@@ -34,10 +34,10 @@ module.exports = {
     // options below to some value.
     //
     development: {
-     host: "127.0.0.1",     // Localhost (default: none)
-     port: 8545,            // Standard Ethereum port (default: none)
+     host: "34.85.65.222",     // Localhost (default: none)
+     port: 6789,            // Standard Ethereum port (default: none)
      network_id: "*",       // Any network (default: none)
-     from: "lat1psl3vrte92kddh6k355dlvyx7rjr7m7y3lh3f9",        // Account to send txs from (default: accounts[0])
+     from: "lat1xetc8djtswghu3r0yk3p55jl25yhlr706l7545",        // Account to send txs from (default: accounts[0])
     },
 
     // Another network with more advanced options...
@@ -66,7 +66,7 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      version: "0.6.12",    // Fetch exact version from solc-bin (default: 0.6.12)
+      version: "0.8.6",    // Fetch exact version from solc-bin (default: 0.6.12)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       settings: {          // See the solidity docs for advice about optimization and evmVersion
         optimizer: {
