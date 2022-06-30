@@ -3,12 +3,26 @@ The purpose of this project is to create a meticulously designed and defined uni
 
 In SIT’s push towards a digital campus, the metaverse that it creates will inherently have a digital economy where a university cryptocurrency (`$SITC`) will be the fundamental basic currency within this ecosystem. And it is of equally, if not more, vital importance that cryptocurrency is designed and defined properly. The aim is to utilize the virtual campus and `$SITC` to build a cohesive environment for SIT, both virtually and physically.
 
+## Deployment
+```sh
+platon-truffle compile
+platon-truffle migrate
+```
+
+## Run Scripts
+```sh
+platon-truffle exec external/transfer_token.js
+```
+
 ## Openzeppelin Contracts library installation
 ```sh
 npm install @openzeppelin/contracts
 ```
 
 ## Changelog
+- v1.2
+  - SIT Coin Contract deployed
+  - Interactive script completed
 - v1.1
   - PRC20 Token Contract
     - Corrected implementation of PRC20 token contract

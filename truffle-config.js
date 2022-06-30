@@ -37,7 +37,7 @@ module.exports = {
      host: "34.85.65.222",     // Localhost (default: none)
      port: 6789,            // Standard Ethereum port (default: none)
      network_id: "*",       // Any network (default: none)
-     from: "lat1xetc8djtswghu3r0yk3p55jl25yhlr706l7545",        // Account to send txs from (default: accounts[0])
+     from: "lat17vxqyp28xtlhuvrgjz9436zg98hcshtcpg6wda",        // Account to send txs from (default: accounts[0])
     },
 
     // Another network with more advanced options...

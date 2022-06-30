@@ -3,23 +3,21 @@ pragma solidity >=0.5.1 <=0.8.6;
 // SPDX-License-Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.7.0) (token/ERC20/ERC20.sol)
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol"
-import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol"
-import "@openzeppelin/contracts/utils/Context.sol"
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /**
  * @dev PRC20 conversion of openzeppelin's ERC20 implementation. 
  * Customized for SIT Coin usage.
  * 
- * Removed: _burn(address account, uint256 amount)
+ * Removed: 
+ * _burn(address account, uint256 amount)
+ * decimals()
  */
-contract PRC20 is Context, IERC20, IERC20Metadata {
+contract PRC20 is IERC20 {
     mapping(address => uint256) private _balances;
-
     mapping(address => mapping(address => uint256)) private _allowances;
 
     uint256 private _totalSupply;
-
     string private _name;
     string private _symbol;
 
@@ -40,7 +38,7 @@ contract PRC20 is Context, IERC20, IERC20Metadata {
     /**
      * @dev Returns the name of the token.
      */
-    function name() public view virtual override returns (string memory) {
+    function name() public view virtual returns (string memory) {
         return _name;
     }
 
@@ -48,25 +46,8 @@ contract PRC20 is Context, IERC20, IERC20Metadata {
      * @dev Returns the symbol of the token, usually a shorter version of the
      * name.
      */
-    function symbol() public view virtual override returns (string memory) {
+    function symbol() public view virtual returns (string memory) {
         return _symbol;
-    }
-
-    /**
-     * @dev Returns the number of decimals used to get its user representation.
-     * For example, if `decimals` equals `2`, a balance of `505` tokens should
-     * be displayed to a user as `5.05` (`505 / 10 ** 2`).
-     *
-     * Tokens usually opt for a value of 18, imitating the relationship between
-     * Ether and Wei. This is the value {ERC20} uses, unless this function is
-     * overridden;
-     *
-     * NOTE: This information is only used for _display_ purposes: it in
-     * no way affects any of the arithmetic of the contract, including
-     * {IERC20-balanceOf} and {IERC20-transfer}.
-     */
-    function decimals() public view virtual override returns (uint8) {
-        return 18;
     }
 
     /**
@@ -92,7 +73,7 @@ contract PRC20 is Context, IERC20, IERC20Metadata {
      * - the caller must have a balance of at least `amount`.
      */
     function transfer(address to, uint256 amount) public virtual override returns (bool) {
-        address owner = _msgSender();
+        address owner = msg.sender;
         _transfer(owner, to, amount);
         return true;
     }
@@ -115,7 +96,7 @@ contract PRC20 is Context, IERC20, IERC20Metadata {
      * - `spender` cannot be the zero address.
      */
     function approve(address spender, uint256 amount) public virtual override returns (bool) {
-        address owner = _msgSender();
+        address owner = msg.sender;
         _approve(owner, spender, amount);
         return true;
     }
@@ -141,7 +122,7 @@ contract PRC20 is Context, IERC20, IERC20Metadata {
         address to,
         uint256 amount
     ) public virtual override returns (bool) {
-        address spender = _msgSender();
+        address spender = msg.sender;
         _spendAllowance(from, spender, amount);
         _transfer(from, to, amount);
         return true;
@@ -160,7 +141,7 @@ contract PRC20 is Context, IERC20, IERC20Metadata {
      * - `spender` cannot be the zero address.
      */
     function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
-        address owner = _msgSender();
+        address owner = msg.sender;
         _approve(owner, spender, allowance(owner, spender) + addedValue);
         return true;
     }
@@ -180,7 +161,7 @@ contract PRC20 is Context, IERC20, IERC20Metadata {
      * `subtractedValue`.
      */
     function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
-        address owner = _msgSender();
+        address owner = msg.sender;
         uint256 currentAllowance = allowance(owner, spender);
         require(currentAllowance >= subtractedValue, "PRC20: decreased allowance below zero");
         unchecked {
