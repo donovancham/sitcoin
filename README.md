@@ -20,6 +20,11 @@ npm install @openzeppelin/contracts
 ```
 
 ## Changelog
+- V1.3.5
+  - Added tests for market
+  - Added new function purchaseItem(), getItemCount(), getSoldItemCount() and getItem()
+  - Renamed fetchAllItems() and fetchUnsoldItems() to getAllItems() and getUnsoldItems()
+    - Edited codes in some of these functions
 - v1.3.4
   - Added tests for minting and minter roles
 - v1.3.3
