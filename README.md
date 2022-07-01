@@ -20,6 +20,13 @@ npm install @openzeppelin/contracts
 ```
 
 ## Changelog
+- v1.3.2
+  - Updated code in Market.sol
+    - Changed fetchAllItems() to fetchUnsoldItems() to get all unsold items
+    - Added fetchAllItems() to get all listed items 
+    - checkItemExist() to check for specific items
+    - unlistItem() to remove unsold items on the market
+  - Added documentation
 - v1.3.1
   - Created Market contract, test file and script (Market.sol, market_usecase.js, test_Market.js)
   - Updated code in Market.sol
