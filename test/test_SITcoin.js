@@ -40,4 +40,9 @@ contract("SITcoin", () => {
         assert.equal(await instance.balanceOf(owner), 99700, 'Sender does not have 99700 SITC')
         assert.equal(await instance.balanceOf(dev1), 300, 'Recipient does not have 300 SITC')
     })
+
+    // Test mint()
+    it("No permission should be denied access to mint", async() => {
+        let instance2 = await Contract.new()
+    })
 })
