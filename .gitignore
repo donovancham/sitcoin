@@ -3,3 +3,4 @@ contracts/.placeholder
 test/.placeholder
 build
 node_modules
+.vscode/settings.json
