@@ -24,16 +24,14 @@ module.exports = async function(callback) {
         let trf = await instance.transfer(dev1, 100)
         console.log(trf)
 
-        console.log('Owner Balance: ', ownerBal)
-        console.log('Dev1 Balance: ', dev1Bal)
+        // console.log('Owner Balance: ', ownerBal)
+        // console.log('Dev1 Balance: ', dev1Bal)
 
-        allowance = await instance.allowance(owner, dev1)
+        // allowance = await instance.allowance(owner, dev1)
+        // console.log('Updated allowance for dev1: ', allowance)
 
-        console.log('Updated allowance for dev1: ', allowance)
-
-        allowance = await instance.allowance(owner, owner)
-
-        console.log('Owner allowance: ', allowance)
+        // allowance = await instance.allowance(owner, owner)
+        // console.log('Owner allowance: ', allowance)
 
         callback();
     }

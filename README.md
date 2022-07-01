@@ -20,6 +20,10 @@ npm install @openzeppelin/contracts
 ```
 
 ## Changelog
+- v1.3.4
+  - Added tests for minting and minter roles
+- v1.3.3
+  - Implemented SafeMath in PRC20.sol
 - v1.3.2
   - Updated code in Market.sol
     - Changed fetchAllItems() to fetchUnsoldItems() to get all unsold items
