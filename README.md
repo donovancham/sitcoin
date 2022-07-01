@@ -20,6 +20,8 @@ npm install @openzeppelin/contracts
 ```
 
 ## Changelog
+- v1.3.1
+  - Implemented SafeMath in PRC20.sol
 - v1.3
   - Testing implemented
   - Removed unneccessary code in PRC20.sol
