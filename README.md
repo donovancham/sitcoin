@@ -20,6 +20,12 @@ npm install @openzeppelin/contracts
 ```
 
 ## Changelog
+- v1.3.1
+  - Created Market contract, test file and script (Market.sol, market_usecase.js, test_Market.js)
+  - Updated code in Market.sol
+    - State variables
+    - Item struct
+    - Functions include createItem(), fetchAllItems()
 - v1.3
   - Testing implemented
   - Removed unneccessary code in PRC20.sol
