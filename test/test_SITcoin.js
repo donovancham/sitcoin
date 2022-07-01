@@ -35,9 +35,30 @@ contract("SITcoin", () => {
 
     // Test transfer()
     // Test balanceOf()
-    it("should transfer tokens correctly", async() => {
+    it("should transfer tokens correctly", async () => {
         await instance.transfer(dev1, 300)
         assert.equal(await instance.balanceOf(owner), 99700, 'Sender does not have 99700 SITC')
         assert.equal(await instance.balanceOf(dev1), 300, 'Recipient does not have 300 SITC')
+    })
+
+    // Test promoteMinter()
+    // Test demoteMinter()
+    it("minter role test", async () => {
+        // Give minter permission
+        await instance.promoteMinter(owner)
+
+        // Test mint
+        await instance.mint(dev1, 100)
+        assert.equal(await instance.balanceOf(dev1), 400, 'Mint unsuccessful')
+
+        // Remove minter permission
+        try {
+            await instance.revokeMinter(owner)
+            await instance.mint(dev1, 100)
+        }
+        catch(err) {
+            // Ensure that no change in dev1
+            assert.equal(await instance.balanceOf(dev1), 400, 'Mint went through')
+        }
     })
 })
