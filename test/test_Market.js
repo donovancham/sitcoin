@@ -1,9 +1,12 @@
 // Note that the artifacts.require should be the contract name
 // declared in the code and NOT the file name
 const Contract = artifacts.require("Market")
-// chnage if needed
-const seller = "lat17vxqyp28xtlhuvrgjz9436zg98hcshtcpg6wda"
-const buyer = "lat1xetc8djtswghu3r0yk3p55jl25yhlr706l7545"
+//0x316fEf8DCFd7676f1aA9847712f3437fBCA2BAFe
+const seller = "lat1x9h7lrw06ank7x4fs3m39u6r07729wh7cmvx7z"
+//0xb50696Db639396C5DA0B29f38C4a3feDe653a092
+const buyer = "lat1k5rfdkmrjwtvtkst98eccj3lahn98gyjed6hp8"
+//0xAcf7C2338187ef219d6E65559522f38C01a4dC26
+const system = "lat14nmuyvupslhjr8twv42e2ghn3sq6fhpxklu8sz"
 
 contract("Market", () => {
 	// Ensure that smart contract is deployed in memory environment before running
@@ -17,7 +20,12 @@ contract("Market", () => {
     //     let balance = await instance.balanceOf(seller)
     //     assert.equal(left, right, 'error comment')
     // })
-
+    it("should transfer tokens correctly", async () => {
+        await instance.transfer(buyer, 800)
+        await instance.transfer(seller, 800)
+        assert.equal(await instance.balanceOf(buyer), 800, 'Buyer does not have 800 SITC')
+        assert.equal(await instance.balanceOf(seller), 800, 'Seller does not have 800 SITC')
+    })
     it("Should add an item to the market", async () => {
         let counter = await instance.createItem("Test Item", 10)
         assert.equal(counter, 1, "item count incorrect")
@@ -76,6 +84,14 @@ contract("Market", () => {
     })
     it("Items should be unlisted", async () => {
         let unlist = await instance.unlistItem(1)
-        assert.equal(unlist, true, "item unlist unsuccessful")
+        assert.equal(unlist, false, "error: item should not be unlisted since sold")
+        unlist = await instance.unlistItem(2)
+        assert.equal(unlist, true, "item should be unlisted since not sold")
+    })
+    it("Should show unlisted item doesn't exist", async () => {
+        let exists = await instance.checkItemExist(1)
+        assert.equal(exists, true, "item exist")
+        exists = await instance.checkItemExist(2)
+        assert.equal(exists, false, "item should have been unlisted")
     })
 })

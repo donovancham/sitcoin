@@ -1,4 +1,11 @@
 // SPDX-License-Identifier: MIT
+
+// TODO: Run the test cases and debug the code.
+// TODO: createItem() If implementing NFT Market, transfer token to seller
+// TODO: purchaseItem() Take note if the token has been transferred from seller to buyer correctly
+// TODO: Implement payable modifier if NFT Market is implemented
+// TODO: Check appropriate use of Private Public External Modifier, review security implications
+
 pragma solidity >=0.5.1 <=0.8.6;
 
 import "./SITcoin.sol";
@@ -17,6 +24,8 @@ contract Market {
         uint256 price;
         bool sold;
     }
+
+    // Generate notification
     event ItemCreated (
         uint256 indexed id, 
         string description, 
@@ -66,16 +75,28 @@ contract Market {
             false //not sold
             );
 
-        //TODO: If implementing NFT Market, transfer token to seller
+        // Notification
+        emit ItemCreated(currId,description,msg.sender,address(0),price,false);
 
         return currId;
     }
+    
+    /**
+    * @dev Shows the count of items in the market (includes sold, unlisted and listed items)
+    * @return total count
+    */
     function getItemCount() public view returns(uint){
         return _identifier.current();
     }
+    
+    /**
+    * @dev Show all the count of sold items in the market.
+    * @return count of sold items
+    */
     function getSoldItemCount() public view returns(uint){
         return _itemsSold.current();
     }
+
     /**
     * @dev Show all unsold items in the market
     * @return array of all unsold items
@@ -163,6 +184,7 @@ contract Market {
         Item storage currItem = _items[_itemId];
         return currItem;
     }
+
     /**
     * @dev Seller can remove/unlist unsold item(s) from the market 
     */
@@ -183,6 +205,7 @@ contract Market {
             return true;
         }else {return false;}
     }
+
     /**
     * @dev Buy items from the market
     */
@@ -198,7 +221,6 @@ contract Market {
         // Check if item price is less than balance of function callee address
         require(currItem.price <= sitcoin.balanceOf(msg.sender), "Insufficient balance");
 
-        //TODO: Take note if the token has been transferred from seller to buyer correctly
         if (sitcoin.transfer(currItem.seller, currItem.price)){
             // Set item to sold
             _items[_itemId].sold = true;
