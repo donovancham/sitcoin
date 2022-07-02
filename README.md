@@ -20,7 +20,12 @@ npm install @openzeppelin/contracts
 ```
 
 ## Changelog
-- V1.3.5
+- v1.3.6
+  - Added use cases for market, under market_usecase.js
+  - Added documentation and TODO for market contract
+  - Minor edit to market test file, under test_Market.js
+  - Edited the wallet address for test files
+- v1.3.5
   - Added tests for market
   - Added new function purchaseItem(), getItemCount(), getSoldItemCount() and getItem()
   - Renamed fetchAllItems() and fetchUnsoldItems() to getAllItems() and getUnsoldItems()
