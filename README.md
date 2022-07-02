@@ -45,6 +45,33 @@ npm install @openzeppelin/contracts
 - v1.4.1
   - Implemented `SafeMath` in `PRC20.sol`
 
+- v1.3.6
+  - Added use cases for market, under market_usecase.js
+  - Added documentation and TODO for market contract
+  - Minor edit to market test file, under test_Market.js
+  - Edited the wallet address for test files
+- v1.3.5
+  - Added tests for market
+  - Added new function purchaseItem(), getItemCount(), getSoldItemCount() and getItem()
+  - Renamed fetchAllItems() and fetchUnsoldItems() to getAllItems() and getUnsoldItems()
+    - Edited codes in some of these functions
+- v1.3.4
+  - Added tests for minting and minter roles
+- v1.3.3
+  - Implemented SafeMath in PRC20.sol
+- v1.3.2
+  - Updated code in Market.sol
+    - Changed fetchAllItems() to fetchUnsoldItems() to get all unsold items
+    - Added fetchAllItems() to get all listed items 
+    - checkItemExist() to check for specific items
+    - unlistItem() to remove unsold items on the market
+  - Added documentation
+- v1.3.1
+  - Created Market contract, test file and script (Market.sol, market_usecase.js, test_Market.js)
+  - Updated code in Market.sol
+    - State variables
+    - Item struct
+    - Functions include createItem(), fetchAllItems()
 - v1.3
   - Testing implemented
   - Removed unneccessary code in `PRC20.sol`
