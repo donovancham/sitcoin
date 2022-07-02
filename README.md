@@ -20,10 +20,16 @@ npm install @openzeppelin/contracts
 ```
 
 ## Changelog
-- v1.3.2
+
+- v1.5
+  - Implemented PRC721
+  - Implemented SafeMath in PRC721.sol
+
+- v1.4.2
   - Added tests for minting and minter roles
-- v1.3.1
+- v1.4.1
   - Implemented SafeMath in PRC20.sol
+
 - v1.3
   - Testing implemented
   - Removed unneccessary code in PRC20.sol
