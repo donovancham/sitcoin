@@ -7,6 +7,7 @@ import { AccessControl } from "@openzeppelin/contracts/access/AccessControl.sol"
 
 contract AccessToken is PRC721, AccessControl {
 
+    // @todo Revamp auth id storage mechanism
     uint public currentAuthTokenId;
 
     // Create a new role identifier for user role
@@ -66,7 +67,7 @@ contract AccessToken is PRC721, AccessControl {
      **/
     function loginWithAuthToken(uint authTokenId, address userAddress, string memory ipfsHash) public view returns (bool _isAuth) {
         // Check whether a login user has role or not
-        require(hasRole(USER_ROLE, userAddress), "Caller is not a user");
+        require(hasRole(USER_ROLE, userAddress), "User has no access permissions");
 
         // Convert each value (data-type are string) to hash in order to compare with each other 
         bytes32 hash1 = keccak256(abi.encodePacked(ipfsHash));

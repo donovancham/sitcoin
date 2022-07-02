@@ -33,13 +33,13 @@ contract SITcoin is PRC20, AccessControl {
     }
 
     // @todo Come back after completing NFT pass implementation
-    function promoteMinter(address account) public virtual {
+    function grantMinter(address account) public virtual {
         // Only DEFAULT_ADMIN_ROLE as caller can grant roles
         grantRole(MINTER_ROLE, account);
     }
 
     // @todo Come back after completing NFT pass implementation
-    function demoteMinter(address account) public virtual {
+    function revokeMinter(address account) public virtual {
         // Only DEFAULT_ADMIN_ROLE as caller can revoke roles
         revokeRole(MINTER_ROLE, account);
     }
