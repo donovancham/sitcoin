@@ -1,10 +1,8 @@
-pragma solidity >=0.5.1 <=0.8.6;
-
 // SPDX-License-Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.7.0) (token/ERC20/ERC20.sol)
+pragma solidity ^0.8.0;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import { SafeMath } from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 /**
  * @dev PRC20 conversion of openzeppelin's ERC20 implementation. 
@@ -15,7 +13,6 @@ import { SafeMath } from "@openzeppelin/contracts/utils/math/SafeMath.sol";
  * decimals()
  */
 contract PRC20 is IERC20 {
-    using SafeMath for uint;
 
     mapping(address => uint256) private _balances;
     mapping(address => mapping(address => uint256)) private _allowances;
@@ -106,11 +103,9 @@ contract PRC20 is IERC20 {
         uint256 fromBalance = _balances[from];
         require(fromBalance >= amount, "PRC20: transfer amount exceeds balance");
         unchecked {
-            // _balances[from] = fromBalance - amount;
-            _balances[from] = SafeMath.sub(fromBalance, amount);
+            _balances[from] = fromBalance - amount;
         }
-        // _balances[to] += amount;
-        _balances[to] = SafeMath.add(_balances[to], amount);
+        _balances[to] += amount;
 
         emit Transfer(from, to, amount);
     }
@@ -127,10 +122,8 @@ contract PRC20 is IERC20 {
     function _mint(address account, uint256 amount) internal virtual {
         require(account != address(0), "PRC20: mint to the zero address");
 
-        // _totalSupply += amount;
-        // _balances[account] += amount;
-        _totalSupply = SafeMath.add(_totalSupply, amount);
-        _balances[account] = SafeMath.add(_balances[account], amount);
+        _totalSupply += amount;
+        _balances[account] += amount;
         
         emit Transfer(address(0), account, amount);
     }

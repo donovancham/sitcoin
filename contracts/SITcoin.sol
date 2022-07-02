@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.7.0) (token/ERC20/ERC20.sol)
-pragma solidity >=0.5.1 <=0.8.6;
+pragma solidity ^0.8.0;
 
 import "./PRC20.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
@@ -34,13 +33,13 @@ contract SITcoin is PRC20, AccessControl {
     }
 
     // @todo Come back after completing NFT pass implementation
-    function promoteMinter(address account) public virtual {
+    function grantMinter(address account) public virtual {
         // Only DEFAULT_ADMIN_ROLE as caller can grant roles
         grantRole(MINTER_ROLE, account);
     }
 
     // @todo Come back after completing NFT pass implementation
-    function demoteMinter(address account) public virtual {
+    function revokeMinter(address account) public virtual {
         // Only DEFAULT_ADMIN_ROLE as caller can revoke roles
         revokeRole(MINTER_ROLE, account);
     }
