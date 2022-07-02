@@ -16,7 +16,7 @@ contract AccessToken is PRC721, AccessControl {
     // Create minter role
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
-    constructor() PRC721("SITM Access Token", "SAT") {
+    constructor() PRC721("SIT Metaverse Access Token", "SAT") {
         // Grant the contract deployer the default admin role: it will be able
         // to grant and revoke any roles
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -75,7 +75,7 @@ contract AccessToken is PRC721, AccessControl {
 
         // Check if user owns token
         if (userAddress == ownerOf(authTokenId)) {
-            // Ensure hash sent matches auth database
+            // Verify IPFS information with what is linked to auth token
             if (hash1 == hash2) {
                 return true;
             }

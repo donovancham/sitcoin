@@ -24,8 +24,6 @@ npm install @openzeppelin/contracts
   - Tests
     - Implemented tests for `MINTER_ROLE` permissions
     - Implemented testing framework `assertTruffle`
-  - `AccessToken.sol`
-    - 
 - v1.5.1
   - Reverted `SafeMath` due to Solidity v0.8.0 auto checks for arithmetic overflow
     - `PRC20.sol`
