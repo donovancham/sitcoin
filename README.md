@@ -20,6 +20,31 @@ npm install @openzeppelin/contracts
 ```
 
 ## Changelog
+- v1.5.2
+  - Tests
+    - Implemented tests for `MINTER_ROLE` permissions
+    - Implemented testing framework `assertTruffle`
+- v1.5.1
+  - Reverted `SafeMath` due to Solidity v0.8.0 auto checks for arithmetic overflow
+    - `PRC20.sol`
+    - `PRC721.sol`
+  - Update all olidity requirements to v0.8.0 to compile
+  - Extended **PRC721**
+    - Added Token URI functions
+    - Updated `_burn()` function
+    - Updated `tokenURI()` function
+  - Implemented `AccessToken.sol`
+    - Added `MINTER_ROLE` for restricting mint access
+    - Updated `_mint()` to `_safeMint()`
+- v1.5
+  - Implemented **PRC721**
+  - Implemented `SafeMath` in `PRC721.sol`
+
+- v1.4.2
+  - Added tests for minting and minter roles
+- v1.4.1
+  - Implemented `SafeMath` in `PRC20.sol`
+
 - v1.3.6
   - Added use cases for market, under market_usecase.js
   - Added documentation and TODO for market contract
@@ -49,13 +74,13 @@ npm install @openzeppelin/contracts
     - Functions include createItem(), fetchAllItems()
 - v1.3
   - Testing implemented
-  - Removed unneccessary code in PRC20.sol
+  - Removed unneccessary code in `PRC20.sol`
 - v1.2
   - SIT Coin Contract deployed
   - Interactive script completed
 - v1.1
-  - PRC20 Token Contract
-    - Corrected implementation of PRC20 token contract
+  - **PRC20** Token Contract
+    - Corrected implementation of **PRC20** token contract
     - Implemented openzeppelin contracts framework
 - v1.0
   - Deployment on PlatOn local private testnet
