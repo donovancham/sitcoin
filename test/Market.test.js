@@ -2,9 +2,13 @@
 // declared in the code and NOT the file name
 const Market = artifacts.require("Market")
 const SITcoin = artifacts.require("SITcoin")
-const { dev1, dev2, dev1hex, dev2hex } = require("../scripts/wallet_accounts")
+const { dev1, dev2, dev1hex } = require("../scripts/wallet_accounts")
 
 contract("Market", () => {
+    var buyer = dev2;
+    var seller = dev1;
+    var sellerhex = dev1hex;
+
 	// Ensure that smart contract is deployed in memory environment before running
     // Use beforeEach to deploy new box for each test
 	beforeEach(async () => {
@@ -23,10 +27,10 @@ contract("Market", () => {
     })
 
     it("should transfer tokens correctly", async () => {
-        await sitInstance.transfer(dev2, 800)
-        await sitInstance.transfer(dev1, 800)
-        assert.equal(await sitInstance.balanceOf(dev2), 800, 'dev2 does not have 800 SITC')
-        assert.equal(await sitInstance.balanceOf(dev1), 800, 'dev1 does not have 800 SITC')
+        await sitInstance.transfer(buyer, 800)
+        await sitInstance.transfer(seller, 800)
+        assert.equal(await sitInstance.balanceOf(buyer), 800, 'buyer does not have 800 SITC')
+        assert.equal(await sitInstance.balanceOf(seller), 800, 'seller does not have 800 SITC')
     })
 
     it("Should add an item to the market", async () => {
@@ -37,7 +41,7 @@ contract("Market", () => {
         console.log("item 1: ", item)
         assert.equal(item.id, 1, "item count incorrect")
         assert.equal(item.description, "Test Item", "item Description wrong")
-        assert.equal(item.seller, dev1hex, "wrong address")
+        assert.equal(item.seller, sellerhex, "wrong address")
         assert.equal(item.buyer, 0x0000000000000000000000000000000000000000, "wrong address")
         assert.equal(item.price, 10, "wrong price")
         assert.equal(item.sold, false, "wrong sold")
@@ -46,7 +50,7 @@ contract("Market", () => {
         console.log("item 2: ", item)
         assert.equal(item.id, 2, "item count incorrect")
         assert.equal(item.description, "Test Item 2", "item Description wrong")
-        assert.equal(item.seller, dev1hex, "wrong address")
+        assert.equal(item.seller, sellerhex, "wrong address")
         assert.equal(item.buyer, 0x0000000000000000000000000000000000000000, "wrong address")
         assert.equal(item.price, 10, "wrong price")
         assert.equal(item.sold, false, "wrong sold")
@@ -65,15 +69,15 @@ contract("Market", () => {
         let item = await instance.getItem(1)
         assert.equal(item.id, 1, "item id incorrect")
         assert.equal(item.description, "Test Item", "item description incorrect")
-        assert.equal(item.seller, dev1hex, "item dev1 incorrect")
-        assert.equal(item.buyer, 0x0000000000000000000000000000000000000000, "item dev2 incorrect")
+        assert.equal(item.seller, sellerhex, "item seller incorrect")
+        assert.equal(item.buyer, 0x0000000000000000000000000000000000000000, "item buyer incorrect")
         assert.equal(item.price, 10, "item price incorrect")
         assert.equal(item.sold, false, "item sold incorrect")
         item = await instance.getItem(2)
         assert.equal(item.id, 2, "item id incorrect")
         assert.equal(item.description, "Test Item 2", "item description incorrect")
-        assert.equal(item.seller, dev1hex, "item dev1 incorrect")
-        assert.equal(item.buyer, 0x0000000000000000000000000000000000000000, "item dev2 incorrect")
+        assert.equal(item.seller, sellerhex, "item seller incorrect")
+        assert.equal(item.buyer, 0x0000000000000000000000000000000000000000, "item buyer incorrect")
     })
 
     it("Should show unsold item(s)", async () => {
