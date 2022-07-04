@@ -11,7 +11,7 @@ platon-truffle migrate
 
 ## Run Scripts
 ```sh
-platon-truffle exec external/transfer_token.js
+platon-truffle exec scripts/transferToken.js
 ```
 
 ## Openzeppelin Contracts library installation
@@ -20,6 +20,17 @@ npm install @openzeppelin/contracts
 ```
 
 ## Changelog
+- v1.6
+  - Removed `PRC20.sol`
+  - Reimplemented `SITcoin.sol`
+    - Added documentations for all functions
+    - Removed `PRC20.sol` inheritance
+    - Added `decimals()` function override to desired decimal place of 0
+  - Updated `SITcoin.test.js`
+    - Updated function calls to explicitly call from owner
+    - Updated some descriptions
+    - Added event-based assertions with `truffleAssert.eventEmitted`s
+  
 - v1.5.2
   - Tests
     - Implemented tests for `MINTER_ROLE` permissions

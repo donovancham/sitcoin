@@ -16,6 +16,8 @@ import { IERC165 } from "@openzeppelin/contracts/utils/introspection/IERC165.sol
  * @dev Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard, including
  * the Metadata extension, but not including the Enumerable extension, which is available separately as
  * {ERC721Enumerable}.
+ * 
+ * Implementation customized for SIT coin use.
  */
 contract PRC721 is Context, ERC165, IERC721, IERC721Metadata {
     using Address for address;

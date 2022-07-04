@@ -1,13 +1,13 @@
 // test/SITcoin.test.js
 // Load dependencies
 const SITcoin = artifacts.require("SITcoin")
-const { owner, dev1, minter } = require("../scripts/wallet_accounts")
+const { owner, ownerhex, dev1, dev1hex } = require("../scripts/wallet_accounts")
 const truffleAssert = require('truffle-assertions');
 
 contract("SITcoin", () => {
 	// Ensure that smart contract is deployed in memory environment before running
     // Use beforeEach to deploy new box for each test
-	beforeEach(async () => {
+	before(async () => {
         // New instance every test
 		this.sitcoin = await SITcoin.deployed()
 	})
@@ -29,6 +29,11 @@ contract("SITcoin", () => {
         assert.equal('SITC', await this.sitcoin.symbol(), 'Wrong symbol')
     })
 
+    // Test decimals()
+    it("should show correct decimal", async () => {
+        assert.equal(0, await this.sitcoin.decimals(), 'Wrong decimal')
+    })
+
     // Test totalSupply()
     it("should show correct supply", async () => {
         assert.equal(100000, await this.sitcoin.totalSupply(), 'Wrong supply')
@@ -38,43 +43,36 @@ contract("SITcoin", () => {
     // Test balanceOf()
     it("should transfer tokens correctly", async () => {
         // Transfer from owner to dev1 account
-        await this.sitcoin.transfer(dev1, 300, {from:owner})
+        let tx = await this.sitcoin.transfer(dev1, 300, {from:owner})
+
+        // Check data from event emitted is correct
+        truffleAssert.eventEmitted(tx, 'Transfer', (ev) => {
+            return ev.from == ownerhex && ev.to == dev1hex && ev.value.words[0] == 300
+        })
+
+        // Ensure balances match
         assert.equal(await this.sitcoin.balanceOf(owner, {from: owner}), 99700, 'Sender does not have 99700 SITC')
         assert.equal(await this.sitcoin.balanceOf(dev1, {from: owner}), 300, 'Recipient does not have 300 SITC')
     })
 
-    // Test grantMinter()
-    // Test revokeMinter()
-    it("deny non-admin from accessing privileged functions", async () => {
-        // Ensure that promote minter results in failure
-        await truffleAssert.reverts(
-            this.sitcoin.grantMinter(minter, {from: dev1}),
-            "exited with an error"
-        )
-
-        // Ensure that revoke minter results in failure
-        await truffleAssert.reverts(
-            this.sitcoin.revokeMinter(minter, {from: dev1}),
-            "exited with an error"
-        )
-    })
-
     // Test mint()
-    // Test grantMinter()
-    // Test revokeMinter()
-    it("should allow minter to mint", async () => {
-        // Give minter permission
-        await this.sitcoin.grantMinter(minter, {from:owner})
+    it("should allow only owner to mint", async () => {
+        // Test mint from owner
+        let tx = await this.sitcoin.mint(owner, 100000, {from:owner})
 
-        // Test mint
-        await this.sitcoin.mint(dev1, 100, {from:minter})
-        assert.equal(await this.sitcoin.balanceOf(dev1, {from:dev1}), 100, 'Mint unsuccessful')
+        // Check data from event emitted is correct
+        truffleAssert.eventEmitted(tx, 'Transfer', (ev) => {
+            return ev.from == 0 && ev.to === ownerhex && ev.value.words[0] == 100000
+        })
+        
+        // Ensure supply updated
+        assert.equal(await this.sitcoin.totalSupply(), 200000, 'Supply not updated')
+        // Ensure owner balance has money
+        assert.equal(await this.sitcoin.balanceOf(owner, {from:owner}), 199700, 'Tokens not updated')
 
-        // Remove minter permission
-        await this.sitcoin.revokeMinter(minter, {from:owner})
-
+        // Test mint from non-owner
         await truffleAssert.reverts(
-            this.sitcoin.mint(dev1, 100, {from:minter}),
+            this.sitcoin.mint(dev1, 100000, {from:dev1}),
             "exited with an error"
         )
     })
