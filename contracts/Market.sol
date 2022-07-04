@@ -238,5 +238,6 @@ contract Market {
                 return true;
             }else {return false;}
 
+        }
     }
 }
