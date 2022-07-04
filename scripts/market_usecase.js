@@ -52,7 +52,8 @@ module.exports = async function(callback) {
 
         let getAllItems = await instance.getAllItems()
         console.log("getAllItems: ", getAllItems) // 2 items (array)
-
+        //----------------------------------------------------------------------------------------------------
+        await sitcInstance.increaseAllowance(instance.address, 400, {from: buyer})
         let purchase = await instance.purchaseItem(1, {from: buyer})
         console.log("purchase: ", purchase) //true
 
