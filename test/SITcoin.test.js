@@ -1,15 +1,29 @@
 // test/SITcoin.test.js
 // Load dependencies
 const SITcoin = artifacts.require("SITcoin")
-const { owner, ownerhex, dev1, dev1hex } = require("../scripts/wallet_accounts")
+const { owner, ownerhex, dev1, dev1hex, dev2, dev2hex } = require("../scripts/wallet_accounts")
 const truffleAssert = require('truffle-assertions');
 
 contract("SITcoin", () => {
+    var ownerBal;
+    var dev1Bal;
+    var dev2Bal;
+
 	// Ensure that smart contract is deployed in memory environment before running
     // Use beforeEach to deploy new box for each test
 	before(async () => {
         // New instance every test
 		this.sitcoin = await SITcoin.deployed()
+        
+        ownerBal = await this.sitcoin.balanceOf(owner).then( bal => {
+            return bal.toNumber()
+        })
+        dev1Bal = await this.sitcoin.balanceOf(dev1).then( bal => {
+            return bal.toNumber()
+        })
+        dev2Bal = await this.sitcoin.balanceOf(dev2).then( bal => {
+            return bal.toNumber()
+        })
 	})
 
     // Test constructor
@@ -73,7 +87,70 @@ contract("SITcoin", () => {
         // Test mint from non-owner
         await truffleAssert.reverts(
             this.sitcoin.mint(dev1, 100000, {from:dev1}),
-            "exited with an error"
+            "exited with an error (status 0)"
         )
+    })
+
+    // Test approve()
+    // Test allowance()
+    // Test transferFrom()
+    it("should allow third-party transfer execution", async () => {
+        // Setup Roles
+        let buyer = owner
+        let buyerhex = ownerhex
+        let seller = dev1
+        let sellerhex = dev1hex
+        let market = dev2
+        let markethex = dev2hex
+
+        // 1. Buyer approves funds for market
+        let tx = await this.sitcoin.approve(market, 100, {from:buyer})
+        truffleAssert.eventEmitted(tx, 'Approval', (ev) => {
+            return ev.owner == buyerhex && ev.spender === markethex && ev.value.words[0] == 100
+        })
+
+        // Ensure seller allowance matches
+        assert.equal(await this.sitcoin.allowance(buyer, market), 100, 'Allowance not updated')
+
+        // 2. Market initiates transaction
+        tx = await this.sitcoin.transferFrom(buyer, seller, 100, {from:dev2})
+        truffleAssert.eventEmitted(tx, 'Approval', (ev) => {
+            return ev.owner == buyerhex && ev.spender === markethex && ev.value.words[0] == 0
+        })
+        truffleAssert.eventEmitted(tx, 'Transfer', (ev) => {
+            return ev.from == buyerhex && ev.to === sellerhex && ev.value.words[0] == 100
+        })
+
+        // Ensure no more allowance
+        assert.equal(await this.sitcoin.allowance(buyer, market), 0, 'Allowance not used up')
+        // Ensure seller account balance increased
+        assert.equal(await this.sitcoin.balanceOf(seller), dev2Bal + 100, 'No money')
+    })
+    
+    // Test allowance()
+    // Test decreaseAllowance()
+    // Test increaseAllowance()
+    it("should allow users to remove allowances", async () => {
+        let tx = await this.sitcoin.increaseAllowance(dev1, 200, {from:owner})
+        truffleAssert.eventEmitted(tx, 'Approval', (ev) => {
+            return ev.owner == ownerhex && ev.spender === dev1hex && ev.value.words[0] == 200
+        })
+
+        // Check allowance
+        assert.equal(await this.sitcoin.allowance(owner, dev1), 200, 'Allowance not updated')
+
+        // Ensure unable to decrease allowance below 0
+        await truffleAssert.reverts(
+            this.sitcoin.decreaseAllowance(dev1, 100000, {from:owner}),
+            "exited with an error (status 0)"
+        )
+        
+        // Check if allowance will be successfully deducted
+        tx = await this.sitcoin.decreaseAllowance(dev1, 50, {from:owner})
+        truffleAssert.eventEmitted(tx, 'Approval', (ev) => {
+            return ev.owner == ownerhex && ev.spender === dev1hex && ev.value.words[0] == 150
+        })
+
+        assert.equal(await this.sitcoin.allowance(owner, dev1), 150, 'Allowance not deducted')
     })
 })

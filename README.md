@@ -20,6 +20,29 @@ npm install @openzeppelin/contracts
 ```
 
 ## Changelog
+- v1.6.3
+  - Updated `wallet_accounts.js`
+    - Added shared accounts for smoother dev
+  - Updated `Market.test.js`
+    - Added smoother testing variables
+  - Updated `SITcoin.test.js`
+    - Added test for `transferFrom()` scenario
+    - Added test for `approve()` and `allowance()`
+- v1.6.2
+  - Updated `Market.sol`
+    - `purchaseItem()` to call `transferFrom()` instead of `transfer()`
+  - Updated `Market_test.js`
+    - Implemented `sitcoin.increaseAllowance(address, value, {from: sender})` before `purchaseItem()`
+      - Address: Market Contract address, using `marketInstance.address`
+      - Value: Price of item
+    - Added tests for unlisting of items (`unlistItem()`) and checking unsold items (`getUnsoldItems()`)
+    - Balance are being updated correctly after the changes above
+- v1.6.1
+  - Update `wallet_accounts.js`
+    - Added `HEX` addresses for accounts
+  - Update `SITcoin.test.js`
+    - Added variables for wallet balances to reduce interference from other test deployments
+    - Add `beforeEach` function to redeploy after each test
 - v1.6
   - Removed `PRC20.sol`
   - Reimplemented `SITcoin.sol`
