@@ -21,12 +21,14 @@ contract("Market", () => {
         let exists = await instance.checkItemExist(1)
         assert.equal(exists, false, "item shouldn't exist")
     })
+
     it("should transfer tokens correctly", async () => {
         await sitInstance.transfer(buyer, 800)
         await sitInstance.transfer(seller, 800)
         assert.equal(await sitInstance.balanceOf(buyer), 800, 'Buyer does not have 800 SITC')
         assert.equal(await sitInstance.balanceOf(seller), 800, 'Seller does not have 800 SITC')
     })
+
     it("Should add an item to the market", async () => {
         await instance.createItem("Test Item", 10, {from: seller})
         await instance.createItem("Test Item 2", 10, {from: seller})
@@ -48,7 +50,6 @@ contract("Market", () => {
         assert.equal(item.buyer, 0x0000000000000000000000000000000000000000, "wrong address")
         assert.equal(item.price, 10, "wrong price")
         assert.equal(item.sold, false, "wrong sold")
-
     })
 
     it("Should show item exists", async () => {
@@ -74,18 +75,21 @@ contract("Market", () => {
         assert.equal(item.seller, "0x316fEf8DCFd7676f1aA9847712f3437fBCA2BAFe", "item seller incorrect")
         assert.equal(item.buyer, 0x0000000000000000000000000000000000000000, "item buyer incorrect")
     })
+
     it("Should show unsold item(s)", async () => {
         let unsold = await instance.getUnsoldItems()
         assert.equal(unsold.length, 2, "unsold item count incorrect")
         assert.equal(unsold[0].description, "Test Item", "wrong item at index 0")
         assert.equal(unsold[1].description, "Test Item 2", "wrong item at index 1")
     })
+
     it("Should return all items", async () => {
         let all = await instance.getAllItems()
         assert.equal(all.length, 2, "all item count incorrect")
         assert.equal(all[0].description, "Test Item", "wrong item at index 0")
         assert.equal(all[1].description, "Test Item 2", "wrong item at index 1")
     })
+    
     it("Should mark item as sold", async () => {
         let sold = await instance.purchaseItem(1, {from: buyer})
         console.log("sold: ", sold)

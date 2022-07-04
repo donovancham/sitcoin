@@ -4,3 +4,4 @@ test/.placeholder
 build
 node_modules
 .vscode/settings.json
+truffle-config.js

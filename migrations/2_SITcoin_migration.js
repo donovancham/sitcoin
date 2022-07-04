@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: MIT
 
 const SITcoin = artifacts.require("SITcoin");
+const { owner } = require("../scripts/wallet_accounts");
 const Market = artifacts.require("Market");
-// Change as needed
-const sitcOwner = "lat14nmuyvupslhjr8twv42e2ghn3sq6fhpxklu8sz";
 
-module.exports = function(deployer) {
+module.exports = (deployer) => {
     // Deploy with starting of 100,000 tokens
-    deployer.deploy(SITcoin, 100000, {from: sitcOwner});
-    deployer.deploy(Market, SITcoin.address); // Pass in the address of the SITcoin contract
-}
+    deployer.deploy(SITcoin, 100000, {from: owner}).then( () => {
+        return deployer.deploy(Market, SITcoin.address);
+    });
+};
+//     deployer.deploy(SITcoin, 100000, {from: sitcOwner});
+//     deployer.deploy(Market, SITcoin.address); // Pass in the address of the SITcoin contract
+// }

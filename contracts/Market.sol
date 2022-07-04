@@ -11,10 +11,12 @@ pragma solidity >=0.5.1 <=0.8.6;
 import "./SITcoin.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
+import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
 contract Market {
     /**
-    * @dev Properties of the items in the market.
-    */
+     * @dev Properties of the items in the market.
+     */
     struct Item{
         uint256 id;
         //address owner;
@@ -36,8 +38,8 @@ contract Market {
     );
 
     /**
-    * @dev Track the number of items in the market, and the number of items sold
-    */
+     * @dev Track the number of items in the market, and the number of items sold
+     */
     using Counters for Counters.Counter;
     Counters.Counter private _identifier;
     Counters.Counter private _itemsSold;
@@ -46,21 +48,21 @@ contract Market {
 
     // Object sitcoin which Holds deployed token contract
     // SITcoin public sitcoin;
-    //address public sitcoin;
-    PRC20 public sitcoin;
+    // address public sitcoin;
+    ERC20 public sitcoin;
 
     /** @dev Sets the contract ID of deployed contract into this contract through contructor.
      *  First deploy token contract and then deploy this contract.
      */
     constructor (address _sitcoin) {
-        sitcoin = PRC20(_sitcoin);
+        sitcoin = ERC20(_sitcoin);
         // sitcoin = SITcoin(_sitcoin);
     }
 
     /**
-    * @dev Creates a new item in the market.
-    * @return The current token ID of the new item.
-    */
+     * @dev Creates a new item in the market.
+     * @return The current token ID of the new item.
+     */
     function createItem(string memory description, uint256 price) public returns(uint){
         // Price to be more than 0
         require(price > 0, "Price must be at least 1 SITC");
@@ -85,25 +87,25 @@ contract Market {
     }
     
     /**
-    * @dev Shows the count of items in the market (includes sold, unlisted and listed items)
-    * @return total count
-    */
+     * @dev Shows the count of items in the market (includes sold, unlisted and listed items)
+     * @return total count
+     */
     function getItemCount() public view returns(uint){
         return _identifier.current();
     }
     
     /**
-    * @dev Show all the count of sold items in the market.
-    * @return count of sold items
-    */
+     * @dev Show all the count of sold items in the market.
+     * @return count of sold items
+     */
     function getSoldItemCount() public view returns(uint){
         return _itemsSold.current();
     }
 
     /**
-    * @dev Show all unsold items in the market
-    * @return array of all unsold items
-    */
+     * @dev Show all unsold items in the market
+     * @return array of all unsold items
+     */
     function getUnsoldItems() public view returns (Item[] memory)
     {
         // Total item count
@@ -131,9 +133,9 @@ contract Market {
     }
 
     /**
-    * @dev Show all listed items in the market
-    * @return array of all items
-    */
+     * @dev Show all listed items in the market
+     * @return array of all items
+     */
     function getAllItems() public view returns (Item[] memory)
     {
         // Total item count
@@ -156,10 +158,10 @@ contract Market {
     }
 
     /**
-    * @dev Check if specific item exists in the market
-    * @param _itemId id of the item to check
-    * @return true if item exists, false otherwise
-    */
+     * @dev Check if specific item exists in the market
+     * @param _itemId id of the item to check
+     * @return true if item exists, false otherwise
+     */
     function checkItemExist(
         uint256 _itemId
     ) public view returns (bool)
@@ -173,9 +175,9 @@ contract Market {
     }
 
     /**
-    * @dev Get specific item details
-    * @return Object of selected item
-    */
+     * @dev Get specific item details
+     * @return Object of selected item
+     */
     function getItem (
         uint256 _itemId
     ) public view returns (Item memory)
@@ -189,8 +191,8 @@ contract Market {
     }
 
     /**
-    * @dev Seller can remove/unlist unsold item(s) from the market 
-    */
+     * @dev Seller can remove/unlist unsold item(s) from the market 
+     */
     function unlistItem(uint256 _itemId) external returns (bool){
 
         if (!checkItemExist(_itemId)){
@@ -212,9 +214,9 @@ contract Market {
     }
 
     /**
-    * @dev Buy items from the market
-    */
-    //
+     * @dev Buy items from the market
+     */
+     //
     function purchaseItem(uint256 _itemId) external returns (bool) {
         // // Item id cannot be below 0
         // require(_itemId > 0, "Item index must be greater than 0");
