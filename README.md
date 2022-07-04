@@ -19,7 +19,14 @@ platon-truffle exec scripts/transferToken.js
 npm install @openzeppelin/contracts
 ```
 
+
 ## Changelog
+- v1.6.1
+  - Update `wallet_accounts.js`
+    - Added `HEX` addresses for accounts
+  - Update `SITcoin.test.js`
+    - Added variables for wallet balances to reduce interference from other test deployments
+    - Add `beforeEach` function to redeploy after each test
 - v1.6
   - Removed `PRC20.sol`
   - Reimplemented `SITcoin.sol`

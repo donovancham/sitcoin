@@ -6,8 +6,8 @@ const Market = artifacts.require("Market");
 
 module.exports = (deployer) => {
     // Deploy with starting of 100,000 tokens
-    deployer.deploy(SITcoin, 100000, {from: owner}).then( () => {
-        return deployer.deploy(Market, SITcoin.address);
+    deployer.deploy(SITcoin, 100000, {from: owner}).then( sitcoin => {
+        return deployer.deploy(Market, sitcoin.address);
     });
 };
 //     deployer.deploy(SITcoin, 100000, {from: sitcOwner});
