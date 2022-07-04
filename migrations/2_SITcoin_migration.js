@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 const SITcoin = artifacts.require("SITcoin");
-const { owner } = require("../scripts/wallet_accounts");
+const { system } = require("../scripts/wallet_accounts");
 const Market = artifacts.require("Market");
 
 module.exports = (deployer) => {

@@ -19,6 +19,7 @@ platon-truffle exec scripts/transferToken.js
 npm install @openzeppelin/contracts
 ```
 
+
 ## Changelog
 - v1.6.3
   - Updated `wallet_accounts.js`
