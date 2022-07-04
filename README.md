@@ -20,6 +20,16 @@ npm install @openzeppelin/contracts
 ```
 
 ## Changelog
+- v1.5.3
+  - Edited `Market.sol`
+    - Updated the code to include code reuse for certain functions
+    - Updated the constructor and state variables
+  - Edited `PRC20.sol`
+    - `transfer()` function using `tx.origin` instead of `msg.sender`
+  - Added Migration code in `2_SITcoin_migration` for market contract
+  - Tests
+    - Edited test case for `purchaseItem()`
+    - Edited assert for `getItem()`
 - v1.5.2
   - Tests
     - Implemented tests for `MINTER_ROLE` permissions
@@ -46,14 +56,14 @@ npm install @openzeppelin/contracts
   - Implemented `SafeMath` in `PRC20.sol`
 
 - v1.3.6
-  - Added use cases for market, under market_usecase.js
+  - Added use cases for market, under `market_usecase.js`
   - Added documentation and TODO for market contract
-  - Minor edit to market test file, under test_Market.js
+  - Minor edit to market test file, under `test_Market.js`
   - Edited the wallet address for test files
 - v1.3.5
   - Added tests for market
-  - Added new function purchaseItem(), getItemCount(), getSoldItemCount() and getItem()
-  - Renamed fetchAllItems() and fetchUnsoldItems() to getAllItems() and getUnsoldItems()
+  - Added new function`purchaseItem()`, `getItemCount()`, `getSoldItemCount()` and `getItem()`
+  - Renamed `fetchAllItems()` and `fetchUnsoldItems()` to `getAllItems()` and `getUnsoldItems()`
     - Edited codes in some of these functions
 - v1.3.4
   - Added tests for minting and minter roles
@@ -61,17 +71,17 @@ npm install @openzeppelin/contracts
   - Implemented SafeMath in PRC20.sol
 - v1.3.2
   - Updated code in Market.sol
-    - Changed fetchAllItems() to fetchUnsoldItems() to get all unsold items
-    - Added fetchAllItems() to get all listed items 
-    - checkItemExist() to check for specific items
-    - unlistItem() to remove unsold items on the market
+    - Changed `fetchAllItems()` to `fetchUnsoldItems()` to get all unsold items
+    - Added `fetchAllItems()` to get all listed items 
+    - `checkItemExist()` to check for specific items
+    - `unlistItem()` to remove unsold items on the market
   - Added documentation
 - v1.3.1
-  - Created Market contract, test file and script (Market.sol, market_usecase.js, test_Market.js)
-  - Updated code in Market.sol
+  - Created Market contract, test file and script (`Market.sol`, `market_usecase.js`, `test_Market.js`)
+  - Updated code in `Market.sol`
     - State variables
     - Item struct
-    - Functions include createItem(), fetchAllItems()
+    - Functions include `createItem()`, `fetchAllItems()`
 - v1.3
   - Testing implemented
   - Removed unneccessary code in `PRC20.sol`

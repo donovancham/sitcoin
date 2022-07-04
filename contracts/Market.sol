@@ -45,13 +45,16 @@ contract Market {
     mapping(uint256 => Item) private _items;
 
     // Object sitcoin which Holds deployed token contract
-    SITcoin public sitcoin;
+    // SITcoin public sitcoin;
+    //address public sitcoin;
+    PRC20 public sitcoin;
 
     /** @dev Sets the contract ID of deployed contract into this contract through contructor.
      *  First deploy token contract and then deploy this contract.
      */
     constructor (address _sitcoin) {
-        sitcoin = SITcoin(_sitcoin);
+        sitcoin = PRC20(_sitcoin);
+        // sitcoin = SITcoin(_sitcoin);
     }
 
     /**
@@ -189,47 +192,52 @@ contract Market {
     * @dev Seller can remove/unlist unsold item(s) from the market 
     */
     function unlistItem(uint256 _itemId) external returns (bool){
-        // Item id cannot be below 0
-        require(_itemId > 0, "Item index must be greater than 0");
-        // Get the item object at the index
+
+        if (!checkItemExist(_itemId)){
+            return false;
+        }
         Item storage currItem = _items[_itemId];
-
-        require(currItem.seller != address(0), "Item does not exist");
-        require(currItem.seller == msg.sender, "Only the seller can unlist an item");
-        require(!currItem.sold, "Item is already sold");
-
-        // Set item to unlisted, set values to default
-        delete _items[_itemId];
-        
-        if (_items[_itemId].seller == address(0)) {
-            return true;
-        }else {return false;}
+        if (currItem.seller != msg.sender || currItem.sold){
+            return false;
+        }
+        else{
+            // Set item to unlisted, set values to default
+            delete _items[_itemId];
+            // return true;
+            if (_items[_itemId].seller == address(0)) {
+                return true;
+            }
+            else {return false;}
+        }
     }
 
     /**
     * @dev Buy items from the market
     */
-    function purchaseItem(uint256 _itemId) external returns (bool success){
-        // Item id cannot be below 0
-        require(_itemId > 0, "Item index must be greater than 0");
-        // Get the item object at the index
-        Item storage currItem = _items[_itemId];
-        // Check if item exists
-        require(currItem.seller != address(0), "Item does not exist");
-        // Check if item is sold
-        require(!currItem.sold, "Item is already sold");
-        // Check if item price is less than balance of function callee address
-        require(currItem.price <= sitcoin.balanceOf(msg.sender), "Insufficient balance");
+    //
+    function purchaseItem(uint256 _itemId) external returns (bool) {
+        // // Item id cannot be below 0
+        // require(_itemId > 0, "Item index must be greater than 0");
+        if (!checkItemExist(_itemId))
+        {
+            return false;
+        }
+        else {
+            // Get the item object at the index
+            Item storage currItem = _items[_itemId];
+            // Check if item is sold
+            require(!currItem.sold, "Item is already sold");
+            if (sitcoin.transfer(currItem.seller, currItem.price))
+            {
+                // Set item to sold
+                _items[_itemId].sold = true;
+                // Increment number of items sold
+                _itemsSold.increment();
+                // Set item buyer to function callee address
+                _items[_itemId].buyer = msg.sender;
+                return true;
+            }else {return false;}
 
-        if (sitcoin.transfer(currItem.seller, currItem.price)){
-            // Set item to sold
-            _items[_itemId].sold = true;
-            // Increment number of items sold
-            _itemsSold.increment();
-            // Set item buyer to function callee address
-            _items[_itemId].buyer = msg.sender;
-            success = true;
-        }else {success = false;}
-        return success;
+        }
     }
 }

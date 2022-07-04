@@ -2,8 +2,8 @@ const SITcoin = artifacts.require("SITcoin")
 
 module.exports = async function(callback) {
     try {
-        const owner = "lat17vxqyp28xtlhuvrgjz9436zg98hcshtcpg6wda"
-        const dev1 = "lat1xetc8djtswghu3r0yk3p55jl25yhlr706l7545"
+        const owner = "lat14nmuyvupslhjr8twv42e2ghn3sq6fhpxklu8sz"
+        const dev1 = "lat1x9h7lrw06ank7x4fs3m39u6r07729wh7cmvx7z"
         console.log("Owner: ", owner)
         console.log('dev1: ', dev1)
 
