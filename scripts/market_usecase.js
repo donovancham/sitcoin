@@ -12,22 +12,22 @@ module.exports = async function(callback) {
         let instance = await Market.deployed()
         let sitcInstance = await SITcoin.deployed()
 
-        let systemBal = await sitcInstance.balanceOf(system)
+        // let systemBal = await sitcInstance.balanceOf(system)
         
-        console.log("systemBal: ", systemBal) //100 000
+        // console.log("systemBal: ", systemBal) //100 000
 
-        let trfToBuyer = await sitcInstance.transfer(buyer, 800)
-        let trfToSeller = await sitcInstance.transfer(seller, 800)
-        let sellerBal = await sitcInstance.balanceOf(seller)
-        let buyerBal = await sitcInstance.balanceOf(buyer)
-        systemBal = await sitcInstance.balanceOf(system)
+        // let trfToBuyer = await sitcInstance.transfer(buyer, 800)
+        // let trfToSeller = await sitcInstance.transfer(seller, 800)
+        // let sellerBal = await sitcInstance.balanceOf(seller)
+        // let buyerBal = await sitcInstance.balanceOf(buyer)
+        // systemBal = await sitcInstance.balanceOf(system)
 
         
-        console.log("trfToBuyer: ", trfToBuyer)
-        console.log("trfToSeller: ", trfToSeller)
-        console.log("systemBal: ", systemBal) //98400
-        console.log("sellerBal: ", sellerBal) //800
-        console.log("buyerBal: ", buyerBal) //800
+        // console.log("trfToBuyer: ", trfToBuyer)
+        // console.log("trfToSeller: ", trfToSeller)
+        // console.log("systemBal: ", systemBal) //98400
+        // console.log("sellerBal: ", sellerBal) //800
+        // console.log("buyerBal: ", buyerBal) //800
 
         // ----------------Use Case: One buyer one seller scenario-----------------------
         let addItem = await instance.createItem("Test Item", 20, {from: seller})
@@ -54,9 +54,15 @@ module.exports = async function(callback) {
         console.log("getAllItems: ", getAllItems) // 2 items (array)
         //----------------------------------------------------------------------------------------------------
         await sitcInstance.increaseAllowance(instance.address, 400, {from: buyer})
+        let allowance = await sitcInstance.allowance(buyer, instance.address)
+        console.log(allowance) //400
+
         let purchase = await instance.purchaseItem(1, {from: buyer})
         console.log("purchase: ", purchase) //true
 
+        allowance = await sitcInstance.allowance(buyer, instance.address)
+        console.log(allowance) //380
+        
         itemInfo = await instance.getItem(1)
         //{ id: 1, desc: 'Test Item', seller: seller addr, buyer: address(0), price: 10, sold: false }
         console.log("itemInfo: ", itemInfo) 
