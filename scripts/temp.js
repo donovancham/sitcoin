@@ -22,9 +22,9 @@ module.exports = async function(callback) {
         
         console.log("trfToBuyer: ", trfToBuyer)
         console.log("trfToSeller: ", trfToSeller)
-        console.log("systemBal: ", systemBal) //98400
-        console.log("sellerBal: ", sellerBal) //800
-        console.log("buyerBal: ", buyerBal) //800
+        console.log("systemBal: ", systemBal)
+        console.log("sellerBal: ", sellerBal)
+        console.log("buyerBal: ", buyerBal)
 
         callback();
     }
@@ -32,3 +32,6 @@ module.exports = async function(callback) {
         console.log(error)
     }
 }
+//let seller = "lat1x9h7lrw06ank7x4fs3m39u6r07729wh7cmvx7z"
+//let buyer = "lat1k5rfdkmrjwtvtkst98eccj3lahn98gyjed6hp8"
+//let system = "lat14nmuyvupslhjr8twv42e2ghn3sq6fhpxklu8sz"

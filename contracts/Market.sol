@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 // TODO: Run the test cases and debug the code.
-// TODO: createItem() If implementing NFT Market, transfer token to seller
-// TODO: purchaseItem() Take note if the token has been transferred from seller to buyer correctly
+
 // TODO: Implement payable modifier if NFT Market is implemented
 // TODO: Check appropriate use of Private Public External Modifier, review security implications
 
@@ -229,7 +228,7 @@ contract Market {
             Item storage currItem = _items[_itemId];
             // Check if item is sold
             require(!currItem.sold, "Item is already sold");
-            if (sitcoin.transfer(currItem.seller, currItem.price))
+            if (sitcoin.transferFrom(msg.sender, currItem.seller, currItem.price))
             {
                 // Set item to sold
                 _items[_itemId].sold = true;

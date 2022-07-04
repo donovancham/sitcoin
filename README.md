@@ -20,6 +20,15 @@ npm install @openzeppelin/contracts
 ```
 
 ## Changelog
+- v1.6.1
+  - Updated `Market.sol`
+    - `purchaseItem()` to call `transferFrom()` instead of `transfer()`
+  - Updated `Market_test.js`
+    - Implemented `sitcoin.increaseAllowance(address, value, {from: sender})` before `purchaseItem()`
+      - Address: Market Contract address, using `marketInstance.address`
+      - Value: Price of item
+    - Added tests for unlisting of items (`unlistItem()`) and checking unsold items (`getUnsoldItems()`)
+    - Balance are being updated correctly after the changes above
 - v1.6
   - Removed `PRC20.sol`
   - Reimplemented `SITcoin.sol`
