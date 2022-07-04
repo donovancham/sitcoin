@@ -2,19 +2,19 @@
 // declared in the code and NOT the file name
 const Market = artifacts.require("Market")
 const SITcoin = artifacts.require("SITcoin")
-const { seller, buyer, system } = require("../scripts/wallet_accounts")
+const { dev1, dev2, dev1hex, dev2hex } = require("../scripts/wallet_accounts")
 
 contract("Market", () => {
 	// Ensure that smart contract is deployed in memory environment before running
     // Use beforeEach to deploy new box for each test
-	before(async () => {
+	beforeEach(async () => {
 		instance = await Market.deployed()
         sitInstance = await SITcoin.deployed()
 	})
     
     // Test constructor
     // it("", async () => {
-    //     let balance = await instance.balanceOf(seller)
+    //     let balance = await instance.balanceOf(dev1)
     //     assert.equal(left, right, 'error comment')
     // })
     it("Should show item doesn't exist", async () => {
@@ -23,21 +23,21 @@ contract("Market", () => {
     })
 
     it("should transfer tokens correctly", async () => {
-        await sitInstance.transfer(buyer, 800)
-        await sitInstance.transfer(seller, 800)
-        assert.equal(await sitInstance.balanceOf(buyer), 800, 'Buyer does not have 800 SITC')
-        assert.equal(await sitInstance.balanceOf(seller), 800, 'Seller does not have 800 SITC')
+        await sitInstance.transfer(dev2, 800)
+        await sitInstance.transfer(dev1, 800)
+        assert.equal(await sitInstance.balanceOf(dev2), 800, 'dev2 does not have 800 SITC')
+        assert.equal(await sitInstance.balanceOf(dev1), 800, 'dev1 does not have 800 SITC')
     })
 
     it("Should add an item to the market", async () => {
-        await instance.createItem("Test Item", 10, {from: seller})
-        await instance.createItem("Test Item 2", 10, {from: seller})
+        await instance.createItem("Test Item", 10, {from: dev1})
+        await instance.createItem("Test Item 2", 10, {from: dev1})
 
         let item = await instance.getItem(1)
         console.log("item 1: ", item)
         assert.equal(item.id, 1, "item count incorrect")
         assert.equal(item.description, "Test Item", "item Description wrong")
-        assert.equal(item.seller, "0x316fEf8DCFd7676f1aA9847712f3437fBCA2BAFe", "wrong address")
+        assert.equal(item.seller, dev1hex, "wrong address")
         assert.equal(item.buyer, 0x0000000000000000000000000000000000000000, "wrong address")
         assert.equal(item.price, 10, "wrong price")
         assert.equal(item.sold, false, "wrong sold")
@@ -46,7 +46,7 @@ contract("Market", () => {
         console.log("item 2: ", item)
         assert.equal(item.id, 2, "item count incorrect")
         assert.equal(item.description, "Test Item 2", "item Description wrong")
-        assert.equal(item.seller, "0x316fEf8DCFd7676f1aA9847712f3437fBCA2BAFe", "wrong address")
+        assert.equal(item.seller, dev1hex, "wrong address")
         assert.equal(item.buyer, 0x0000000000000000000000000000000000000000, "wrong address")
         assert.equal(item.price, 10, "wrong price")
         assert.equal(item.sold, false, "wrong sold")
@@ -65,15 +65,15 @@ contract("Market", () => {
         let item = await instance.getItem(1)
         assert.equal(item.id, 1, "item id incorrect")
         assert.equal(item.description, "Test Item", "item description incorrect")
-        assert.equal(item.seller, "0x316fEf8DCFd7676f1aA9847712f3437fBCA2BAFe", "item seller incorrect")
-        assert.equal(item.buyer, 0x0000000000000000000000000000000000000000, "item buyer incorrect")
+        assert.equal(item.seller, dev1hex, "item dev1 incorrect")
+        assert.equal(item.buyer, 0x0000000000000000000000000000000000000000, "item dev2 incorrect")
         assert.equal(item.price, 10, "item price incorrect")
         assert.equal(item.sold, false, "item sold incorrect")
         item = await instance.getItem(2)
         assert.equal(item.id, 2, "item id incorrect")
         assert.equal(item.description, "Test Item 2", "item description incorrect")
-        assert.equal(item.seller, "0x316fEf8DCFd7676f1aA9847712f3437fBCA2BAFe", "item seller incorrect")
-        assert.equal(item.buyer, 0x0000000000000000000000000000000000000000, "item buyer incorrect")
+        assert.equal(item.seller, dev1hex, "item dev1 incorrect")
+        assert.equal(item.buyer, 0x0000000000000000000000000000000000000000, "item dev2 incorrect")
     })
 
     it("Should show unsold item(s)", async () => {

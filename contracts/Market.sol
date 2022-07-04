@@ -5,7 +5,7 @@
 // TODO: Implement payable modifier if NFT Market is implemented
 // TODO: Check appropriate use of Private Public External Modifier, review security implications
 
-pragma solidity >=0.5.1 <=0.8.6;
+pragma solidity ^0.8.0;
 
 import "./SITcoin.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -46,8 +46,6 @@ contract Market {
     mapping(uint256 => Item) private _items;
 
     // Object sitcoin which Holds deployed token contract
-    // SITcoin public sitcoin;
-    // address public sitcoin;
     ERC20 public sitcoin;
 
     /** @dev Sets the contract ID of deployed contract into this contract through contructor.
@@ -55,7 +53,6 @@ contract Market {
      */
     constructor (address _sitcoin) {
         sitcoin = ERC20(_sitcoin);
-        // sitcoin = SITcoin(_sitcoin);
     }
 
     /**
@@ -214,8 +211,8 @@ contract Market {
 
     /**
      * @dev Buy items from the market
+     *
      */
-     //
     function purchaseItem(uint256 _itemId) external returns (bool) {
         // // Item id cannot be below 0
         // require(_itemId > 0, "Item index must be greater than 0");
