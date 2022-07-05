@@ -21,6 +21,14 @@ npm install @openzeppelin/contracts
 
 
 ## Changelog
+- v1.6.3
+  - Updated `wallet_accounts.js`
+    - Added shared accounts for smoother dev
+  - Updated `Market.test.js`
+    - Added smoother testing variables
+  - Updated `SITcoin.test.js`
+    - Added test for `transferFrom()` scenario
+    - Added test for `approve()` and `allowance()`
 - v1.6.2
   - Updated `Market.sol`
     - `purchaseItem()` to call `transferFrom()` instead of `transfer()`
