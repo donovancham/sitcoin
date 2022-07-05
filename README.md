@@ -25,6 +25,7 @@ npm install @openzeppelin/contracts
   - Added `ItemUnlisted` and `ItemPurchased` events
     - Events used in `purchaseItem()` and `unlistItem()`
   - Added more tests cases and use cases
+    - Test and use cases working as intended
   - Changed wallet addresses in `market_usecases.js` to use shared wallet account for dev
 - v1.6.3
   - Updated `wallet_accounts.js`
