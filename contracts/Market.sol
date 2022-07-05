@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MIT
 
-// TODO: Run the test cases and debug the code.
-
 // TODO: Implement payable modifier if NFT Market is implemented
 // TODO: Check appropriate use of Private Public External Modifier, review security implications
 
@@ -34,6 +32,16 @@ contract Market {
         address buyer, 
         uint256 price,
         bool sold
+    );
+    event ItemUnlisted (
+        uint256 indexed id,
+        bool success
+    );
+    event ItemPurchased (
+        uint256 indexed id,
+        address buyer,
+        uint256 price,
+        bool success
     );
 
     /**
@@ -192,10 +200,12 @@ contract Market {
     function unlistItem(uint256 _itemId) external returns (bool){
 
         if (!checkItemExist(_itemId)){
+            emit ItemUnlisted(_itemId, false);
             return false;
         }
         Item storage currItem = _items[_itemId];
         if (currItem.seller != msg.sender || currItem.sold){
+            emit ItemUnlisted(_itemId, false);
             return false;
         }
         else{
@@ -203,9 +213,13 @@ contract Market {
             delete _items[_itemId];
             // return true;
             if (_items[_itemId].seller == address(0)) {
+                emit ItemUnlisted(_itemId, true);
                 return true;
             }
-            else {return false;}
+            else {
+                emit ItemUnlisted(_itemId, false);
+                return false;
+            }
         }
     }
 
@@ -233,8 +247,14 @@ contract Market {
                 _itemsSold.increment();
                 // Set item buyer to function callee address
                 _items[_itemId].buyer = msg.sender;
+                emit ItemPurchased(_itemId, _items[_itemId].buyer, currItem.price, true);
                 return true;
-            }else {return false;}
+            }
+            else 
+            {
+                emit ItemPurchased(_itemId, _items[_itemId].buyer, currItem.price, false);
+                return false;
+            }
 
         }
     }

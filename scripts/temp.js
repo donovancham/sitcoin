@@ -1,23 +1,24 @@
 const SITcoin = artifacts.require("SITcoin")
-const { seller, buyer, system } = require("../scripts/wallet_accounts")
+//dev3 = buyer, dev2 = seller
+const { dev2, dev3, owner } = require("../scripts/wallet_accounts")
 
 module.exports = async function(callback) {
     try{
-        console.log("seller: ", seller)
-        console.log("buyer: ", buyer)
-        console.log("system: ", system)
+        console.log("seller: ", dev2)
+        console.log("buyer: ", dev3)
+        console.log("system: ", owner)
 
         let sitc = await SITcoin.deployed()
 
-        let systemBal = await sitc.balanceOf(system)
+        let systemBal = await sitc.balanceOf(owner)
         
         console.log("systemBal: ", systemBal) //100 000
 
-        let trfToBuyer = await sitc.transfer(buyer, 800)
-        let trfToSeller = await sitc.transfer(seller, 800)
-        let sellerBal = await sitc.balanceOf(seller)
-        let buyerBal = await sitc.balanceOf(buyer)
-        systemBal = await sitc.balanceOf(system)
+        let trfToBuyer = await sitc.transfer(dev3, 800)
+        let trfToSeller = await sitc.transfer(dev2, 800)
+        let sellerBal = await sitc.balanceOf(dev2)
+        let buyerBal = await sitc.balanceOf(dev3)
+        systemBal = await sitc.balanceOf(owner)
 
         
         console.log("trfToBuyer: ", trfToBuyer)
@@ -32,6 +33,7 @@ module.exports = async function(callback) {
         console.log(error)
     }
 }
-//let seller = "lat1x9h7lrw06ank7x4fs3m39u6r07729wh7cmvx7z"
-//let buyer = "lat1k5rfdkmrjwtvtkst98eccj3lahn98gyjed6hp8"
+//let seller = "lat1ed0c92vu5puul7aud2lgltcpd66pj6dm0rcyvw"
+//let buyer = "lat143qqa2ek84tjj07tnm6p2quup5yuzeyv77c04u"
 //let system = "lat14nmuyvupslhjr8twv42e2ghn3sq6fhpxklu8sz"
+//let owner = "lat1rd8c02e905rguunal8ck77ftct0jph2v6zj7cq"
