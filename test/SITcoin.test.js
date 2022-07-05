@@ -1,7 +1,8 @@
+/* eslint-disable no-undef */
 // test/SITcoin.test.js
 // Load dependencies
 const SITcoin = artifacts.require("SITcoin")
-const { owner, ownerhex, dev1, dev1hex, dev2, dev2hex } = require("../scripts/wallet_accounts")
+const { owner, ownerhex, dev1, dev1hex, dev2, dev2hex } = require("../scripts/constants")
 const truffleAssert = require('truffle-assertions');
 
 contract("SITcoin", () => {

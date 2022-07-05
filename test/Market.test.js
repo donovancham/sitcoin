@@ -1,13 +1,16 @@
+/* eslint-disable no-undef */
 // Note that the artifacts.require should be the contract name
 // declared in the code and NOT the file name
 const Market = artifacts.require("Market")
 const SITcoin = artifacts.require("SITcoin")
-const { dev1, dev2, dev1hex } = require("../scripts/wallet_accounts")
+const { dev1, dev2, dev1hex } = require("../scripts/constants")
 
 contract("Market", () => {
     var buyer = dev2;
     var seller = dev1;
     var sellerhex = dev1hex;
+    var instance;
+    var sitInstance;
 
 	// Ensure that smart contract is deployed in memory environment before running
     // Use beforeEach to deploy new box for each test
@@ -105,7 +108,7 @@ contract("Market", () => {
         console.log("sold: ", sold)
         //assert.equal(sold, true, "item not sold")
     })
-    it("Should show unsold item(s)", async () => {
+    it("should delete purchased item from view", async () => {
         let unsold = await instance.getUnsoldItems()
         console.log("unsold: ", unsold)
         assert.equal(unsold.length, 1, "unsold item count incorrect")

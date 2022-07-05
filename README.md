@@ -21,6 +21,15 @@ npm install @openzeppelin/contracts
 
 
 ## Changelog
+- v1.6.4
+  - web3 App
+    - Implemented using **Next.js**
+    - UI done using **React-bootstrap**
+    - Blockchain interaction done using **web3.js**
+    - Current implementation unable to progress 
+  - Update `constants.js`
+    - Changed name from `wallet_accounts.js`
+    - Future uses will be providing contract addresses for dApp
 - v1.6.3
   - Updated `wallet_accounts.js`
     - Added shared accounts for smoother dev
