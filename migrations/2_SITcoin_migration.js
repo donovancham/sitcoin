@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+// Migrations for SITcoin contract and Market contract
 
 const SITcoin = artifacts.require("SITcoin");
-const { owner } = require("../scripts/wallet_accounts");
+const { owner } = require("../scripts/constants");
 const Market = artifacts.require("Market");
 
 module.exports = (deployer) => {

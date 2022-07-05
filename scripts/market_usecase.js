@@ -1,6 +1,6 @@
 const Market = artifacts.require("Market")
 const SITcoin = artifacts.require("SITcoin")
-const { dev2, dev3, owner } = require("../scripts/wallet_accounts")
+const { dev2, dev3, owner } = require("constants")
 
 module.exports = async function(callback) {
     try{
