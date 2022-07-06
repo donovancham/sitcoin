@@ -21,7 +21,7 @@ contract NFTMarket is ReentrancyGuard {
         ERC721 nft; //INSTANCE OF NFT Contract associated with the NFT
         uint tokenId;
         //string description;
-        address payable seller;
+        address seller;
         //address buyer;
         uint256 price;
         bool sold;
@@ -77,13 +77,18 @@ contract NFTMarket is ReentrancyGuard {
             itemCount, 
             _nft,
             _tokenId, 
-            payable(msg.sender), 
+            msg.sender, 
             _price, 
             false
         );
 
-        emit NFTListed
-        (itemCount, address(_nft), _tokenId, _price, msg.sender);
+        emit NFTListed(
+            itemCount, 
+            address(_nft), 
+            _tokenId, 
+            _price, 
+            msg.sender
+        );
      }
   
      function purchaseItem (uint _itemId) external payable nonReentrant {
@@ -109,5 +114,8 @@ contract NFTMarket is ReentrancyGuard {
             item.seller, 
             msg.sender
         );
+     }
+     function getaddress() public view returns(address) {
+        return address(this);
      }
 }
