@@ -27,8 +27,8 @@ contract SITcoin is ERC20, Ownable {
     }
 
     /// @notice Returns the number of decimals of the token
-    /// @dev Override the existing implementation of 18 decimals for SIT Coin 
-    /// tokenomics proposal of 0 decimals for easier reading.
+    /// @dev Override the existing implementation of 18 decimals ($ETH default)  
+    /// for SIT Coin tokenomics proposal of 0 decimals for easier reading.
     /// @return uint8 The number of decimals used to get its user representation. 
     function decimals() public view virtual override returns (uint8) {
         return 0;

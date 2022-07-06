@@ -1,7 +1,8 @@
+/* eslint-disable no-undef */
 // test/SITcoin.test.js
 // Load dependencies
 const SITcoin = artifacts.require("SITcoin")
-const { owner, ownerhex, dev1, dev1hex, dev2, dev2hex } = require("../scripts/wallet_accounts")
+const { owner, ownerhex, dev1, dev1hex, dev2, dev2hex } = require("../scripts/constants")
 const truffleAssert = require('truffle-assertions');
 
 contract("SITcoin", () => {
@@ -123,7 +124,7 @@ contract("SITcoin", () => {
         // Ensure no more allowance
         assert.equal(await this.sitcoin.allowance(buyer, market), 0, 'Allowance not used up')
         // Ensure seller account balance increased
-        assert.equal(await this.sitcoin.balanceOf(seller), dev2Bal + 100, 'No money')
+        assert.equal(await this.sitcoin.balanceOf(seller), dev1Bal + 100, 'No money')
     })
     
     // Test allowance()
