@@ -181,6 +181,7 @@ platon-truffle migrate
 5. Run Tests
 ```sh
 platon-truffle test
+platon-truffle test --show-events
 ```
 
 ## Running Scripts
@@ -189,6 +190,11 @@ platon-truffle exec scripts/transferToken.js
 ```
 
 ## Changelog
+- v1.6.6
+  - Added NFT market place `NFTMarket.sol`
+    - Added `createItem()`, `purchaseItem()` and `getTotalPrice()`
+    - Not working yet, work in progress
+  - Minor update to `README.md` for run tests command
 - v1.6.5
   - web3 App
     - Implemented using **Next.js**
