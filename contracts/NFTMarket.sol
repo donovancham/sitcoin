@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: MIT
-
+/**
+ * @dev Mint the NFT first and list it on the market.
+ */
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+// for NFT
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+// for Token transaction
+import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./SITcoin.sol";
 
 contract NFTMarket is ReentrancyGuard {
-
-    address payable public immutable receiverAcc;
-    uint public immutable feePercent;
-    uint public itemCount;
-
     /**
      * @dev Properties of the items in the market.
      */
@@ -21,16 +21,14 @@ contract NFTMarket is ReentrancyGuard {
         ERC721 nft; //INSTANCE OF NFT Contract associated with the NFT
         uint tokenId;
         //string description;
-        address payable seller;
+        address seller;
         //address buyer;
         uint256 price;
         bool sold;
     }
 
-    // itemID -> Ttem
-    mapping (uint256 => Item) public _items;
-
-    event Listed(
+    event NFTListed
+    (
         uint itemId,
         address indexed nft,
         uint tokenId,
@@ -38,15 +36,33 @@ contract NFTMarket is ReentrancyGuard {
         address indexed seller
     );
 
-    constructor (uint _feePercent) {
-        receiverAcc = payable(msg.sender);
-        feePercent = _feePercent;
+    event NFTPurchased(
+        uint itemId,
+        address indexed nft,
+        uint tokenId,
+        uint256 price,
+        address indexed seller,
+        address indexed buyer
+    );
+    
+    // address payable public immutable receiverAcc;
+    // uint public immutable feePercent;
+    uint public itemCount;
+     // Object sitcoin which Holds deployed token contract
+    ERC20 public sitcoin;
+
+    // itemId -> Ttem
+    mapping (uint256 => Item) public _items;
+    constructor (address _sitcoin) {
+        // receiverAcc = payable(msg.sender);
+        // feePercent = _feePercent;
+        sitcoin = ERC20(_sitcoin);
     }
 
     /**
      * @dev Creates a new item in the market.
-     * @param _nft The description of the item.
-     * @param _tokenId The price of the item.
+     * @param _nft Instance of the NFT contract
+     * @param _tokenId Token identifier number
      * @param _price The price of the item.
      */
      function createItem (ERC721 _nft, uint _tokenId, uint256 _price) external nonReentrant {
@@ -60,26 +76,46 @@ contract NFTMarket is ReentrancyGuard {
         _items[itemCount] = Item(
             itemCount, 
             _nft,
-             _tokenId, 
-             payable(msg.sender), 
-             _price, 
-             false
+            _tokenId, 
+            msg.sender, 
+            _price, 
+            false
         );
-        emit Listed(itemCount, address(_nft), _tokenId, _price, msg.sender);
+
+        emit NFTListed(
+            itemCount, 
+            address(_nft), 
+            _tokenId, 
+            _price, 
+            msg.sender
+        );
      }
-     function getTotalPrice(uint _itemId) view public returns (uint) {
-        return((_items[_itemId].price*(100 + feePercent)) / 100);
-     }
+  
      function purchaseItem (uint _itemId) external payable nonReentrant {
-        uint _totalPrice = getTotalPrice(_itemId);
+        //uint _totalPrice = getTotalPrice(_itemId);
         Item storage item = _items[_itemId];
 
         require(_itemId > 0 && _itemId <= itemCount, "Item does not exist");
-        require(msg.value >= _totalPrice, "Insufficient funds");
+        //require(msg.value >= _totalPrice, "Insufficient funds");
         require(!item.sold, "Item is already sold");
 
-        // This transfers LAT to account of the seller
-        // TODO: Change it to token only, using transferFrom()
-        item.seller.transfer(item.price);
+        // TODO: call increaseAllowance() before this
+        sitcoin.transferFrom(msg.sender, item.seller, item.price);
+
+        // transfer nft instance from contract to buyer 
+        // TODO: call setApprovalForAll() before this 
+        item.nft.transferFrom(address(this), msg.sender, item.tokenId);
+
+        emit NFTPurchased(
+            _itemId, 
+            address(item.nft), 
+            item.tokenId, 
+            item.price,
+            item.seller, 
+            msg.sender
+        );
+     }
+     function getaddress() public view returns(address) {
+        return address(this);
      }
 }
