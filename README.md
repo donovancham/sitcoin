@@ -190,6 +190,13 @@ platon-truffle exec scripts/transferToken.js
 ```
 
 ## Changelog
+- v1.6.7
+  - Added NFT contract `NFT.sol`
+    - Inherits the `ERC721URIStorage.sol` to link URI to `tokenId`
+    - Allow users to mint NFT before listing them in the NFT Market
+  - Edited `NFTMarket.sol`
+    - `NFTListed` event and `NFTPurchased` event
+    - Implemented `transferFrom()` in `purchaseItem()` for both tokens and NFT transfer
 - v1.6.6
   - Added NFT market place `NFTMarket.sol`
     - Added `createItem()`, `purchaseItem()` and `getTotalPrice()`
