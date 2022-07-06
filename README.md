@@ -190,6 +190,10 @@ platon-truffle exec scripts/transferToken.js
 ```
 
 ## Changelog
+- v1.6.8
+  - Edited migration file
+    - Migration for `NFT.sol`
+    - Migration for `NFTMarket.sol`
 - v1.6.7
   - Added NFT contract `NFT.sol`
     - Inherits the `ERC721URIStorage.sol` to link URI to `tokenId`
