@@ -1,3 +1,9 @@
+/**
+ * Contains wallet addresses used for development and testing.
+ * Ensure that wallets are imported to PlatON interface before using.
+ * 
+ * Common JS style exports, use require() to read.
+ */
 module.exports = {
     // Wallet Addresses
     owner: "lat1rd8c02e905rguunal8ck77ftct0jph2v6zj7cq",
@@ -8,7 +14,4 @@ module.exports = {
     dev2hex: "0xCb5F82A99CA079CfFbbC6abE8FAF016eb41969Bb",
     dev3: "lat143qqa2ek84tjj07tnm6p2quup5yuzeyv77c04u",
     dev3hex: "0xaC400EAb363d57293FCb9EF415039C0D09C1648c",
-    
-    // Contract Addresses
-    
 }

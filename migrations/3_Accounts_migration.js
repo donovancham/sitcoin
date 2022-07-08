@@ -4,7 +4,7 @@
 
 const Identity = artifacts.require("Identity");
 const KeyManager = artifacts.require("KeyManager");
-const { dev1 } = require("../scripts/constants");
+const { dev1 } = require("../scripts/walletAddress");
 
 module.exports = (deployer) => {
     // Deploy Identity contract

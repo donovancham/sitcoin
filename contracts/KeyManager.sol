@@ -8,4 +8,6 @@ contract KeyManager is LSP6KeyManager {
     constructor(address _newOwner) LSP6KeyManager(_newOwner) {
         
     }
+
+    // @todo Hold claim for requests
 }

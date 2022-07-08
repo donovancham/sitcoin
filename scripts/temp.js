@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 const SITcoin = artifacts.require("SITcoin")
 //dev3 = buyer, dev2 = seller
-const { dev2, dev3, owner } = require("constants")
+const { dev2, dev3, owner } = require("./walletAddress")
 
 module.exports = async function(callback) {
     try{

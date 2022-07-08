@@ -3,7 +3,7 @@
 // declared in the code and NOT the file name
 const Market = artifacts.require("Market")
 const SITcoin = artifacts.require("SITcoin")
-const { dev1, dev2, dev1hex } = require("../scripts/constants")
+const { dev1, dev2, dev1hex } = require("../modules/walletAddress")
 
 contract("Market", () => {
     var buyer = dev2;
