@@ -1,7 +1,7 @@
 const SITcoin = artifacts.require("SITcoin");
 const NFTMarket = artifacts.require("NFTMarket");
 const NFT = artifacts.require("NFT");
-const { dev1, dev1hex, dev2, dev2hex } = require("../scripts/constants");
+const { dev1, dev1hex, dev2, dev2hex } = require("../scripts/walletAddress");
 const { expect } = require("chai");
 
 contract("NFTMarket", () => {

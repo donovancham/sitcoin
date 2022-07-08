@@ -189,6 +189,8 @@ platon-truffle exec scripts/transferToken.js
     - Added interface for connecting with Samurai wallet
     - Added button to connect to Samurai wallet
     - Added alerts for UI
+  - Edit tests
+    - Fix imports due to changing filename
 - v1.6.8
   - Edited migration file
     - Migration for `NFT.sol`
