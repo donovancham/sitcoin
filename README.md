@@ -175,6 +175,7 @@ platon-truffle migrate
 5. Run Tests
 ```sh
 platon-truffle test
+platon-truffle test --show-events
 ```
 
 ## Running Scripts
@@ -188,7 +189,23 @@ platon-truffle exec scripts/transferToken.js
     - Added interface for connecting with Samurai wallet
     - Added button to connect to Samurai wallet
     - Added alerts for UI
-
+- v1.6.8
+  - Edited migration file
+    - Migration for `NFT.sol`
+    - Migration for `NFTMarket.sol`
+  - Added tests for `NFTMarket` and `NFT`
+- v1.6.7
+  - Added NFT contract `NFT.sol`
+    - Inherits the `ERC721URIStorage.sol` to link URI to `tokenId`
+    - Allow users to mint NFT before listing them in the NFT Market
+  - Edited `NFTMarket.sol`
+    - `NFTListed` event and `NFTPurchased` event
+    - Implemented `transferFrom()` in `purchaseItem()` for both tokens and NFT transfer
+- v1.6.6
+  - Added NFT market place `NFTMarket.sol`
+    - Added `createItem()`, `purchaseItem()` and `getTotalPrice()`
+    - Not working yet, work in progress
+  - Minor update to `README.md` for run tests command
 - v1.6.5
   - web3 App
     - Implemented using **Next.js**

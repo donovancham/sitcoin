@@ -50,7 +50,7 @@ contract Market {
     using Counters for Counters.Counter;
     Counters.Counter private _identifier;
     Counters.Counter private _itemsSold;
-
+    // itemId -> Ttem
     mapping(uint256 => Item) private _items;
 
     // Object sitcoin which Holds deployed token contract
