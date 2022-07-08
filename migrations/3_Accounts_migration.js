@@ -8,8 +8,8 @@ const { dev1 } = require("../scripts/walletAddress");
 
 module.exports = (deployer) => {
     // Deploy Identity contract
-    deployer.deploy(Identity, dev1, {from: dev1}).then( identity => {
-        // Deploy Market after getting sitcoin address
-        return deployer.deploy(KeyManager, identity.address);
-    });
+    // deployer.deploy(Identity, dev1, {from: dev1}).then( identity => {
+    //     // Deploy Market after getting sitcoin address
+    //     return deployer.deploy(KeyManager, identity.address);
+    // });
 };

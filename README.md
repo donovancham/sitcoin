@@ -6,16 +6,26 @@ In SIT’s push towards a digital campus, the metaverse that it creates will inh
 ## Installation (Linux)
 1. Install [Node.js](https://nodejs.org/en/download/)
 ```sh
-# TODO
+# Install n to manage node version
+curl -L https://git.io/n-install | bash
+n 14
+
+$ node -v 
+v14.19.3
+
+$ npm -v
+6.14.17
 ```
 
-1. Install [PlatON Truffle Suite](https://platon-truffle.readthedocs.io/en/v1.1.1/getting-started/installation.html)
+2. Install [PlatON Truffle Suite](https://platon-truffle.readthedocs.io/en/v1.1.1/getting-started/installation.html) and [Lerna](https://github.com/lerna/lerna)
 ```sh
 # Truffle Install
 npm install -g platon-truffle
 npm audit fix --force
-sudo ln -s /usr/local/node-v18.2.0-linux-x64/bin/* /usr/bin/
 platon-truffle version
+
+# Install Lerna for PlatON-JS-SDK
+npm install -g lerna
 ```
 
 3. Install other dependencies
@@ -184,6 +194,19 @@ platon-truffle exec scripts/transferToken.js
 ```
 
 ## Changelog
+- web3 App
+  - Removed `alert.module.js`
+- Updated `contracts`
+  - Deleted `Identity.sol`
+  - Deleted `KeyManager.sol
+  - Deleted `PRC721.sol`
+  - Updated `AccessToken.sol`
+    - Removed all previous implementation
+    - Restarting from clean slate
+- Added `digitalIdentity.js``
+  - Explore `web3` API
+  - Test digital identity related functions
+
 - v1.6.9
   - web3 App
     - Added interface for connecting with Samurai wallet

@@ -36,10 +36,13 @@ export async function getContractAbi(contract) {
  * @param {number} network The network to connect
  * @returns The instantiated Web3 object
  */
-export function initWeb3(network = 1) {
+ function initWeb3(network = 1) {
     if (network === 1) {
         // Instantiate Web3 for DevNet 1 (default)
-        return new Web3(Web3.givenProvider || devnetHTTP || devnetWS)
+        let web3 = new Web3(Web3.givenProvider || devnetHTTP || devnetWS)
+        // Set default account
+        web3.platon.defaultAccount = 'lat1rd8c02e905rguunal8ck77ftct0jph2v6zj7cq'
+        return web3
     }
     else if (network === 2) {
         // Instantiate Web3 for DevNet 2
@@ -52,6 +55,9 @@ export function initWeb3(network = 1) {
 
 /**
  * Connects to Samurai wallet on browser.
+ * 
+ * @param {Web3} web3 
+ * @returns The address of the account connected on success. Returns false on failure.
  */
 export async function connectSamurai(web3) {
     try {
