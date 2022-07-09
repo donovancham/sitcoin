@@ -67,7 +67,7 @@ contract Market {
      * @dev Creates a new item in the market.
      * @return The current token ID of the new item.
      */
-    function createItem(string memory description, uint256 price) public returns(uint){
+    function createItem(string memory description, uint256 price) external returns(uint){
         // Price to be more than 0
         require(price > 0, "Price must be at least 1 SITC");
         // create new token ID
@@ -170,12 +170,16 @@ contract Market {
         uint256 _itemId
     ) public view returns (bool)
     {
-        // Item id cannot be below 0
-        require(_itemId > 0, "Item index must be greater than 0");
-        // Get the item at the index
-        Item storage currItem = _items[_itemId];
-        // If item exists, by checking for valid seller address
-        return (currItem.seller != address(0));
+       // Item id cannot be below 0
+        if(_itemId > 0){
+            // Get the item at the index
+            Item storage currItem = _items[_itemId];
+            // If item exists, by checking for valid seller address
+            return (currItem.seller != address(0));
+        }
+        else{
+            return false;
+        }
     }
 
     /**
@@ -186,8 +190,6 @@ contract Market {
         uint256 _itemId
     ) public view returns (Item memory)
     {
-        // Item id cannot be below 0
-        require(_itemId > 0, "Item index must be greater than 0");
         require(checkItemExist(_itemId), "Item does not exist");
         // Get the item at the index
         Item storage currItem = _items[_itemId];
@@ -200,7 +202,6 @@ contract Market {
     function unlistItem(uint256 _itemId) external returns (bool){
 
         if (!checkItemExist(_itemId)){
-            emit ItemUnlisted(_itemId, false);
             return false;
         }
         Item storage currItem = _items[_itemId];

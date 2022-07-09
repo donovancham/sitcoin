@@ -184,6 +184,9 @@ platon-truffle exec scripts/transferToken.js
 ```
 
 ## Changelog
+- v1.6.10
+  - Added tests for `NFTMarket`
+  - Added `checkItemExist()` for `NFTMarket`
 - v1.6.9
   - web3 App
     - Added interface for connecting with Samurai wallet
