@@ -3,7 +3,6 @@
 const SITcoin = artifacts.require("SITcoin");
 const { owner } = require("../scripts/walletAddress");
 const Market = artifacts.require("Market");
-const NFT = artifacts.require("NFT");
 const NFTMarket = artifacts.require("NFTMarket");
 
 module.exports = (deployer) => {

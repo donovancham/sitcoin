@@ -184,6 +184,9 @@ platon-truffle exec scripts/transferToken.js
 ```
 
 ## Changelog
+- v1.6.11
+  - Edits to `MFTMarket.sol`
+    - Added Functions `marketItemExist()`, `getAllMarketItems()`, `getUnsoldItems()`, `unlistItem()`, `getMyNFTs()`
 - v1.6.10
   - Added tests for `NFTMarket`
     - [In Progress] Edit tests according to edits in `NFTMarket.sol`
