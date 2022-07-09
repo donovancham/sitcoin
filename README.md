@@ -186,7 +186,13 @@ platon-truffle exec scripts/transferToken.js
 ## Changelog
 - v1.6.10
   - Added tests for `NFTMarket`
-  - Added `checkItemExist()` for `NFTMarket`
+    - [In Progress] Edit tests according to edits in `NFTMarket.sol`
+  - Edits to `NFTMarket.sol`
+    - Added functions `checkItemExist()`, `checkNFTExist()`, `getName()`, `getSymbol()`, `isOwnerOf()`, `mint()`
+    - Refactoring of codes
+  - Created `PRC721URIStorage.sol`
+  - [In Progress] Merging `NFT.sol` to `NFTMarket.sol`
+  - Deleted `NFT.sol`
 - v1.6.9
   - web3 App
     - Added interface for connecting with Samurai wallet

@@ -1,121 +1,272 @@
 // SPDX-License-Identifier: MIT
+
+//TODO: move nft and market tgt, burn nft remove from nft and market array
+
 /**
  * @dev Mint the NFT first and list it on the market.
  */
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "./PRC721URIStorage.sol";
 // for NFT
-import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import {PRC721} from "./PRC721.sol";
 // for Token transaction
-import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./SITcoin.sol";
 
-contract NFTMarket is ReentrancyGuard {
+contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
     /**
-     * @dev Properties of the items in the market.
+     * @dev To track minted NFTs
      */
-    struct Item{
-        uint256 itemId;
-        //address owner;
-        ERC721 nft; //INSTANCE OF NFT Contract associated with the NFT
-        uint tokenId;
-        //string description;
-        address seller;
-        //address buyer;
+    struct NFT {
+        uint256 tokenId; //id of NFT in PRC721
+        string title;
+        string description;
         uint256 price;
+        string authorName;
+        address seller;
+        address owner;
+        bool sold;
+        bool published; //on market
+        string uri;
+    }
+    /**
+     * @dev To track published items on the market
+     */ 
+    struct Market {
+        uint256 itemId; //id of item on the market
+        string title;
+        uint256 tokenId;
+        uint256 price;
+        address seller;
         bool sold;
     }
-
-    event NFTListed
-    (
-        uint itemId,
-        address indexed nft,
-        uint tokenId,
+    /**
+     * @dev To emit event when item is published on the market
+     */
+    event NFTListed(
+        uint256 itemId, //id of item on the market
+        string title,
+        uint256 tokenId,
         uint256 price,
         address indexed seller
     );
-
+    /**
+     * @dev To emit event when item is sold on the market
+     */
     event NFTPurchased(
-        uint itemId,
-        address indexed nft,
-        uint tokenId,
+        uint256 itemId,  //id of item on the market
+        uint256 tokenId,
         uint256 price,
         address indexed seller,
         address indexed buyer
     );
-    
-    // address payable public immutable receiverAcc;
-    // uint public immutable feePercent;
-    uint public itemCount;
-     // Object sitcoin which Holds deployed token contract
+    // Track total no. of NFT in the market
+    uint256 public MarketItemCount;
+
+    // TODO: Change to SITCoin?
     ERC20 public sitcoin;
 
-    // itemId -> Ttem
-    mapping (uint256 => Item) public _items;
-    constructor (address _sitcoin) {
+    // Track total no. of NFT minted
+    uint256 public NFTCount;
+
+    // tokenId -> NFT
+    mapping(uint256 => NFT) public mintedNFTs;
+    // itemId -> Market
+    mapping(uint256 => Market) public _marketItems;
+
+    constructor(address _sitcoin) PRC721("SITC NFT", "SITC") {
         // receiverAcc = payable(msg.sender);
         // feePercent = _feePercent;
         sitcoin = ERC20(_sitcoin);
     }
 
-    /**
-     * @dev Creates a new item in the market.
-     * @param _nft Instance of the NFT contract
-     * @param _tokenId Token identifier number
-     * @param _price The price of the item.
-     */
-     function createItem (ERC721 _nft, uint _tokenId, uint256 _price) external nonReentrant {
+    function mint(
+        string memory title,
+        string memory description,
+        string memory authorName,
+        string memory _tokenURI, 
+        uint256 _price
+    ) 
+        external returns (uint256) 
+    {
         require(_price > 0, "Price must be greater than 0");
-        itemCount++;
+        NFTCount++;
+        // _safemint -> _mint -> Mapping owner address to token count, Mapping from token ID to owner address
+        _safeMint(msg.sender, NFTCount);
+        // maps token ID to token URI
+        _setTokenURI(NFTCount, _tokenURI);
 
-        // address(this) referring to the address of the contract instance
-        _nft.transferFrom(msg.sender, address(this), _tokenId); //from, to, tokenId
-        
-        // map itemId -> Item
-        _items[itemCount] = Item(
-            itemCount, 
-            _nft,
-            _tokenId, 
-            msg.sender, 
-            _price, 
-            false
+        // TODO: Allow user to set private/public item
+        mintedNFTs[NFTCount] = NFT (
+            NFTCount,
+            title,
+            description,
+            _price,
+            authorName,
+            msg.sender, //author address
+            address(0), //owner address
+            false, //sold
+            false, //published
+            _tokenURI
         );
 
-        emit NFTListed(
-            itemCount, 
-            address(_nft), 
-            _tokenId, 
-            _price, 
-            msg.sender
-        );
-     }
-  
-     function purchaseItem (uint _itemId) external payable nonReentrant {
-        //uint _totalPrice = getTotalPrice(_itemId);
-        Item storage item = _items[_itemId];
 
-        require(_itemId > 0 && _itemId <= itemCount, "Item does not exist");
-        //require(msg.value >= _totalPrice, "Insufficient funds");
-        require(!item.sold, "Item is already sold");
+        return (NFTCount);
+    }
 
-        // TODO: call increaseAllowance() before this
-        sitcoin.transferFrom(msg.sender, item.seller, item.price);
+    /* return true if the address is the owner of the token or else false */
+    function isOwnerOf(uint256 tokenId, address account)
+        public
+        view
+        returns (bool)
+    {
+        address owner = ownerOf(tokenId);
+        if (owner != address(0)) {
+            return owner == account;
+        } else {
+            return false;
+        }
+    }
+    function getSymbol() public view returns (string memory) {
+        return symbol(); // SITC
+    }
+    function getName() public view returns (string memory) {
+        return name(); //SITC NFT
+    }
+    function checkNFTExist(uint256 _tokenId) private view returns (bool) {
+        // Item id cannot be below 0
+        if (_tokenId > 0 && mintedNFTs[_tokenId].seller != address(0)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-        // transfer nft instance from contract to buyer 
-        // TODO: call setApprovalForAll() before this 
-        item.nft.transferFrom(address(this), msg.sender, item.tokenId);
+    // function getMyNFTs() public view returns (uint256[] memory _myNFTs, uint256 count)
+    // {
+    //     require(msg.sender != address(0), "Invalid walletaddress");
+    //     uint256 numOftokens = balanceOf(msg.sender);
+    //     if (numOftokens == 0) {
+    //         return (new uint256[](0), 0);
+    //     } 
+    //     else {
+    //         // Array to store all items, size of all items
+    //         NFT[] memory NFTitems = new NFT[](numOftokens);
 
-        emit NFTPurchased(
-            _itemId, 
-            address(item.nft), 
-            item.tokenId, 
-            item.price,
-            item.seller, 
-            msg.sender
-        );
-     }
-     function getaddress() public view returns(address) {
+    //         uint256 currIndex = 0;
+    //         // uint256 arrLength = arts.length;
+    //         for (uint256 i = 0; i < arrLength; i++) {
+    //             if (ownerOf(i) == msg.sender) {
+    //                 NFTitems[currIndex] = i;
+    //                 currIndex++;
+    //             }
+    //         }
+    //         return (myArts, numOftokens);
+    //     }
+    // }
+
+
+
+    //TODO: Market - Set public or private
+    /**
+     * @dev Add NFT into the market for purchase
+     * @param _tokenId Token identifier number
+     */
+    function createItem(uint256 _tokenId) external nonReentrant 
+    {
+        if (checkNFTExist(_tokenId)) {
+            // Otain NFT item for listing
+            NFT storage NFTItem = mintedNFTs[_tokenId];
+            // Ensure Item not sold or already published
+            if (NFTItem.sold == false && NFTItem.published == false) {
+
+                MarketItemCount++;
+            
+                // Transfer ownership of NFT from seller to market
+                // Call setApprovalForAll() before this to allow the market contract to sell the NFT
+                transferFrom(msg.sender, address(this), _tokenId); //from, to, tokenId
+
+                mintedNFTs[_tokenId].published = true;
+
+                _marketItems[MarketItemCount] = Market (
+                    MarketItemCount,
+                    NFTItem.title,
+                    NFTItem.tokenId,
+                    NFTItem.price,
+                    msg.sender,
+                    false
+                );
+
+                emit NFTListed(
+                    MarketItemCount, //itemId
+                    NFTItem.title,
+                    NFTItem.tokenId,
+                    NFTItem.price, //price
+                    msg.sender //seller
+                );
+            }
+            
+        }
+    }
+
+    function purchaseItem(uint256 _itemId)
+        external
+        nonReentrant
+        returns (bool)
+    {
+        // Check if item for purchase exist on the market
+        if (checkItemExist(_itemId)) {
+            // Get the published item on the market
+            Market storage marketItem = _marketItems[_itemId];
+            // Check that item is not sold
+            if (!marketItem.sold) {
+
+                // TODO: call increaseAllowance() before this
+                sitcoin.transferFrom(msg.sender, marketItem.seller, marketItem.price);
+
+                // transfer NFT Ownership from contract to buyer
+                transferFrom(address(this), msg.sender, marketItem.tokenId);
+
+                // Update item in market to sold
+                _marketItems[_itemId].sold = true;
+
+                // Update NFT item to sold, and new owner of NFT
+                mintedNFTs[marketItem.tokenId].owner = msg.sender;
+                mintedNFTs[marketItem.tokenId].sold = true;
+
+                emit NFTPurchased(
+                    _itemId, //itemId
+                    marketItem.tokenId, //nft ID
+                    marketItem.price, //price
+                    marketItem.seller, //seller
+                    msg.sender //buyer
+                );
+
+                return true;
+            } 
+            return false;
+        } 
+        return false;
+    }
+
+    function getaddress() public view returns (address) {
         return address(this);
-     }
+    }
+
+    function checkItemExist(uint256 _itemId) public view returns (bool) {
+        // Item id cannot be below 0
+        //TODO: check if NFT is public or private. 
+        //TODO: If private, check if msg.sender is seller, return exist if yes, else no
+        if (_itemId > 0) {
+            // Get the item at the index
+            Market storage marketItem = _marketItems[_itemId];
+            if (marketItem.seller != address(0)) {
+                return true;
+            } 
+            return false; // item does not exist
+        } 
+        return false; // item does not exist
+    }
 }
