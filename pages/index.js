@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Col, Row } from 'react-bootstrap'
 import Wallet from '../components/Wallet'
 import Layout from '../components/Layout'
+import IpfsComponent from '../components/Ipfs'
 
 
 export default function Index() {
@@ -17,6 +18,7 @@ export default function Index() {
                 </div>
             </div>
             <Wallet />
+            <IpfsComponent />
         </Layout>
     )
 }
