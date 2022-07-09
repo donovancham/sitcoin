@@ -1,13 +1,22 @@
 // Global configuration file
 // Use to keep states between pages
-import Layout from "../components/Layout"
+import Head from 'next/head'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Script from 'next/script';
 
 export default function App({ Component, pageProps }) {
     return (
-        <Layout>
+        <>
+            <Head>
+                <meta charset="UTF-8"></meta>
+                <title>SIT Metaverse</title>
+                {/* Only Notify module js */}
+                <Script src="dist/notiflix-notify-aio-X.X.X.min.js"></Script>
+                {/* Only Report module js */}
+                <Script src="dist/notiflix-report-aio-X.X.X.min.js"></Script>
+            </Head>
             <Component {...pageProps} />
-        </Layout>
+        </>
     )
 }
 

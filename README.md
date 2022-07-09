@@ -6,16 +6,10 @@ In SIT’s push towards a digital campus, the metaverse that it creates will inh
 ## Installation (Linux)
 1. Install [Node.js](https://nodejs.org/en/download/)
 ```sh
-# Node JS Install
-wget https://nodejs.org/download/release/v18.2.0/node-v18.2.0-linux-x64.tar.gz
-sudo tar -zxvf node-v18.2.0-linux-x64.tar.gz -C /usr/local
-sudo ln -s /usr/local/node-v18.2.0-linux-x64/bin/* /usr/bin/
-node -v
-sudo chmod -R 777 /usr/local/node-v18.2.0-linux-x64/bin
-sudo chmod -R 777 /usr/local/node-v18.2.0-linux-x64/lib/node_modules
+# TODO
 ```
 
-2. Install [PlatON Truffle Suite](https://platon-truffle.readthedocs.io/en/v1.1.1/getting-started/installation.html)
+1. Install [PlatON Truffle Suite](https://platon-truffle.readthedocs.io/en/v1.1.1/getting-started/installation.html)
 ```sh
 # Truffle Install
 npm install -g platon-truffle
@@ -100,11 +94,11 @@ git clone https://github.com/donovancham/sitcoin.git
 
 2. Install dependencies
 ```sh
-npm install
+npm install --save-dev <pkgname>
 ```
 
 3. Add `truffle-config.js`. Copy exactly
-```json
+```js
 module.exports = {
     /**
      * Networks define how you connect to your platon client and let you set the
@@ -190,6 +184,13 @@ platon-truffle exec scripts/transferToken.js
 ```
 
 ## Changelog
+- v1.6.9
+  - web3 App
+    - Added interface for connecting with Samurai wallet
+    - Added button to connect to Samurai wallet
+    - Added alerts for UI
+  - Edit tests
+    - Fix imports due to changing filename
 - v1.6.8
   - Edited migration file
     - Migration for `NFT.sol`
