@@ -5,8 +5,8 @@ const { dev2, dev3, owner } = require("./walletAddress")
 
 module.exports = async function(callback) {
     try{
-        console.log("seller: ", dev2)
-        console.log("buyer: ", dev3)
+        console.log("seller: ", dev1)
+        console.log("buyer: ", dev2)
         console.log("system: ", owner)
 
         let sitc = await SITcoin.deployed()
@@ -15,10 +15,11 @@ module.exports = async function(callback) {
         
         console.log("systemBal: ", systemBal) //100 000
 
-        let trfToBuyer = await sitc.transfer(dev3, 800)
-        let trfToSeller = await sitc.transfer(dev2, 800)
-        let sellerBal = await sitc.balanceOf(dev2)
-        let buyerBal = await sitc.balanceOf(dev3)
+        let trfToSeller = await sitc.transfer(dev1, 800)
+        let trfToBuyer = await sitc.transfer(dev2, 800)
+        
+        let sellerBal = await sitc.balanceOf(dev1)
+        let buyerBal = await sitc.balanceOf(dev2)
         systemBal = await sitc.balanceOf(owner)
 
         
