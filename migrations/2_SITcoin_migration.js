@@ -12,7 +12,6 @@ module.exports = (deployer) => {
         const sitcoin = await SITcoin.deployed();
         await deployer.deploy(Market, sitcoin.address);
         await deployer.deploy(NFTMarket, sitcoin.address);
-        await deployer.deploy(NFT);
     });
         
 };
