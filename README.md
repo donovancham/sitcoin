@@ -185,8 +185,15 @@ platon-truffle exec scripts/transferToken.js
 
 ## Changelog
 - v1.6.11
-  - Edits to `MFTMarket.sol`
-    - Added Functions `marketItemExist()`, `getAllMarketItems()`, `getUnsoldItems()`, `unlistItem()`, `getMyNFTs()`
+  - Edits to `NFTMarket.sol`
+    - Added Functions `marketItemExist()`, `getAllMarketItems()`, `getUnsoldItems()`, `unlistItem()`, `getMyNFTs()`, `getTotalMarketItems()`, 'getTotalNFTCount()`
+    - Refactored the code
+    - Added Docstrings
+  - Edits to `Market.sol`
+    - Added inheritance to `ReentrancyGuard` 
+    - Refactored the code
+  - Added use case script for `NFTMarket`
+  - Added test cases for `NFTMarket`
 - v1.6.10
   - Added tests for `NFTMarket`
     - [In Progress] Edit tests according to edits in `NFTMarket.sol`

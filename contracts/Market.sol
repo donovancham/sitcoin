@@ -1,16 +1,14 @@
 // SPDX-License-Identifier: MIT
 
-// TODO: Implement payable modifier if NFT Market is implemented
-// TODO: Check appropriate use of Private Public External Modifier, review security implications
-
 pragma solidity ^0.8.0;
 
 import "./SITcoin.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract Market {
+contract Market is ReentrancyGuard {
     /**
      * @dev Properties of the items in the market.
      */
@@ -43,6 +41,9 @@ contract Market {
         uint256 price,
         bool success
     );
+    event ErrorMsg(
+        string errorMessage
+    );
 
     /**
      * @dev Track the number of items in the market, and the number of items sold
@@ -50,13 +51,15 @@ contract Market {
     using Counters for Counters.Counter;
     Counters.Counter private _identifier;
     Counters.Counter private _itemsSold;
+    Counters.Counter private _itemsUnlisted;
     // itemId -> Ttem
     mapping(uint256 => Item) private _items;
 
     // Object sitcoin which Holds deployed token contract
-    ERC20 public sitcoin;
+    ERC20 internal sitcoin;
 
-    /** @dev Sets the contract ID of deployed contract into this contract through contructor.
+    /** 
+     * @dev Sets the SITCoin instance
      *  First deploy token contract and then deploy this contract.
      */
     constructor (address _sitcoin) {
@@ -67,29 +70,136 @@ contract Market {
      * @dev Creates a new item in the market.
      * @return The current token ID of the new item.
      */
-    function createItem(string memory description, uint256 price) external returns(uint){
+    function createItem(string memory description, uint256 price) external nonReentrant returns(uint){
         // Price to be more than 0
-        require(price > 0, "Price must be at least 1 SITC");
-        // create new token ID
-        _identifier.increment();
-        uint256 currId = _identifier.current();
+        if(price > 0){
+            // create new token ID
+            _identifier.increment();
+            uint256 currId = _identifier.current();
 
-        // create new item mapped to token ID
-        _items[currId] = Item (
-            currId,
-            description, 
-            msg.sender, //seller
-            address(0), //buyer
-            price, //sitc tokens
-            false //not sold
-            );
+            // create new item mapped to token ID
+            _items[currId] = Item (
+                currId,
+                description, 
+                msg.sender, //seller
+                address(0), //buyer
+                price, //sitc tokens
+                false //not sold
+                );
 
-        // Notification
-        emit ItemCreated(currId,description,msg.sender,address(0),price,false);
-
-        return currId;
+            // Notification
+            emit ItemCreated(currId,description,msg.sender,address(0),price,false);
+            return currId;
+        } else {
+            emit ErrorMsg("Price must be greater than 0");
+            return 0;
+        }
     }
-    
+
+    /**
+     * @dev Seller can remove/unlist unsold item(s) from the market 
+     */
+    function unlistItem(uint256 _itemId) external returns (bool){
+
+        if (!checkItemExist(_itemId)){
+            emit ErrorMsg("Item does not exist");
+            return false;
+        }
+        Item storage currItem = _items[_itemId];
+        if (currItem.seller != msg.sender || currItem.sold){
+            emit ErrorMsg("Item does not belong to you or already sold");
+            return false;
+        }
+        else{
+            // Set item to unlisted, set values to default
+            delete _items[_itemId];
+            // return true;
+            if (_items[_itemId].seller == address(0)) {
+                emit ItemUnlisted(_itemId, true);
+                _itemsUnlisted.increment();
+                return true;
+            }
+            else {
+                emit ErrorMsg("Item is not unlisted");
+                return false;
+            }
+        }
+    }
+
+    /**
+     * @dev Buy items from the market
+     *
+     */
+    function purchaseItem(uint256 _itemId) external nonReentrant returns (bool) {
+        // // Item id cannot be below 0
+        if (!checkItemExist(_itemId))
+        {
+            emit ErrorMsg("Item does not exist");
+            return false;
+        }
+        else {
+            // Get the item object at the index
+            Item storage currItem = _items[_itemId];
+            // Check if item is sold
+            require(!currItem.sold, "Item is already sold");
+            if (sitcoin.transferFrom(msg.sender, currItem.seller, currItem.price))
+            {
+                // Set item to sold
+                _items[_itemId].sold = true;
+                // Increment number of items sold
+                _itemsSold.increment();
+                // Set item buyer to function callee address
+                _items[_itemId].buyer = msg.sender;
+                emit ItemPurchased(_itemId, _items[_itemId].buyer, currItem.price, true);
+                return true;
+            }
+            else 
+            {
+                emit ErrorMsg("Not enough tokens");
+                return false;
+            }
+
+        }
+    }
+
+
+
+
+
+    /**
+     * @dev Get specific item details
+     * @return Object of selected item
+     */
+    function getItem (
+        uint256 _itemId
+    ) external view returns (Item memory)
+    {
+        require(checkItemExist(_itemId), "Item does not exist");
+        // Get the item at the index
+        Item storage currItem = _items[_itemId];
+        return currItem;
+    }
+
+    /**
+     * @dev Check if specific item exists in the market
+     * @param _itemId id of the item to check
+     * @return true if item exists, false otherwise
+     */
+    function checkItemExist(
+        uint256 _itemId
+    ) public view returns (bool)
+    {
+       // Item id cannot be below 0
+        if(_itemId > 0){
+            // Get the item at the index
+            Item storage currItem = _items[_itemId];
+            // If item exists, by checking for valid seller address
+            return (currItem.seller != address(0));
+        }
+        else{
+            return false;
+        }
+    }
     /**
      * @dev Shows the count of items in the market (includes sold, unlisted and listed items)
      * @return total count
@@ -110,12 +220,12 @@ contract Market {
      * @dev Show all unsold items in the market
      * @return array of all unsold items
      */
-    function getUnsoldItems() public view returns (Item[] memory)
+    function getUnsoldItems() external view returns (Item[] memory)
     {
         // Total item count
         uint itemCount = _identifier.current();
         // Items without buyer yet (unsold)
-        uint unsoldItemCount = _identifier.current() - _itemsSold.current();
+        uint unsoldItemCount = _identifier.current() - _itemsSold.current() - _itemsUnlisted.current();
         // Temporary counter
         uint currIndex = 0;
 
@@ -140,7 +250,7 @@ contract Market {
      * @dev Show all listed items in the market
      * @return array of all items
      */
-    function getAllItems() public view returns (Item[] memory)
+    function getAllItems() external view returns (Item[] memory)
     {
         // Total item count
         uint itemCount = _identifier.current();
@@ -162,101 +272,10 @@ contract Market {
     }
 
     /**
-     * @dev Check if specific item exists in the market
-     * @param _itemId id of the item to check
-     * @return true if item exists, false otherwise
+     * @dev Get the current contract address
+     * @return address of current contract
      */
-    function checkItemExist(
-        uint256 _itemId
-    ) public view returns (bool)
-    {
-       // Item id cannot be below 0
-        if(_itemId > 0){
-            // Get the item at the index
-            Item storage currItem = _items[_itemId];
-            // If item exists, by checking for valid seller address
-            return (currItem.seller != address(0));
-        }
-        else{
-            return false;
-        }
-    }
-
-    /**
-     * @dev Get specific item details
-     * @return Object of selected item
-     */
-    function getItem (
-        uint256 _itemId
-    ) public view returns (Item memory)
-    {
-        require(checkItemExist(_itemId), "Item does not exist");
-        // Get the item at the index
-        Item storage currItem = _items[_itemId];
-        return currItem;
-    }
-
-    /**
-     * @dev Seller can remove/unlist unsold item(s) from the market 
-     */
-    function unlistItem(uint256 _itemId) external returns (bool){
-
-        if (!checkItemExist(_itemId)){
-            return false;
-        }
-        Item storage currItem = _items[_itemId];
-        if (currItem.seller != msg.sender || currItem.sold){
-            emit ItemUnlisted(_itemId, false);
-            return false;
-        }
-        else{
-            // Set item to unlisted, set values to default
-            delete _items[_itemId];
-            // return true;
-            if (_items[_itemId].seller == address(0)) {
-                emit ItemUnlisted(_itemId, true);
-                return true;
-            }
-            else {
-                emit ItemUnlisted(_itemId, false);
-                return false;
-            }
-        }
-    }
-
-    /**
-     * @dev Buy items from the market
-     *
-     */
-    function purchaseItem(uint256 _itemId) external returns (bool) {
-        // // Item id cannot be below 0
-        // require(_itemId > 0, "Item index must be greater than 0");
-        if (!checkItemExist(_itemId))
-        {
-            return false;
-        }
-        else {
-            // Get the item object at the index
-            Item storage currItem = _items[_itemId];
-            // Check if item is sold
-            require(!currItem.sold, "Item is already sold");
-            if (sitcoin.transferFrom(msg.sender, currItem.seller, currItem.price))
-            {
-                // Set item to sold
-                _items[_itemId].sold = true;
-                // Increment number of items sold
-                _itemsSold.increment();
-                // Set item buyer to function callee address
-                _items[_itemId].buyer = msg.sender;
-                emit ItemPurchased(_itemId, _items[_itemId].buyer, currItem.price, true);
-                return true;
-            }
-            else 
-            {
-                emit ItemPurchased(_itemId, _items[_itemId].buyer, currItem.price, false);
-                return false;
-            }
-
-        }
+     function getaddress() public view returns (address) {
+        return address(this);
     }
 }

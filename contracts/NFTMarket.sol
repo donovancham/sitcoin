@@ -1,10 +1,5 @@
 // SPDX-License-Identifier: MIT
 
-//TODO: move nft and market tgt, burn nft remove from nft and market array
-
-/**
- * @dev Mint the NFT first and list it on the market.
- */
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
@@ -25,7 +20,7 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
         string description;
         uint256 price;
         string authorName;
-        address seller;
+        address author;
         address owner;
         bool sold;
         bool published; //on market
@@ -44,7 +39,7 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
         PRC721 nft;
     }
     /**
-     * @dev To emit event when item is published on the market
+     * @dev To emit event when item is newly added onto the market
      */
     event NFTListed(
         uint256 itemId, //id of item on the market
@@ -63,34 +58,56 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
         address indexed seller,
         address indexed buyer
     );
-
+    /**
+     * @dev To emit event when item is unlisted on the market
+     */
     event MarketItemUnlisted(
         uint256 itemId,
         bool success
     );
+    /**
+     * @dev To emit event when transactional error occurs
+    */
+    event ErrorMsg(
+        string errorMessage
+    );
 
     // Track total no. of NFT in the market
-    uint256 public MarketItemCount;
-    uint256 public MarketItemSold;
-    uint256 public unlistedItemCount;
+    uint256 private MarketItemCount;
+    // Track total no. of NFT sold on the market
+    uint256 private MarketItemSold;
+    // Track total no. of NFT unlisted on the market
+    uint256 private unlistedItemCount;
 
-    // TODO: Change to SITCoin?
-    ERC20 public sitcoin;
-
+    ERC20 internal sitcoin;
     // Track total no. of NFT minted
-    uint256 public NFTCount;
+    uint256 private NFTCount;
 
     // tokenId -> NFT
     mapping(uint256 => NFT) public mintedNFTs;
     // itemId -> Market
     mapping(uint256 => Market) public _marketItems;
 
+    /** 
+     * @dev Sets the token properties and stores the SITCoin instance
+     * @param _sitcoin Address of SITcoin contract
+     * First deploy token contract and then deploy this contract.
+     */
     constructor(address _sitcoin) PRC721("SITC NFT", "SITC") {
         // receiverAcc = payable(msg.sender);
         // feePercent = _feePercent;
         sitcoin = ERC20(_sitcoin);
     }
 
+    /**
+     * @dev Mint a new NFT
+     * @param title Title of the NFT.
+     * @param description Description of the NFT.
+     * @param authorName Creator of NFT
+     * @param _tokenURI Link to the digital asset
+     * @param _price Price of the NFT
+     * @return The id of the item created.
+     */
     function mint(
         string memory title,
         string memory description,
@@ -100,32 +117,39 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
     ) 
         external returns (uint256) 
     {
-        require(_price > 0, "Price must be greater than 0");
-        NFTCount++;
-        // _safemint -> _mint -> Mapping owner address to token count, Mapping from token ID to owner address
-        _safeMint(msg.sender, NFTCount);
-        // maps token ID to token URI
-        _setTokenURI(NFTCount, _tokenURI);
+        if (_price > 0){
+            NFTCount++;
+            // _safemint -> _mint -> Mapping owner address to token count, 
+            // Mapping from token ID to owner address
+            _safeMint(msg.sender, NFTCount);
+            // maps token ID to token URI
+            _setTokenURI(NFTCount, _tokenURI);
 
-        // TODO: Allow user to set private/public item
-        mintedNFTs[NFTCount] = NFT (
-            NFTCount,
-            title,
-            description,
-            _price,
-            authorName,
-            msg.sender, //author address
-            address(0), //owner address
-            false, //sold
-            false, //published
-            _tokenURI
-        );
-
-
-        return (NFTCount);
+            // TODO: Allow user to set private/public item
+            mintedNFTs[NFTCount] = NFT (
+                NFTCount,
+                title,
+                description,
+                _price,
+                authorName,
+                msg.sender, //author address
+                address(0), //owner address
+                false, //sold
+                false, //published
+                _tokenURI
+            );
+            return (NFTCount);
+        }
+        emit ErrorMsg("Price must be greater than 0");
+        return (0);
     }
 
-    /* return true if the address is the owner of the token or else false */
+    /**
+    * @dev Check if wallet address (user) is owner of a particular NFT
+    * @param tokenId The token ID of the NFT to be checked
+    * @param account The account number to check against
+    * @return True if the user owns the NFT, false otherwise
+    */
     function isOwnerOf(uint256 tokenId, address account)
         public
         view
@@ -138,22 +162,42 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
             return false;
         }
     }
-    function getSymbol() public view returns (string memory) {
+
+    /**
+     * @dev Get the symbol of the token
+     * @return token symbol
+     */
+    function getSymbol() external view returns (string memory) {
         return symbol(); // SITC
     }
-    function getName() public view returns (string memory) {
+
+    /**
+     * @dev Get the name of the token
+     * @return token name
+     */
+    function getName() external view returns (string memory) {
         return name(); //SITC NFT
     }
-    function checkNFTExist(uint256 _tokenId) private view returns (bool) {
+
+    /**
+     * @dev Check if a specific NFT is minted or not
+     * @return true if the NFT is minted else false
+     */
+    function checkNFTExist(uint256 _tokenId) internal view returns (bool) {
         // Item id cannot be below 0
-        if (_tokenId > 0 && mintedNFTs[_tokenId].seller != address(0)) {
+        if (_tokenId > 0 && mintedNFTs[_tokenId].author != address(0)) {
             return true;
         } else {
             return false;
         }
     }
 
-    function getMyNFTs() public view returns (NFT[] memory _myNFTs, uint256 count)
+    /**
+     * @dev Get the total number of NFT owned (minted and bought) by the user
+     * @return _myNFTs Number of NFTs the user owns
+     * @return count Number of NFTs the user owns
+     */
+    function myOwnedNFTs() external view returns (NFT[] memory _myNFTs, uint256 count)
     {
         require(msg.sender != address(0), "Invalid walletaddress");
         uint256 numOftokens = balanceOf(msg.sender);
@@ -166,7 +210,7 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
 
             uint256 currIndex = 0;
             uint256 totalTokens = NFTCount;
-            for (uint256 i = 1; i < totalTokens; i++) 
+            for (uint256 i = 1; i <= totalTokens; i++) 
             {
                 // Find the NFTs that belongs to the user
                 if (ownerOf(i) == msg.sender) {
@@ -178,20 +222,82 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
         }
     }
 
+    /**
+     * @dev Get the total number of NFT minted by user
+     * @return count Number of NFTs the author created
+     */
+    function getMyCreationCount(address author) internal view returns (uint256 count) {
+    
+        uint256 currIndex = 0;
+        for (uint256 i = 1; i <= NFTCount; i++) 
+        {
+            // Find the NFTs that belongs to the user
+            if (mintedNFTs[i].author == author) {
+                currIndex++;
+            }
+        }
+        return currIndex;
+    }
+
+    /**
+     * @dev Get all the NFT that is created by the author
+     * @return _myNFTs NFTs created by the author
+     * @return count Number of NFTs the author created
+     */
+    function getMyNFTCreations() external view returns (NFT[] memory _myNFTs, uint256 count)
+    {
+        require(msg.sender != address(0), "Invalid walletaddress");
+
+        uint256 totalTokens = getMyCreationCount(msg.sender);
+        if (totalTokens == 0) 
+        {
+            return (new NFT[](0), 0);
+        } 
+        else {
+            // Array to store all items, size of all items
+            NFT[] memory NFTitems = new NFT[](totalTokens);
+
+            uint256 currIndex = 0;
+            
+            for (uint256 i = 1; i <= NFTCount; i++) 
+            {
+                // Find the NFTs that belongs to the user
+                if (mintedNFTs[i].author == msg.sender) {
+                    NFTitems[currIndex] = mintedNFTs[i];
+                    currIndex++;
+                }
+            }
+            return (NFTitems, totalTokens);
+        }
+    }
+
+    /**
+     * @dev Get total number of NFTs minted
+     * @return Number of NFTs minted
+     */
+    function getTotalNFTCount() external view returns (uint256) {
+        return NFTCount;
+    }
 
 
-    //TODO: Market - Set public or private
+
+
     /**
      * @dev Add NFT into the market for purchase
      * @param _tokenId Token identifier number
+     * @param _nft the address of current contract holding the nft
      */
     function createItem(uint256 _tokenId, PRC721 _nft) external nonReentrant 
     {
         if (checkNFTExist(_tokenId)) {
             // Otain NFT item for listing
             NFT storage NFTItem = mintedNFTs[_tokenId];
-            // Ensure Item not sold or already published
-            if (NFTItem.sold == false && NFTItem.published == false) {
+            // Ensure Item not sold or already published, and only author can put item up for sale
+            if (NFTItem.sold == false && 
+                NFTItem.published == false && 
+                NFTItem.author == msg.sender && 
+                NFTItem.owner == address(0)) 
+            {
 
                 MarketItemCount++;
             
@@ -218,11 +324,14 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
                     NFTItem.price, //price
                     msg.sender //seller
                 );
-            }
-            
-        }
+            }else{emit ErrorMsg("Item sold, published, or not owned by you");} 
+        }else{emit ErrorMsg("Item does not exist");}      
     }
 
+    /**
+     * @dev Purchase NFT from the market
+     * @return true if item is sold, false if otherwise
+     */
     function purchaseItem(uint256 _itemId)
         external
         nonReentrant
@@ -233,39 +342,87 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
         if (marketItem.seller != address(0) && marketItem.sold == false) {
             // Get the published item on the market
             // TODO: call increaseAllowance() before this
-            sitcoin.transferFrom(msg.sender, marketItem.seller, marketItem.price);
+            if (sitcoin.transferFrom(msg.sender, marketItem.seller, marketItem.price))
+            {
+                // // transfer NFT Ownership from contract to buyer
+                marketItem.nft.transferFrom(address(this), msg.sender, marketItem.tokenId);
 
-            // // transfer NFT Ownership from contract to buyer
-            marketItem.nft.transferFrom(address(this), msg.sender, marketItem.tokenId);
+                // Update item in market to sold
+                _marketItems[_itemId].sold = true;
 
-            // Update item in market to sold
-            _marketItems[_itemId].sold = true;
+                // Update NFT item to sold, and new owner of NFT
+                mintedNFTs[marketItem.tokenId].owner = msg.sender;
+                mintedNFTs[marketItem.tokenId].sold = true;
 
-            // Update NFT item to sold, and new owner of NFT
-            mintedNFTs[marketItem.tokenId].owner = msg.sender;
-            mintedNFTs[marketItem.tokenId].sold = true;
-
-            MarketItemSold++;
-            emit NFTPurchased(
-                _itemId, //itemId
-                marketItem.tokenId, //nft ID
-                marketItem.price, //price
-                marketItem.seller, //seller
-                msg.sender //buyer
-            );
-
-            return true;
-        } 
-        return false;
+                MarketItemSold++;
+                emit NFTPurchased(
+                    _itemId, //itemId
+                    marketItem.tokenId, //nft ID
+                    marketItem.price, //price
+                    marketItem.seller, //seller
+                    msg.sender //buyer
+                );
+                return true;
+            }
+            else {
+                emit ErrorMsg("Not enough tokens");
+                return false;
+            }
+        } else {
+            emit ErrorMsg("Item does not exist or already sold");
+            return false;
+        }
     }
 
+    /**
+     * @dev Unpublish items on the market
+     * @return true if item is successfully unlisted, false otherwise
+     */
+     function unlistItem(uint256 _itemId) external nonReentrant returns (bool)
+     {
+        // check if item is sold
+        if (!marketItemExist(_itemId)){
+            emit ErrorMsg("Item does not exist");
+            return false;
+        }
+        Market storage marketItem = _marketItems[_itemId];
+
+        // Check if msg.sender is the seller and if item is sold
+        if (marketItem.seller != msg.sender || marketItem.sold){
+            emit ErrorMsg("Only seller can unlist, or item is sold");
+            return false;
+        }
+        else{
+            // transfer NFT Ownership from market back to author/owner
+            marketItem.nft.transferFrom(address(this), msg.sender, marketItem.tokenId);
+            NFT storage NFTItem = mintedNFTs[marketItem.tokenId];
+            NFTItem.published = false;
+            // Deletes listing on Market but item still exists as NFT
+            delete _marketItems[_itemId];
+            if (!marketItemExist(_itemId)){
+                unlistedItemCount++;
+                emit MarketItemUnlisted(_itemId, true);
+                return true;
+            }
+            else{
+                emit ErrorMsg("Item still on the market, unable to unlist");
+                return false;
+            }
+        }
+     }
+     
+    /**
+     * @dev Get the address of current contract
+     * @return Address of current contract
+     */
     function getaddress() public view returns (address) {
         return address(this);
     }
     /** 
      * @dev Check if item exist in the market
+     * @return true if item exist, false if not
      */
-    function marketItemExist(uint256 _itemId) public view returns (bool) {
+    function marketItemExist(uint256 _itemId) internal view returns (bool) {
         // Item id cannot be below 0
         if (_itemId > 0) {
             // Get the item at the index
@@ -277,8 +434,19 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
         } 
         return false; // item does not exist
     }
+
     /**
-     * @dev Get the item from the market
+     * @dev Get total number of items on the market, excluding unlisted items
+     * @return Number of items on the market
+     */
+    function getTotalMarketItems() external view returns (uint256) {
+        return MarketItemCount - unlistedItemCount;
+    }
+
+    /**
+     * @dev Get the all items published on the market
+     * @return allItems sll Market items
+     * @return count number of Market items
      */
      function getAllMarketItems() public view returns (Market[] memory allItems, uint256 count) {
         // Total item count
@@ -302,6 +470,11 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
         return (items, currIndex+1);
      }
 
+    /**
+     * @dev Get the all unsold items published on the market
+     * @return unsold All unsold market items
+     * @return count number of unsold Market items
+     */
      function getUnsoldItems() public view returns (Market[] memory unsold, uint256 count){
         uint itemCount = MarketItemCount;
         uint unsoldItemCount = MarketItemCount - MarketItemSold - unlistedItemCount;
@@ -317,34 +490,6 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
             }
         }
         return (unsoldItems, unsoldItemCount);
-     }
-
-     function unlistItem(uint256 _itemId) external nonReentrant returns (bool)
-     {
-        // check if item is sold
-        if (!marketItemExist(_itemId)){
-            return false;
-        }
-        Market storage marketItem = _marketItems[_itemId];
-        if (marketItem.seller != msg.sender || marketItem.sold){
-            emit MarketItemUnlisted(_itemId, false);
-            return false;
-        }
-        else{
-            NFT storage NFTItem = mintedNFTs[marketItem.tokenId];
-            NFTItem.published = false;
-            // Deletes listing on Market but item still exists as NFT
-            delete _marketItems[_itemId];
-            if (!marketItemExist(_itemId)){
-                unlistedItemCount++;
-                emit MarketItemUnlisted(_itemId, true);
-                return true;
-            }
-            else{
-                emit MarketItemUnlisted(_itemId, false);
-                return false;
-            }
-        }
      }
 
 }
