@@ -3,7 +3,6 @@
 const SITcoin = artifacts.require("SITcoin");
 const { owner } = require("../scripts/walletAddress");
 const Market = artifacts.require("Market");
-const NFT = artifacts.require("NFT");
 const NFTMarket = artifacts.require("NFTMarket");
 
 module.exports = (deployer) => {
@@ -12,7 +11,6 @@ module.exports = (deployer) => {
         const sitcoin = await SITcoin.deployed();
         await deployer.deploy(Market, sitcoin.address);
         await deployer.deploy(NFTMarket, sitcoin.address);
-        await deployer.deploy(NFT);
     });
         
 };
