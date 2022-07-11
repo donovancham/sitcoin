@@ -195,7 +195,7 @@ contract("NFTMarket", () => {
             await market.createItem(3, market.address,{from: user2})
         })
     });
-    describe("List unsold items on the market", () => {
+    describe("Get unsold items on the market", () => {
         it("Should approve marketplace to spend nft", async () => {
             // in IERC721: setApprovalForAll(address operator, bool _approved);
             // user1 approves marketplace to spend nft (is like increase allowance for ERC20)

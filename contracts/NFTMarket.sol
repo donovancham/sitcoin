@@ -7,8 +7,8 @@ import "./PRC721URIStorage.sol";
 // for NFT
 import {PRC721} from "./PRC721.sol";
 // for Token transaction
-import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "./SITcoin.sol";
+//import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {SITcoin} from "./SITcoin.sol";
 
 contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
     /**
@@ -79,7 +79,7 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
     // Track total no. of NFT unlisted on the market
     uint256 private unlistedItemCount;
 
-    ERC20 internal sitcoin;
+    SITcoin internal sitcoin;
     // Track total no. of NFT minted
     uint256 private NFTCount;
 
@@ -96,7 +96,7 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
     constructor(address _sitcoin) PRC721("SITC NFT", "SITC") {
         // receiverAcc = payable(msg.sender);
         // feePercent = _feePercent;
-        sitcoin = ERC20(_sitcoin);
+        sitcoin = SITcoin(_sitcoin);
     }
 
     /**
@@ -199,7 +199,7 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
      */
     function myOwnedNFTs() external view returns (NFT[] memory _myNFTs, uint256 count)
     {
-        require(msg.sender != address(0), "Invalid walletaddress");
+        require(msg.sender != address(0), "Invalid wallet address");
         uint256 numOftokens = balanceOf(msg.sender);
         if (numOftokens == 0) {
             return (new NFT[](0), 0);
@@ -256,10 +256,10 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
         else {
             // Array to store all items, size of all items
             NFT[] memory NFTitems = new NFT[](totalTokens);
-
+            uint256 _NFTCount = NFTCount;
             uint256 currIndex = 0;
             
-            for (uint256 i = 1; i <= NFTCount; i++) 
+            for (uint256 i = 1; i <= _NFTCount; i++) 
             {
                 // Find the NFTs that belongs to the user
                 if (mintedNFTs[i].author == msg.sender) {
@@ -278,6 +278,7 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
     function getTotalNFTCount() external view returns (uint256) {
         return NFTCount;
     }
+
 
 
 
@@ -451,13 +452,14 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
      function getAllMarketItems() public view returns (Market[] memory allItems, uint256 count) {
         // Total item count
         uint itemCount = MarketItemCount - unlistedItemCount;
+        uint totalCount = MarketItemCount;
         // Temporary counter
         uint currIndex = 0;
 
         // Array to store all items, size of all items (unlisted items are not included)
         Market[] memory items = new Market[](itemCount);
         // Iterate through all items
-        for (uint256 i = 1; i <= MarketItemCount; i++)
+        for (uint256 i = 1; i <= totalCount; i++)
         {
             // If not unlisted item, add to array
             if (marketItemExist(i)) {
@@ -476,12 +478,12 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
      * @return count number of unsold Market items
      */
      function getUnsoldItems() public view returns (Market[] memory unsold, uint256 count){
-        uint itemCount = MarketItemCount;
+        uint totalCount = MarketItemCount;
         uint unsoldItemCount = MarketItemCount - MarketItemSold - unlistedItemCount;
         uint currIndex = 0;
 
         Market[] memory unsoldItems = new Market[](unsoldItemCount);
-        for (uint256 i = 1; i <= itemCount; i++)
+        for (uint256 i = 1; i <= totalCount; i++)
         {
             if (_marketItems[i].sold == false && marketItemExist(i)) {
                 Market storage currItem = _marketItems[i];
