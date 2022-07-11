@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'next/link'
-import { Col, Row } from 'react-bootstrap'
-import Wallet from '../components/Wallet'
+
 import Layout from '../components/Layout'
+import Wallet from '../components/Wallet'
 import WalletContext from '../context/WalletContext'
+import Ipfs from '../components/Ipfs'
+import IpfsContext from '../context/IpfsContext'
 
 export default function Index() {
     return (
@@ -17,6 +18,9 @@ export default function Index() {
             <WalletContext>
                 <Wallet />
             </WalletContext>
+            <IpfsContext>
+                <Ipfs />
+            </IpfsContext>
             {/* <IpfsComponent /> */}
         </Layout>
     )
