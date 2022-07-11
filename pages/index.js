@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import ReactDOM from 'react-dom/client'
-import Link from 'next/link'
+import { Link } from 'next/link'
 import { Col, Row } from 'react-bootstrap'
 import Wallet from '../components/Wallet'
 import Layout from '../components/Layout'
-import IpfsComponent from '../components/Ipfs'
-
+import WalletContext from '../context/WalletContext'
 
 export default function Index() {
-
     return (
         <Layout>
             {/* main app container */}
@@ -17,8 +14,10 @@ export default function Index() {
                     <h1>SIT Metaverse</h1>
                 </div>
             </div>
-            <Wallet />
-            <IpfsComponent />
+            <WalletContext>
+                <Wallet />
+            </WalletContext>
+            {/* <IpfsComponent /> */}
         </Layout>
     )
 }
