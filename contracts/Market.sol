@@ -2,11 +2,11 @@
 
 pragma solidity ^0.8.0;
 
-import "./SITcoin.sol";
+import {SITcoin} from "./SITcoin.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+//import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract Market is ReentrancyGuard {
     /**
@@ -56,14 +56,14 @@ contract Market is ReentrancyGuard {
     mapping(uint256 => Item) private _items;
 
     // Object sitcoin which Holds deployed token contract
-    ERC20 internal sitcoin;
+    SITcoin internal sitcoin;
 
     /** 
      * @dev Sets the SITCoin instance
      *  First deploy token contract and then deploy this contract.
      */
     constructor (address _sitcoin) {
-        sitcoin = ERC20(_sitcoin);
+        sitcoin = SITcoin(_sitcoin);
     }
 
     /**
