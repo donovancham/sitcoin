@@ -16,28 +16,29 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
      */
     struct NFT {
         uint256 tokenId; //id of NFT in PRC721
-        string title;
         string description;
+        //string description;
         uint256 price;
-        string authorName;
         address author;
+        address seller;
         address owner;
         bool sold;
         bool published; //on market
         string uri;
+        ERC721 nft;
     }
     /**
      * @dev To track published items on the market
      */ 
-    struct Market {
-        uint256 itemId; //id of item on the market
-        string title;
-        uint256 tokenId;
-        uint256 price;
-        address seller;
-        bool sold;
-        ERC721 nft;
-    }
+    // struct Market {
+    //     uint256 itemId; //id of item on the market
+    //     string title;
+    //     uint256 tokenId;
+    //     uint256 price;
+    //     address seller;
+    //     bool sold;
+    //     ERC721 nft;
+    // }
     /**
      * @dev To emit event when item is newly added onto the market
      */
@@ -86,7 +87,7 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
     // tokenId -> NFT
     mapping(uint256 => NFT) public mintedNFTs;
     // itemId -> Market
-    mapping(uint256 => Market) public _marketItems;
+    // mapping(uint256 => Market) public _marketItems;
 
     /** 
      * @dev Sets the token properties and stores the SITCoin instance
@@ -101,19 +102,16 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
 
     /**
      * @dev Mint a new NFT
-     * @param title Title of the NFT.
      * @param description Description of the NFT.
-     * @param authorName Creator of NFT
      * @param _tokenURI Link to the digital asset
      * @param _price Price of the NFT
      * @return The id of the item created.
      */
     function mint(
-        string memory title,
         string memory description,
-        string memory authorName,
         string memory _tokenURI, 
-        uint256 _price
+        uint256 _price,
+        ERC721 _nft
     ) 
         external returns (uint256) 
     {
@@ -128,15 +126,15 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
             
             mintedNFTs[NFTCount] = NFT (
                 NFTCount,
-                title,
                 description,
                 _price,
-                authorName,
                 msg.sender, //author address
+                address(0), //seller address
                 address(0), //owner address
                 false, //sold
                 false, //published
-                _tokenURI
+                _tokenURI,
+                _nft
             );
             return (NFTCount);
         }
@@ -286,9 +284,8 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
     /**
      * @dev Add NFT into the market for purchase
      * @param _tokenId Token identifier number
-     * @param _nft the address of current contract holding the nft
      */
-    function createItem(uint256 _tokenId, ERC721 _nft) external nonReentrant 
+    function createItem(uint256 _tokenId) external nonReentrant 
     {
         if (checkNFTExist(_tokenId)) {
             // Otain NFT item for listing
@@ -307,20 +304,21 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
                 transferFrom(msg.sender, address(this), _tokenId); //from, to, tokenId
 
                 mintedNFTs[_tokenId].published = true;
+                mintedNFTs[_tokenId].seller = msg.sender;
 
-                _marketItems[MarketItemCount] = Market (
-                    MarketItemCount,
-                    NFTItem.title,
-                    NFTItem.tokenId,
-                    NFTItem.price,
-                    msg.sender,
-                    false,
-                    _nft
-                );
+                // _marketItems[MarketItemCount] = Market (
+                //     MarketItemCount,
+                //     NFTItem.title,
+                //     NFTItem.tokenId,
+                //     NFTItem.price,
+                //     msg.sender,
+                //     false,
+                //     _nft
+                // );
 
                 emit NFTListed(
                     MarketItemCount, //itemId
-                    NFTItem.title,
+                    NFTItem.description, //description
                     NFTItem.tokenId,
                     NFTItem.price, //price
                     msg.sender //seller
@@ -333,14 +331,15 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
      * @dev Purchase NFT from the market
      * @return true if item is sold, false if otherwise
      */
-    function purchaseItem(uint256 _itemId)
+    function purchaseItem(uint256 _tokenId)
         external
         nonReentrant
         returns (bool)
     {
         // Check if item for purchase exist on the market
-        Market storage marketItem = _marketItems[_itemId];
-        if (marketItem.seller != address(0) && marketItem.sold == false) {
+        NFT storage marketItem = mintedNFTs[_tokenId];
+        if (marketItem.published == true && marketItem.seller != address(0) && marketItem.sold == false) {
+
             // Get the published item on the market
             // TODO: call increaseAllowance() before this
             if (sitcoin.transferFrom(msg.sender, marketItem.seller, marketItem.price))
@@ -349,15 +348,15 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
                 marketItem.nft.transferFrom(address(this), msg.sender, marketItem.tokenId);
 
                 // Update item in market to sold
-                _marketItems[_itemId].sold = true;
+                // _marketItems[_tokenId].sold = true;
 
                 // Update NFT item to sold, and new owner of NFT
-                mintedNFTs[marketItem.tokenId].owner = msg.sender;
-                mintedNFTs[marketItem.tokenId].sold = true;
+                mintedNFTs[_tokenId].owner = msg.sender;
+                mintedNFTs[_tokenId].sold = true;
 
                 MarketItemSold++;
                 emit NFTPurchased(
-                    _itemId, //itemId
+                    _tokenId, //tokenid
                     marketItem.tokenId, //nft ID
                     marketItem.price, //price
                     marketItem.seller, //seller
@@ -379,14 +378,14 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
      * @dev Unpublish items on the market
      * @return true if item is successfully unlisted, false otherwise
      */
-     function unlistItem(uint256 _itemId) external nonReentrant returns (bool)
+     function unlistItem(uint256 _tokenId) external nonReentrant returns (bool)
      {
         // check if item is sold
-        if (!marketItemExist(_itemId)){
+        if (!marketItemExist(_tokenId)){
             emit ErrorMsg("Item does not exist");
             return false;
         }
-        Market storage marketItem = _marketItems[_itemId];
+        NFT storage marketItem = mintedNFTs[_tokenId];
 
         // Check if msg.sender is the seller and if item is sold
         if (marketItem.seller != msg.sender || marketItem.sold){
@@ -395,14 +394,14 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
         }
         else{
             // transfer NFT Ownership from market back to author/owner
-            marketItem.nft.transferFrom(address(this), msg.sender, marketItem.tokenId);
-            NFT storage NFTItem = mintedNFTs[marketItem.tokenId];
+            marketItem.nft.transferFrom(address(this), msg.sender, _tokenId);
+            NFT storage NFTItem = mintedNFTs[_tokenId];
             NFTItem.published = false;
             // Deletes listing on Market but item still exists as NFT
-            delete _marketItems[_itemId];
-            if (!marketItemExist(_itemId)){
-                unlistedItemCount++;
-                emit MarketItemUnlisted(_itemId, true);
+            // delete _marketItems[_tokenId];
+            if (!marketItemExist(_tokenId)){
+                MarketItemCount--;
+                emit MarketItemUnlisted(_tokenId, true);
                 return true;
             }
             else{
@@ -423,12 +422,12 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
      * @dev Check if item exist in the market
      * @return true if item exist, false if not
      */
-    function marketItemExist(uint256 _itemId) internal view returns (bool) {
+    function marketItemExist(uint256 _tokenId) internal view returns (bool) {
         // Item id cannot be below 0
-        if (_itemId > 0) {
+        if (_tokenId > 0) {
             // Get the item at the index
-            Market storage marketItem = _marketItems[_itemId];
-            if (marketItem.seller != address(0)) {
+            NFT storage marketItem = mintedNFTs[_tokenId];
+            if (marketItem.seller != address(0) && marketItem.published == true) {
                 return true;
             } 
             return false; // item does not exist
@@ -449,27 +448,27 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
      * @return allItems sll Market items
      * @return count number of Market items
      */
-     function getAllMarketItems() public view returns (Market[] memory allItems, uint256 count) {
+     function getAllMarketItems() public view returns (NFT[] memory allItems, uint256 count) {
         // Total item count
-        uint itemCount = MarketItemCount - unlistedItemCount;
-        uint totalCount = MarketItemCount;
+        uint itemCount = MarketItemCount;
+        uint totalCount = NFTCount;
         // Temporary counter
         uint currIndex = 0;
 
         // Array to store all items, size of all items (unlisted items are not included)
-        Market[] memory items = new Market[](itemCount);
+        NFT[] memory items = new NFT[](itemCount);
         // Iterate through all items
         for (uint256 i = 1; i <= totalCount; i++)
         {
             // If not unlisted item, add to array
             if (marketItemExist(i)) {
                 // Add item to array
-                Market storage currItem = _marketItems[i];
+                NFT storage currItem = mintedNFTs[i];
                 items[currIndex] = currItem;
                 currIndex++;
             }
         }
-        return (items, currIndex+1);
+        return (items, itemCount);
      }
 
     /**
@@ -477,16 +476,17 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
      * @return unsold All unsold market items
      * @return count number of unsold Market items
      */
-     function getUnsoldItems() public view returns (Market[] memory unsold, uint256 count){
-        uint totalCount = MarketItemCount;
-        uint unsoldItemCount = MarketItemCount - MarketItemSold - unlistedItemCount;
+     function getUnsoldItems() public view returns (NFT[] memory unsold, uint256 count){
+        uint totalCount = NFTCount;
+        uint unsoldItemCount = MarketItemCount - MarketItemSold;
         uint currIndex = 0;
 
-        Market[] memory unsoldItems = new Market[](unsoldItemCount);
+        NFT[] memory unsoldItems = new NFT[](unsoldItemCount);
         for (uint256 i = 1; i <= totalCount; i++)
-        {
-            if (_marketItems[i].sold == false && marketItemExist(i)) {
-                Market storage currItem = _marketItems[i];
+
+        {   NFT storage currItem = mintedNFTs[i];
+
+            if (currItem.sold == false && marketItemExist(i)) {
                 unsoldItems[currIndex] = currItem;
                 currIndex++;
             }

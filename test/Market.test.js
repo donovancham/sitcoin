@@ -11,6 +11,7 @@ contract("Market", () => {
     var sellerhex = dev1hex;
     var instance;
     var sitInstance;
+    var emptyaddr = 0x0000000000000000000000000000000000000000;
 
 	// Ensure that smart contract is deployed in memory environment before running
     // Use beforeEach to deploy new box for each test
@@ -51,7 +52,7 @@ contract("Market", () => {
         assert.equal(item.id, 1, "item count incorrect")
         assert.equal(item.description, "Test Item", "item Description wrong")
         assert.equal(item.seller, sellerhex, "wrong address")
-        assert.equal(item.buyer, 0x0000000000000000000000000000000000000000, "wrong address")
+        assert.equal(item.buyer, emptyaddr, "wrong address")
         assert.equal(item.price, 10, "wrong price")
         assert.equal(item.sold, false, "wrong sold")
         
@@ -60,7 +61,7 @@ contract("Market", () => {
         assert.equal(item.id, 2, "item count incorrect")
         assert.equal(item.description, "Test Item 2", "item Description wrong")
         assert.equal(item.seller, sellerhex, "wrong address")
-        assert.equal(item.buyer, 0x0000000000000000000000000000000000000000, "wrong address")
+        assert.equal(item.buyer, emptyaddr, "wrong address")
         assert.equal(item.price, 10, "wrong price")
         assert.equal(item.sold, false, "wrong sold")
     })
