@@ -3,14 +3,14 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "./PRC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 // for NFT
-import {PRC721} from "./PRC721.sol";
+import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 // for Token transaction
 //import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {SITcoin} from "./SITcoin.sol";
 
-contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
+contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
     /**
      * @dev To track minted NFTs
      */
@@ -36,7 +36,7 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
         uint256 price;
         address seller;
         bool sold;
-        PRC721 nft;
+        ERC721 nft;
     }
     /**
      * @dev To emit event when item is newly added onto the market
@@ -93,7 +93,7 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
      * @param _sitcoin Address of SITcoin contract
      * First deploy token contract and then deploy this contract.
      */
-    constructor(address _sitcoin) PRC721("SITC NFT", "SITC") {
+    constructor(address _sitcoin) ERC721("SITC NFT", "SITC") {
         // receiverAcc = payable(msg.sender);
         // feePercent = _feePercent;
         sitcoin = SITcoin(_sitcoin);
@@ -125,7 +125,7 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
             // maps token ID to token URI
             _setTokenURI(NFTCount, _tokenURI);
 
-            // TODO: Allow user to set private/public item
+            
             mintedNFTs[NFTCount] = NFT (
                 NFTCount,
                 title,
@@ -288,7 +288,7 @@ contract NFTMarket is ReentrancyGuard, PRC721URIStorage {
      * @param _tokenId Token identifier number
      * @param _nft the address of current contract holding the nft
      */
-    function createItem(uint256 _tokenId, PRC721 _nft) external nonReentrant 
+    function createItem(uint256 _tokenId, ERC721 _nft) external nonReentrant 
     {
         if (checkNFTExist(_tokenId)) {
             // Otain NFT item for listing
