@@ -184,6 +184,12 @@ platon-truffle exec scripts/transferToken.js
 ```
 
 ## Changelog
+- v1.6.12
+  - Edits to `MFTMarket.sol`
+    - Removed `Market` struct, using only `NFT` struct
+    - Refactored the code due to above changes
+  - Edited `NFTMarket.test.js` according to changes above
+  - Test and use case files for market tested with no errors
 - v1.6.11
   - Edits to `NFTMarket.sol`
     - Added Functions `marketItemExist()`, `getAllMarketItems()`, `getUnsoldItems()`, `unlistItem()`, `getMyNFTs()`, `getTotalMarketItems()`, 'getTotalNFTCount()`

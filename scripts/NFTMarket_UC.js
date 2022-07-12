@@ -29,14 +29,10 @@ module.exports = async function(callback) {
         console.log("user3 balance: ", await sitc.balanceOf(user3)) //1600
 
         //----------------------- Mint NFT ---------------------------------------------
-        await market.mint("Rubber Ducky", "Picture of duck", "Zi Wei", URI, 10, {from: user1})
-        await market.mint("Electro Boy", "Funny Comic Korean Humor", "Jjaltoon", URI, 10, {from: user2})
-        await market.mint("Bro Code", "Lame Animation", "Jjaltoon", URI, 10, {from: user3})
-        await market.mint("Maplestory 2070", "Maple Humor", "Jjaltoon", URI, 10, {from: user1})
-
-        //----------------------- Check total NFT Count --------------------------------
-        let nftCount = await market.NFTCount().then(function(count) { countInstance = count})
-        console.log("nftCount: ", nftCount) //4
+        await market.mint("Rubber Ducky", URI, 10, market.address, {from: user1})
+        await market.mint("Electro Boy", URI, 10, market.address, {from: user2})
+        await market.mint("Bro Code", URI, 10, market.address, {from: user3})
+        await market.mint("Maplestory 2070", URI, 10, market.address, {from: user1})
 
         //----------------------- Check NFT balance of each user --------------------------------
         await market.balanceOf(user1).then(function(balance) { u1BalIns = balance})
@@ -49,11 +45,10 @@ module.exports = async function(callback) {
         //----------------------- Check NFT details --------------------------------
         await market.mintedNFTs(1).then(function(nft) { nftIns = nft})
         console.log("tokenId: ", nftIns.tokenId.words[0]) //1
-        console.log("title: ", nftIns.title) //Rubber Ducky
-        console.log("description: ", nftIns.description) //Picture of duck
+        console.log("description: ", nftIns.description) //Rubber Ducky
         console.log("price: ", nftIns.price.words[0]) //10
-        console.log("authorName: ", nftIns.authorName) //Zi Wei
         console.log("author addr: ", nftIns.author) //0x...
+        console.log("seller addr: ", nftIns.seller) //0x0
         console.log("owner addr: ", nftIns.owner) //0x...
         console.log("sold: ", nftIns.sold) //false
         console.log("published: ", nftIns.published) //false
@@ -61,11 +56,10 @@ module.exports = async function(callback) {
 
         await market.mintedNFTs(2).then(function(nft) { nftIns = nft})
         console.log("tokenId: ", nftIns.tokenId.words[0]) //1
-        console.log("title: ", nftIns.title) //Electro Boy
-        console.log("description: ", nftIns.description) // Funny Comic Korean Humor
+        console.log("description: ", nftIns.description) // Electro Boy
         console.log("price: ", nftIns.price.words[0]) //10
-        console.log("authorName: ", nftIns.authorName) // Jjaltoon
         console.log("author addr: ", nftIns.author) //0x...
+        console.log("seller addr: ", nftIns.seller) //0x0
         console.log("owner addr: ", nftIns.owner) //0x0
         console.log("sold: ", nftIns.sold) //false
         console.log("published: ", nftIns.published) //false
@@ -73,11 +67,10 @@ module.exports = async function(callback) {
 
         await market.mintedNFTs(3).then(function(nft) { nftIns = nft})
         console.log("tokenId: ", nftIns.tokenId.words[0]) //1
-        console.log("title: ", nftIns.title) // Bro Code
-        console.log("description: ", nftIns.description) //  Lame Animation
+        console.log("description: ", nftIns.description) //  Bro Code
         console.log("price: ", nftIns.price.words[0]) // 10
-        console.log("authorName: ", nftIns.authorName) // Jjaltoon
         console.log("author addr: ", nftIns.author) //0x...
+        console.log("seller addr: ", nftIns.seller) //0x0
         console.log("owner addr: ", nftIns.owner) //0x0
         console.log("sold: ", nftIns.sold) //false
         console.log("published: ", nftIns.published) //false
@@ -85,11 +78,10 @@ module.exports = async function(callback) {
 
         await market.mintedNFTs(4).then(function(nft) { nftIns = nft})
         console.log("tokenId: ", nftIns.tokenId.words[0]) //1
-        console.log("title: ", nftIns.title) // Maplestory 2070
-        console.log("description: ", nftIns.description) //  Maple Humor
+        console.log("description: ", nftIns.description) //  Maplestory 2070
         console.log("price: ", nftIns.price.words[0]) //10
-        console.log("authorName: ", nftIns.authorName) // Jjaltoon
         console.log("author addr: ", nftIns.author) //0x...
+        console.log("seller addr: ", nftIns.seller) //0x0
         console.log("owner addr: ", nftIns.owner) //0x0
         console.log("sold: ", nftIns.sold) //false
         console.log("published: ", nftIns.published) //false
@@ -104,9 +96,9 @@ module.exports = async function(callback) {
         console.log("user3 approved: ", await market.isApprovedForAll(user3, market.address)) //true
 
         // ------------------------ List NFT up for sale on market --------------------------------
-        await market.createItem(1, market.address, {from: user1})
-        await market.createItem(2, market.address, {from: user2})
-        await market.createItem(3, market.address, {from: user3})
+        await market.createItem(1, {from: user1})
+        await market.createItem(2, {from: user2})
+        await market.createItem(3, {from: user3})
         
         // ------------------------ Owner of listed NFT belongs to Market --------------------------
         console.log("Market owner of 1: ", await market.isOwnerOf(1, market.address)) //true
@@ -114,28 +106,25 @@ module.exports = async function(callback) {
         console.log("Market owner of 3: ",await market.isOwnerOf(3, market.address))
 
         // ------------------------ Check Market Item details --------------------------------
-        await market._marketItems(1).then(function(item) { itemins = item})
-        console.log("item ID: ", itemins.itemId.words[0]) //1
-        console.log("item title: ", itemins.title) //Rubber Ducky
-        console.log("item tokenId: ", itemins.tokenId.words[0]) //1
+        await market.mintedNFTs(1).then(function(item) { itemins = item})
+        console.log("token ID: ", itemins.tokenId.words[0]) //1
+        console.log("item description: ", itemins.description) //Rubber Ducky
         console.log("item price: ", itemins.price.words[0]) //10
         console.log("item seller: ", itemins.seller) //user1
         console.log("item sold: ", itemins.sold) //false
 
-        await market._marketItems(2).then(function(item) { itemins = item})
-        console.log("item ID: ", itemins.itemId.words[0]) //1
-        console.log("item title: ", itemins.title) //Rubber Ducky
-        console.log("item tokenId: ", itemins.tokenId.words[0]) //1
+        await market.mintedNFTs(2).then(function(item) { itemins = item})
+        console.log("token ID: ", itemins.tokenId.words[0]) //1
+        console.log("item description: ", itemins.description) // Electro Boy
         console.log("item price: ", itemins.price.words[0]) //10
-        console.log("item seller: ", itemins.seller) //user1
+        console.log("item seller: ", itemins.seller) //user2
         console.log("item sold: ", itemins.sold) //false
 
-        await market._marketItems(3).then(function(item) { itemins = item})
-        console.log("item ID: ", itemins.itemId.words[0]) //1
-        console.log("item title: ", itemins.title) //Rubber Ducky
-        console.log("item tokenId: ", itemins.tokenId.words[0]) //1
+        await market.mintedNFTs(3).then(function(item) { itemins = item})
+        console.log("token ID: ", itemins.tokenId.words[0]) //1
+        console.log("item description: ", itemins.description) //  Bro Code
         console.log("item price: ", itemins.price.words[0]) //10
-        console.log("item seller: ", itemins.seller) //user1
+        console.log("item seller: ", itemins.seller) //user3
         console.log("item sold: ", itemins.sold) //false
 
         // ------------------------ Increase allowance from User2 to Market ------------------------
