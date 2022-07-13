@@ -194,6 +194,11 @@ platon-truffle exec scripts/transferToken.js
 ```
 
 ## Changelog
+- v1.6.1
+  - Updated `SITcoin.sol`
+    - Implemented token burning
+    - Implemented `AccessControl` instead of token burning
+    - Implemented `ERC20Permit` for gasless transfers
 - v1.6
   - web3 App
     - Removed `alert.module.js`
