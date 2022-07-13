@@ -1,7 +1,21 @@
+# `Migrations`
+
+## `restricted()`
+
 # Functions:
 
 - [`setCompleted(uint256 completed)`](#Migrations-setCompleted-uint256-)
 
-# Function `setCompleted(uint256 completed)` {#Migrations-setCompleted-uint256-}
+## setCompleted
+
+<br>
+
+```sol
+
+function setCompleted(
+
+) public
+
+```
 
 No description

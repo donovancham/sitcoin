@@ -1,16 +1,8 @@
-Implemented access control using openzeppelin's `AccessControl` 
+# `SITcoin`
 
-library. This implementation allows supply on demand by allowing 
+ERC20 token implemented with controlled supply that allows minting and burning of tokens. This token is designed to be deployed on the PlatON blockchain, which requires compatibility with the `PRC20` fungible token standard. `PRC20` is fully compatible with `ERC20` so openzeppelin's `ERC20` implementation can be used to provide standard `ERC20` functional implemnetations without any conflicts.
 
-more tokens to be minted as demand increases. The minting of tokens 
-
-can only be done calling the `mint()` function from a privileged 
-
-address with the 'MINTER' role. 
-
-PRC-20 is fully compatible with ERC-20 so `ERC20` base contract
-
-passes PRC-20 token standards.
+Implemented access control using openzeppelin's `AccessControl` library. This implementation allows supply on demand by allowing more tokens to be minted as demand increases. The minting of tokens can only be done calling the `mint()` function from a privileged address with the 'MINTER' role. 
 
 # Functions:
 
@@ -24,50 +16,126 @@ passes PRC-20 token standards.
 
 - [`revokeMinterRole(address _account)`](#SITcoin-revokeMinterRole-address-)
 
-# Events:
+## constructor
 
-- [`Mint(address minter, uint256 value)`](#SITcoin-Mint-address-uint256-)
+<br>
 
-# Function `constructor(uint256 initialSupply)` {#SITcoin-constructor-uint256-}
+```sol
 
-Constructor inherits from ERC20 base. Mints initial supply
+function constructor(
 
-according to specification.
+  uint256 initialSupply
 
-## Parameters:
+) public
+
+```
+
+Constructor inherits from ERC20 base. Mints initial supply according to specification.
+
+### Parameters:
 
 - `initialSupply`: The initial supply of the token
 
-# Function `decimals() → uint8` {#SITcoin-decimals--}
+## decimals
 
-Override the existing implementation of 18 decimals ($ETH default)  
+<br>
 
-for SIT Coin tokenomics proposal of 0 decimals for easier reading.
+```sol
 
-## Return Values:
+function decimals(
+
+) public returns (uint8)
+
+```
+
+Override the existing implementation of 18 decimals _(`$ETH` default)_ for SIT Coin tokenomics proposal of 0 decimals. This allows for greater readability when calling functions that get the amount of tokens.
+
+### Return Values:
 
 - uint8 The number of decimals used to get its user representation.
 
-# Function `mint(address to, uint256 amount)` {#SITcoin-mint-address-uint256-}
+## mint
+
+<br>
+
+```sol
+
+function mint(
+
+  address to,
+
+  uint256 amount
+
+) public
+
+```
 
 Only minters are allowed to increase supply
 
-## Parameters:
+### Parameters:
 
 - `to`: The address where the minted tokens are sent
 
 - `amount`: The amount of tokens to mint
 
-# Function `grantMinterRole(address _account)` {#SITcoin-grantMinterRole-address-}
+## grantMinterRole
 
-No description
+<br>
 
-# Function `revokeMinterRole(address _account)` {#SITcoin-revokeMinterRole-address-}
+```sol
 
-No description
+function grantMinterRole(
 
-# Event `Mint(address minter, uint256 value)` {#SITcoin-Mint-address-uint256-}
+  address _account
 
-Emitted when `value` tokens are minted into the existing 
+) public
 
-supply pool.
+```
+
+Gives an `account` permission to mint tokens. Can only be called by the contract owner.
+
+### Parameters:
+
+- `_account`: The account to grant minting permissions
+
+## revokeMinterRole
+
+<br>
+
+```sol
+
+function revokeMinterRole(
+
+  address _account
+
+) public
+
+```
+
+Revokes an `account` permission to mint tokens. Can only be called by the contract owner. The `_account` being called must have an existing privileged minter role.
+
+### Parameters:
+
+- `_account`: The account to revoke minting permissions
+
+# Events:
+
+- [`Mint(address minter, uint256 amount)`](#SITcoin-Mint-address-uint256-)
+
+## Mint
+
+<br>
+
+```sol
+
+Mint(address minter, uint256 amount)
+
+```
+
+Emitted when `value` tokens are minted into the existing supply pool by `minter`.
+
+### Parameters:
+
+- `minter`: The address of the privileged `MINTER_ROLE` that called the contract.
+
+- `amount`: The amount of tokens minted.

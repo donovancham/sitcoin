@@ -1,3 +1,5 @@
+# `KeyHolder`
+
 # Functions:
 
 - [`getKey(bytes32 _key)`](#KeyHolder-getKey-bytes32-)
@@ -12,26 +14,86 @@
 
 - [`keyHasPurpose(bytes32 _key, uint256 _purpose)`](#KeyHolder-keyHasPurpose-bytes32-uint256-)
 
-# Function `getKey(bytes32 _key) → uint256 purpose, uint256 keyType, bytes32 key` {#KeyHolder-getKey-bytes32-}
+## getKey
+
+<br>
+
+```sol
+
+function getKey(
+
+) public returns (uint256 purpose, uint256 keyType, bytes32 key)
+
+```
 
 No description
 
-# Function `getKeyPurpose(bytes32 _key) → uint256 purpose` {#KeyHolder-getKeyPurpose-bytes32-}
+## getKeyPurpose
+
+<br>
+
+```sol
+
+function getKeyPurpose(
+
+) public returns (uint256 purpose)
+
+```
 
 No description
 
-# Function `getKeysByPurpose(uint256 _purpose) → bytes32[] _keys` {#KeyHolder-getKeysByPurpose-uint256-}
+## getKeysByPurpose
+
+<br>
+
+```sol
+
+function getKeysByPurpose(
+
+) public returns (bytes32[] _keys)
+
+```
 
 No description
 
-# Function `addKey(bytes32 _key, uint256 _purpose, uint256 _type) → bool success` {#KeyHolder-addKey-bytes32-uint256-uint256-}
+## addKey
+
+<br>
+
+```sol
+
+function addKey(
+
+) public returns (bool success)
+
+```
 
 No description
 
-# Function `removeKey(bytes32 _key) → bool success` {#KeyHolder-removeKey-bytes32-}
+## removeKey
+
+<br>
+
+```sol
+
+function removeKey(
+
+) public returns (bool success)
+
+```
 
 No description
 
-# Function `keyHasPurpose(bytes32 _key, uint256 _purpose) → bool result` {#KeyHolder-keyHasPurpose-bytes32-uint256-}
+## keyHasPurpose
+
+<br>
+
+```sol
+
+function keyHasPurpose(
+
+) public returns (bool result)
+
+```
 
 No description

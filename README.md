@@ -3,6 +3,9 @@ The purpose of this project is to create a meticulously designed and defined uni
 
 In SIT’s push towards a digital campus, the metaverse that it creates will inherently have a digital economy where a university cryptocurrency (`$SITC`) will be the fundamental basic currency within this ecosystem. And it is of equally, if not more, vital importance that cryptocurrency is designed and defined properly. The aim is to utilize the virtual campus and `$SITC` to build a cohesive environment for SIT, both virtually and physically.
 
+# Documentation
+- [SITCOIN documentation](docgen/SUMMARY.md)
+
 ## Installation (Linux)
 1. Install [Node.js](https://nodejs.org/en/download/)
 ```sh
@@ -220,6 +223,10 @@ npm run docify
     - Added tests for granting/revoking roles
     - Added tests for normal token burning
     - Added tests for token burning from user that has allowance
+  - Added `.gitattributes` for solidity syntax highlighting in github docs page
+  - Updated documentation
+    - Added better readability format for `contract.hbs` template.
+    - Updated comments in `SITcoin.sol` for better documentation.
 - v1.6.2
   - Added [auto documentation generation](https://forum.openzeppelin.com/t/incorporating-solidity-docgen-into-your-project/1882)
     - Automatically generates documentation for solidity contracts from `natspec` compliant comments

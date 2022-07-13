@@ -1,3 +1,5 @@
+# `ClaimVerifier`
+
 # Functions:
 
 - [`constructor(address _trustedClaimHolder)`](#ClaimVerifier-constructor-address-)
@@ -8,32 +10,88 @@
 
 - [`getRecoveredAddress(bytes sig, bytes32 dataHash)`](#ClaimVerifier-getRecoveredAddress-bytes-bytes32-)
 
+## constructor
+
+<br>
+
+```sol
+
+function constructor(
+
+) public
+
+```
+
+No description
+
+## checkClaim
+
+<br>
+
+```sol
+
+function checkClaim(
+
+) public returns (bool claimValid)
+
+```
+
+No description
+
+## claimIsValid
+
+<br>
+
+```sol
+
+function claimIsValid(
+
+) public returns (bool claimValid)
+
+```
+
+No description
+
+## getRecoveredAddress
+
+<br>
+
+```sol
+
+function getRecoveredAddress(
+
+) public returns (address addr)
+
+```
+
+No description
+
 # Events:
 
 - [`ClaimValid(contract ClaimHolder _identity, uint256 claimType)`](#ClaimVerifier-ClaimValid-contract-ClaimHolder-uint256-)
 
 - [`ClaimInvalid(contract ClaimHolder _identity, uint256 claimType)`](#ClaimVerifier-ClaimInvalid-contract-ClaimHolder-uint256-)
 
-# Function `constructor(address _trustedClaimHolder)` {#ClaimVerifier-constructor-address-}
+## ClaimValid
+
+<br>
+
+```sol
+
+ClaimValid(contract ClaimHolder _identity, uint256 claimType)
+
+```
 
 No description
 
-# Function `checkClaim(contract ClaimHolder _identity, uint256 claimType) → bool claimValid` {#ClaimVerifier-checkClaim-contract-ClaimHolder-uint256-}
+## ClaimInvalid
 
-No description
+<br>
 
-# Function `claimIsValid(contract ClaimHolder _identity, uint256 claimType) → bool claimValid` {#ClaimVerifier-claimIsValid-contract-ClaimHolder-uint256-}
+```sol
 
-No description
+ClaimInvalid(contract ClaimHolder _identity, uint256 claimType)
 
-# Function `getRecoveredAddress(bytes sig, bytes32 dataHash) → address addr` {#ClaimVerifier-getRecoveredAddress-bytes-bytes32-}
-
-No description
-
-# Event `ClaimValid(contract ClaimHolder _identity, uint256 claimType)` {#ClaimVerifier-ClaimValid-contract-ClaimHolder-uint256-}
-
-No description
-
-# Event `ClaimInvalid(contract ClaimHolder _identity, uint256 claimType)` {#ClaimVerifier-ClaimInvalid-contract-ClaimHolder-uint256-}
+```
 
 No description
