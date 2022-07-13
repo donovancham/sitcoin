@@ -28,9 +28,9 @@ export default function Wallet() {
             </Col>
             <Col>
                 <Button variant="info" size="md" onClick={async () => {
-
+                    
                 }}>
-                    Lalaland
+                    Login
                 </Button>
             </Col>
         </Container>

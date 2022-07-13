@@ -1,48 +1,54 @@
-import React, { createContext, useState, useEffect, useContext } from 'react'
+import React, { createContext, useContext, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { Report } from 'notiflix/build/notiflix-report-aio';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import Web3 from 'web3'
 
 const WalletContext = createContext()
 
 export default function WalletProvider({ children }) {
-    var web3
     const router = useRouter()
     const [account, setAccount] = useState()
     const [network, setNetwork] = useState()
+    const [web3, setWeb3] = useState()
+    const [web3a, setWeb3a] = useState()
 
-    // Ensure that PlatON provider is detected
-    if (typeof window.platon === 'undefined') {
-        Report.info(
-            'Please Install Samurai',
-            'Samurai Wallet is required to connect with the SIT Metaverse.',
-            'Install Samurai',
-            () => {
-                router.push('https://devdocs.platon.network/docs/en/Samurai_user_manual#installation')
-            }
-        )
-    }
-    else {
-        // Loads web3 instance from samurai wallet when page loads
-        web3 = new Web3(platon)
-    }
-
-    // Run this whenever the site something in dependency array is changed
+    // Run this whenever something in dependency array is changed
     // Dependency array currently has accounts and network set as dependency
     useEffect(() => {
+        // Ensure that PlatON provider is detected
+        if (typeof window.platon === 'undefined') {
+            Report.info(
+                'Please Install Samurai',
+                'Samurai Wallet is required to connect with the SIT Metaverse.',
+                'Install Samurai',
+                () => {
+                    router.push('https://devdocs.platon.network/docs/en/Samurai_user_manual#installation')
+                }
+            )
+            return
+        }
+
+        // Loads web3 instance from samurai wallet when page loads
+        web3
+            ? Notify.info('Web3 object already loaded')
+            : setWeb3(new Web3(platon))
+
+        // Configure network tracker
         
+        // Load other items
+
 
     }, [account])
 
-    const wallet = {
+    const walletState = {
         account,
         setAccount,
         web3
     }
 
     return (
-        <WalletContext.Provider value={wallet}>
+        <WalletContext.Provider value={walletState}>
             {children}
         </WalletContext.Provider>
     )
