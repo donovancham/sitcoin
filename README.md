@@ -3,6 +3,9 @@ The purpose of this project is to create a meticulously designed and defined uni
 
 In SIT’s push towards a digital campus, the metaverse that it creates will inherently have a digital economy where a university cryptocurrency (`$SITC`) will be the fundamental basic currency within this ecosystem. And it is of equally, if not more, vital importance that cryptocurrency is designed and defined properly. The aim is to utilize the virtual campus and `$SITC` to build a cohesive environment for SIT, both virtually and physically.
 
+# Documentation
+- [SITCOIN documentation](docgen/SUMMARY.md)
+
 ## Installation (Linux)
 1. Install [Node.js](https://nodejs.org/en/download/)
 ```sh
@@ -189,11 +192,53 @@ platon-truffle test --show-events
 ```
 
 ## Running Scripts
+1. Using `platon-truffle`
 ```sh
 platon-truffle exec scripts/transferToken.js
 ```
 
+2. Using node.js
+```sh
+node scripts/transferToken.js
+```
+
+## Documentation Generator
+1. Ensure that `solidity-docgen` is installed to version **0.5.11**. If this project is cloned you can just run `npm i` to install dependencies.
+
+2. Make sure that the `solc` is installed with alias `solc-0.8.6`.
+```sh
+npm i -D solc-0.8.6@npm:solc@0.8.6
+```
+
+3. Run the documentation script to generate the docs
+```sh
+npm run docify
+```
+
+4. Access the docs [here](docgen/SUMMARY.md)
+
 ## Changelog
+- v1.6.3
+  - Updated `test/SITcoin.test.js`
+    - Added tests for granting/revoking roles
+    - Added tests for normal token burning
+    - Added tests for token burning from user that has allowance
+  - Added `.gitattributes` for solidity syntax highlighting in github docs page
+  - Updated documentation
+    - Added better readability format for `contract.hbs` template.
+    - Updated comments in `SITcoin.sol` for better documentation.
+- v1.6.2
+  - Added [auto documentation generation](https://forum.openzeppelin.com/t/incorporating-solidity-docgen-into-your-project/1882)
+    - Automatically generates documentation for solidity contracts from `natspec` compliant comments
+    - Set up npm script for generating docs
+    - Installed `solidity-docgen`
+    - Installed `solc@0.8.6`
+    - Document format can be changed using `contract.hbs` to template the output
+- v1.6.1
+  - Updated `SITcoin.sol`
+    - Implemented token burning
+    - Implemented `AccessControl` instead of token burning
+    - Implemented `ERC20Permit` for gasless transfers
 - v1.6
   - web3 App
     - Removed `alert.module.js`
