@@ -1,15 +1,18 @@
 /* eslint-disable no-undef */
-// Migrations for Externally Owned Account System for SIT
-// Identity contract and Key Manager contract
+// Migrations for Account System for SIT
 
-const Identity = artifacts.require("Identity");
-const KeyManager = artifacts.require("KeyManager");
-const { dev1 } = require("../scripts/walletAddress");
+const AccountManager = artifacts.require("AccountManager");
+const { owner, dev1 } = require("../scripts/walletAddress");
+const { create } = require('ipfs-http-client');
+const Web3 = require('web3');
+
+const devnetHTTP = "https://devnetopenapi2.platon.network/rpc";
 
 module.exports = (deployer) => {
-    // Deploy Identity contract
-    deployer.deploy(Identity, dev1, {from: dev1}).then( identity => {
-        // Deploy Market after getting sitcoin address
-        return deployer.deploy(KeyManager, identity.address);
-    });
+    const web3 = Web3(devnetHTTP)
+    // Ensure that `ipfs daemon` is running to deploy properly
+    const ipfs = await create("http://localhost:5001")
+
+    // Deploy Account Manager Contracts
+    // deployer.deploy(AccountManager, { from: owner });
 };

@@ -8,7 +8,6 @@ const truffleAssert = require('truffle-assertions');
 contract("SITcoin", () => {
     var ownerBal;
     var dev1Bal;
-    var dev2Bal;
 
 	// Ensure that smart contract is deployed in memory environment before running
     // Use beforeEach to deploy new box for each test

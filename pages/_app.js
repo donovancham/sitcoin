@@ -8,8 +8,8 @@ export default function App({ Component, pageProps }) {
     return (
         <>
             <Head>
-                <meta charset="UTF-8"></meta>
                 <title>SIT Metaverse</title>
+                <meta name="viewport" content="initial-scale=1.0, width=device-width" />
                 {/* Only Notify module js */}
                 <Script src="dist/notiflix-notify-aio-X.X.X.min.js"></Script>
                 {/* Only Report module js */}

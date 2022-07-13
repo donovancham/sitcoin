@@ -6,16 +6,26 @@ In SIT’s push towards a digital campus, the metaverse that it creates will inh
 ## Installation (Linux)
 1. Install [Node.js](https://nodejs.org/en/download/)
 ```sh
-# TODO
+# Install n to manage node version
+curl -L https://git.io/n-install | bash
+n 14
+
+$ node -v 
+v14.19.3
+
+$ npm -v
+6.14.17
 ```
 
-1. Install [PlatON Truffle Suite](https://platon-truffle.readthedocs.io/en/v1.1.1/getting-started/installation.html)
+2. Install [PlatON Truffle Suite](https://platon-truffle.readthedocs.io/en/v1.1.1/getting-started/installation.html) and [Lerna](https://github.com/lerna/lerna)
 ```sh
 # Truffle Install
 npm install -g platon-truffle
 npm audit fix --force
-sudo ln -s /usr/local/node-v18.2.0-linux-x64/bin/* /usr/bin/
 platon-truffle version
+
+# Install Lerna for PlatON-JS-SDK
+npm install -g lerna
 ```
 
 3. Install other dependencies
@@ -184,13 +194,35 @@ platon-truffle exec scripts/transferToken.js
 ```
 
 ## Changelog
-- v1.6.12
+- v1.6
+  - web3 App
+    - Removed `alert.module.js`
+    - Implemented `Ipfs.js` for connecting to IPFS local node
+    - Added Contexts for managing wallet state variables
+    - Added Contexts for managing IPFS node
+  - Updated `contracts` folder
+    - Deleted `Identity.sol`
+    - Deleted `KeyManager.sol`
+    - Deleted `PRC721.sol`
+    - Updated `AccessToken.sol`
+      - Removed all previous implementation
+      - Restarting from clean slate
+    - Added `ERC725.sol` (Digital Identity proxy account with keys)
+    - Added `ERC735.sol` (Claim Holder)
+    - Added `KeyHolder.sol` 
+    - Added `ClaimHolder.sol`
+    - Added `ClaimVerifier.sol`
+  - Updated `scripts`
+    - Moved `PlatonWeb3.js` from `components` folder and renamed to `web3Module.js`
+    - Fixed JSON import contract ABI issue
+
+- v1.5.12
   - Edits to `MFTMarket.sol`
     - Removed `Market` struct, using only `NFT` struct
     - Refactored the code due to above changes
   - Edited `NFTMarket.test.js` according to changes above
   - Test and use case files for market tested with no errors
-- v1.6.11
+- v1.5.11
   - Edits to `NFTMarket.sol`
     - Added Functions `marketItemExist()`, `getAllMarketItems()`, `getUnsoldItems()`, `unlistItem()`, `getMyNFTs()`, `getTotalMarketItems()`, 'getTotalNFTCount()`
     - Refactored the code
@@ -200,7 +232,7 @@ platon-truffle exec scripts/transferToken.js
     - Refactored the code
   - Added use case script for `NFTMarket`
   - Added test cases for `NFTMarket`
-- v1.6.10
+- v1.5.10
   - Added tests for `NFTMarket`
     - [In Progress] Edit tests according to edits in `NFTMarket.sol`
   - Edits to `NFTMarket.sol`
@@ -209,48 +241,48 @@ platon-truffle exec scripts/transferToken.js
   - Created `PRC721URIStorage.sol`
   - [In Progress] Merging `NFT.sol` to `NFTMarket.sol`
   - Deleted `NFT.sol`
-- v1.6.9
+- v1.5.9
   - web3 App
-    - Added interface for connecting with Samurai wallet
+    - Added interface for connecting with [Samurai wallet](https://devdocs.platon.network/docs/en/Samurai_API)
     - Added button to connect to Samurai wallet
     - Added alerts for UI
   - Edit tests
     - Fix imports due to changing filename
-- v1.6.8
+- v1.5.8
   - Edited migration file
     - Migration for `NFT.sol`
     - Migration for `NFTMarket.sol`
   - Added tests for `NFTMarket` and `NFT`
-- v1.6.7
+- v1.5.7
   - Added NFT contract `NFT.sol`
     - Inherits the `ERC721URIStorage.sol` to link URI to `tokenId`
     - Allow users to mint NFT before listing them in the NFT Market
   - Edited `NFTMarket.sol`
     - `NFTListed` event and `NFTPurchased` event
     - Implemented `transferFrom()` in `purchaseItem()` for both tokens and NFT transfer
-- v1.6.6
+- v1.5.6
   - Added NFT market place `NFTMarket.sol`
     - Added `createItem()`, `purchaseItem()` and `getTotalPrice()`
     - Not working yet, work in progress
   - Minor update to `README.md` for run tests command
-- v1.6.5
+- v1.5.5
   - web3 App
-    - Implemented using **Next.js**
-    - UI done using **React-bootstrap**
-    - Blockchain interaction done using **web3.js**
+    - Implemented using [Next.js](https://nextjs.org/)
+    - UI done using [React-bootstrap](https://react-bootstrap.github.io/)
+    - Blockchain interaction done using [PlatON web3.js](https://devdocs.platon.network/docs/en/JS_SDK/)
     - Current implementation unable to progress 
   - Update `constants.js`
     - Changed name from `wallet_accounts.js`
     - Future uses will be providing contract addresses for dApp
   - Update `README.md`
     - Added installation instructions for quick deployment
-- v1.6.4
+- v1.5.4
   - Added `ItemUnlisted` and `ItemPurchased` events
     - Events used in `purchaseItem()` and `unlistItem()`
   - Added more tests cases and use cases
     - Test and use cases working as intended
   - Changed wallet addresses in `market_usecases.js` to use shared wallet account for dev
-- v1.6.3
+- v1.5.3
   - Updated `wallet_accounts.js`
     - Added shared accounts for smoother dev
   - Updated `Market.test.js`
@@ -258,7 +290,7 @@ platon-truffle exec scripts/transferToken.js
   - Updated `SITcoin.test.js`
     - Added test for `transferFrom()` scenario
     - Added test for `approve()` and `allowance()`
-- v1.6.2
+- v1.5.2
   - Updated `Market.sol`
     - `purchaseItem()` to call `transferFrom()` instead of `transfer()`
   - Updated `Market_test.js`
@@ -267,13 +299,13 @@ platon-truffle exec scripts/transferToken.js
       - Value: Price of item
     - Added tests for unlisting of items (`unlistItem()`) and checking unsold items (`getUnsoldItems()`)
     - Balance are being updated correctly after the changes above
-- v1.6.1
+- v1.5.1
   - Update `wallet_accounts.js`
     - Added `HEX` addresses for accounts
   - Update `SITcoin.test.js`
     - Added variables for wallet balances to reduce interference from other test deployments
     - Add `beforeEach` function to redeploy after each test
-- v1.6
+- v1.5
   - Removed `PRC20.sol`
   - Reimplemented `SITcoin.sol`
     - Added documentations for all functions
@@ -284,7 +316,7 @@ platon-truffle exec scripts/transferToken.js
     - Updated some descriptions
     - Added event-based assertions with `truffleAssert.eventEmitted`s
   
-- v1.5.3
+- v1.4.3
   - Edited `Market.sol`
     - Updated the code to include code reuse for certain functions
     - Updated the constructor and state variables
@@ -294,11 +326,11 @@ platon-truffle exec scripts/transferToken.js
   - Tests
     - Edited test case for `purchaseItem()`
     - Edited assert for `getItem()`
-- v1.5.2
+- v1.4.2
   - Tests
     - Implemented tests for `MINTER_ROLE` permissions
     - Implemented testing framework `assertTruffle`
-- v1.5.1
+- v1.4.1
   - Reverted `SafeMath` due to Solidity v0.8.0 auto checks for arithmetic overflow
     - `PRC20.sol`
     - `PRC721.sol`
@@ -310,14 +342,9 @@ platon-truffle exec scripts/transferToken.js
   - Implemented `AccessToken.sol`
     - Added `MINTER_ROLE` for restricting mint access
     - Updated `_mint()` to `_safeMint()`
-- v1.5
+- v1.4
   - Implemented **PRC721**
   - Implemented `SafeMath` in `PRC721.sol`
-
-- v1.4.2
-  - Added tests for minting and minter roles
-- v1.4.1
-  - Implemented `SafeMath` in `PRC20.sol`
 
 - v1.3.6
   - Added use cases for market, under `market_usecase.js`
@@ -332,9 +359,9 @@ platon-truffle exec scripts/transferToken.js
 - v1.3.4
   - Added tests for minting and minter roles
 - v1.3.3
-  - Implemented SafeMath in PRC20.sol
+  - Implemented SafeMath in `PRC20.sol`
 - v1.3.2
-  - Updated code in Market.sol
+  - Updated code in `Market.sol`
     - Changed `fetchAllItems()` to `fetchUnsoldItems()` to get all unsold items
     - Added `fetchAllItems()` to get all listed items 
     - `checkItemExist()` to check for specific items
