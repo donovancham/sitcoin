@@ -12,13 +12,18 @@
     "react": "^18.2.0",
     "react-bootstrap": "^2.4.0",
     "react-dom": "^18.2.0",
+    "solc": "0.8.6",
+    "solc-0.8.6": "npm:solc@^0.8.6",
+    "solidity-docgen": "0.5.16",
     "truffle-assertions": "^0.9.2",
     "web3": "github:PlatONnetwork/client-sdk-js#master"
   },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "clean": "find node_modules -type d -empty -delete",
+    "docify": "node docify.js"
   },
   "eslintConfig": {
     "extends": [
