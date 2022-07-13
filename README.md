@@ -194,27 +194,53 @@ platon-truffle exec scripts/transferToken.js
 ```
 
 ## Changelog
-- web3 App
-  - Removed `alert.module.js`
-  - Implemented `Ipfs.js` for connecting to IPFS local node
-  - Added Contexts for managing wallet state variables
-  - Added Contexts for managing IPFS node
-- Updated `contracts` folder
-  - Deleted `Identity.sol`
-  - Deleted `KeyManager.sol`
-  - Deleted `PRC721.sol`
-  - Updated `AccessToken.sol`
-    - Removed all previous implementation
-    - Restarting from clean slate
-  - Added `ERC725.sol` (Digital Identity proxy account with keys)
-  - Added `ERC735.sol` (Claim Holder)
-  - Added `KeyHolder.sol` 
-  - Added `ClaimHolder.sol`
-  - Added `ClaimVerifier.sol`
-- Updated `scripts`
-  - Moved `PlatonWeb3.js` from `components` folder and renamed to `web3Module.js`
-  - Fixed JSON import contract ABI issue
+- v1.6
+  - web3 App
+    - Removed `alert.module.js`
+    - Implemented `Ipfs.js` for connecting to IPFS local node
+    - Added Contexts for managing wallet state variables
+    - Added Contexts for managing IPFS node
+  - Updated `contracts` folder
+    - Deleted `Identity.sol`
+    - Deleted `KeyManager.sol`
+    - Deleted `PRC721.sol`
+    - Updated `AccessToken.sol`
+      - Removed all previous implementation
+      - Restarting from clean slate
+    - Added `ERC725.sol` (Digital Identity proxy account with keys)
+    - Added `ERC735.sol` (Claim Holder)
+    - Added `KeyHolder.sol` 
+    - Added `ClaimHolder.sol`
+    - Added `ClaimVerifier.sol`
+  - Updated `scripts`
+    - Moved `PlatonWeb3.js` from `components` folder and renamed to `web3Module.js`
+    - Fixed JSON import contract ABI issue
 
+- v1.5.12
+  - Edits to `MFTMarket.sol`
+    - Removed `Market` struct, using only `NFT` struct
+    - Refactored the code due to above changes
+  - Edited `NFTMarket.test.js` according to changes above
+  - Test and use case files for market tested with no errors
+- v1.5.11
+  - Edits to `NFTMarket.sol`
+    - Added Functions `marketItemExist()`, `getAllMarketItems()`, `getUnsoldItems()`, `unlistItem()`, `getMyNFTs()`, `getTotalMarketItems()`, 'getTotalNFTCount()`
+    - Refactored the code
+    - Added Docstrings
+  - Edits to `Market.sol`
+    - Added inheritance to `ReentrancyGuard` 
+    - Refactored the code
+  - Added use case script for `NFTMarket`
+  - Added test cases for `NFTMarket`
+- v1.5.10
+  - Added tests for `NFTMarket`
+    - [In Progress] Edit tests according to edits in `NFTMarket.sol`
+  - Edits to `NFTMarket.sol`
+    - Added functions `checkItemExist()`, `checkNFTExist()`, `getName()`, `getSymbol()`, `isOwnerOf()`, `mint()`
+    - Refactoring of codes
+  - Created `PRC721URIStorage.sol`
+  - [In Progress] Merging `NFT.sol` to `NFTMarket.sol`
+  - Deleted `NFT.sol`
 - v1.5.9
   - web3 App
     - Added interface for connecting with [Samurai wallet](https://devdocs.platon.network/docs/en/Samurai_API)
