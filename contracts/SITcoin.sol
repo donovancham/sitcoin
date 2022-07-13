@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 
 import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import { ERC20Burnable } from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
-import { ERC20Permit } from "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import { AccessControl } from "@openzeppelin/contracts/access/AccessControl.sol";
 
 /// @title SIT Coin Smart Contract
@@ -18,19 +17,20 @@ import { AccessControl } from "@openzeppelin/contracts/access/AccessControl.sol"
 /// PRC-20 is fully compatible with ERC-20 so `ERC20` base contract
 /// passes PRC-20 token standards.
 ///
-contract SITcoin is ERC20, ERC20Burnable, AccessControl, ERC20Permit {
+contract SITcoin is ERC20, ERC20Burnable, AccessControl {
     // Creates a unique role hash to identify minters
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
+    /// @notice Event to indicate that tokens were minted
     /// @dev Emitted when `value` tokens are minted into the existing 
-    /// supply pool.
+    /// supply pool by `minter`.
     event Mint(address indexed minter, uint256 value);
 
     /// @notice Initialize token contract
     /// @dev Constructor inherits from ERC20 base. Mints initial supply
     /// according to specification.
     /// @param initialSupply The initial supply of the token
-    constructor(uint256 initialSupply) ERC20("SIT Coin", "SITC") ERC20Permit("SIT Coin") {
+    constructor(uint256 initialSupply) ERC20("SIT Coin", "SITC") {
         // Setup permissions for the contract
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(MINTER_ROLE, msg.sender);
@@ -55,7 +55,8 @@ contract SITcoin is ERC20, ERC20Burnable, AccessControl, ERC20Permit {
         _mint(to, amount);
         emit Mint(_msgSender(), amount);
     }
-
+    
+    /// @notice 
     function grantMinterRole(address _account) public onlyRole(DEFAULT_ADMIN_ROLE) {
         grantRole(MINTER_ROLE, _account);
     }

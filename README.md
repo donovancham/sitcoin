@@ -215,6 +215,11 @@ npm run docify
 4. Access the docs [here](docgen/SUMMARY.md)
 
 ## Changelog
+- v1.6.3
+  - Updated `test/SITcoin.test.js`
+    - Added tests for granting/revoking roles
+    - Added tests for normal token burning
+    - Added tests for token burning from user that has allowance
 - v1.6.2
   - Added [auto documentation generation](https://forum.openzeppelin.com/t/incorporating-solidity-docgen-into-your-project/1882)
     - Automatically generates documentation for solidity contracts from `natspec` compliant comments
