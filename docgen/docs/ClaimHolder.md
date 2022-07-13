@@ -1,3 +1,5 @@
+# `ClaimHolder`
+
 # Functions:
 
 - [`addClaim(uint256 _topic, uint256 _scheme, address _issuer, bytes _signature, bytes _data, string _uri)`](#ClaimHolder-addClaim-uint256-uint256-address-bytes-bytes-string-)
@@ -8,18 +10,58 @@
 
 - [`getClaimIdsByTopic(uint256 _topic)`](#ClaimHolder-getClaimIdsByTopic-uint256-)
 
-# Function `addClaim(uint256 _topic, uint256 _scheme, address _issuer, bytes _signature, bytes _data, string _uri) → bytes32 claimRequestId` {#ClaimHolder-addClaim-uint256-uint256-address-bytes-bytes-string-}
+## addClaim
+
+<br>
+
+```sol
+
+function addClaim(
+
+) public returns (bytes32 claimRequestId)
+
+```
 
 No description
 
-# Function `removeClaim(bytes32 _claimId) → bool success` {#ClaimHolder-removeClaim-bytes32-}
+## removeClaim
+
+<br>
+
+```sol
+
+function removeClaim(
+
+) public returns (bool success)
+
+```
 
 No description
 
-# Function `getClaim(bytes32 _claimId) → uint256 topic, uint256 scheme, address issuer, bytes signature, bytes data, string uri` {#ClaimHolder-getClaim-bytes32-}
+## getClaim
+
+<br>
+
+```sol
+
+function getClaim(
+
+) public returns (uint256 topic, uint256 scheme, address issuer, bytes signature, bytes data, string uri)
+
+```
 
 No description
 
-# Function `getClaimIdsByTopic(uint256 _topic) → bytes32[] claimIds` {#ClaimHolder-getClaimIdsByTopic-uint256-}
+## getClaimIdsByTopic
+
+<br>
+
+```sol
+
+function getClaimIdsByTopic(
+
+) public returns (bytes32[] claimIds)
+
+```
 
 No description

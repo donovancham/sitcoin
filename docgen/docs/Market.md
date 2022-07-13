@@ -1,3 +1,5 @@
+# `Market`
+
 # Functions:
 
 - [`constructor(address _sitcoin)`](#Market-constructor-address-)
@@ -22,6 +24,200 @@
 
 - [`getaddress()`](#Market-getaddress--)
 
+## constructor
+
+<br>
+
+```sol
+
+function constructor(
+
+) public
+
+```
+
+Sets the SITCoin instance
+
+ First deploy token contract and then deploy this contract.
+
+## createItem
+
+<br>
+
+```sol
+
+function createItem(
+
+) external returns (uint256)
+
+```
+
+Creates a new item in the market.
+
+### Return Values:
+
+- The current token ID of the new item.
+
+## unlistItem
+
+<br>
+
+```sol
+
+function unlistItem(
+
+) external returns (bool)
+
+```
+
+Seller can remove/unlist unsold item(s) from the market
+
+## purchaseItem
+
+<br>
+
+```sol
+
+function purchaseItem(
+
+) external returns (bool)
+
+```
+
+Buy items from the market
+
+## getItem
+
+<br>
+
+```sol
+
+function getItem(
+
+) external returns (struct Market.Item)
+
+```
+
+Get specific item details
+
+### Return Values:
+
+- Object of selected item
+
+## checkItemExist
+
+<br>
+
+```sol
+
+function checkItemExist(
+
+  uint256 _itemId
+
+) public returns (bool)
+
+```
+
+Check if specific item exists in the market
+
+### Parameters:
+
+- `_itemId`: id of the item to check
+
+### Return Values:
+
+- true if item exists, false otherwise
+
+## getItemCount
+
+<br>
+
+```sol
+
+function getItemCount(
+
+) public returns (uint256)
+
+```
+
+Shows the count of items in the market (includes sold, unlisted and listed items)
+
+### Return Values:
+
+- total count
+
+## getSoldItemCount
+
+<br>
+
+```sol
+
+function getSoldItemCount(
+
+) public returns (uint256)
+
+```
+
+Show all the count of sold items in the market.
+
+### Return Values:
+
+- count of sold items
+
+## getUnsoldItems
+
+<br>
+
+```sol
+
+function getUnsoldItems(
+
+) external returns (struct Market.Item[])
+
+```
+
+Show all unsold items in the market
+
+### Return Values:
+
+- array of all unsold items
+
+## getAllItems
+
+<br>
+
+```sol
+
+function getAllItems(
+
+) external returns (struct Market.Item[])
+
+```
+
+Show all listed items in the market
+
+### Return Values:
+
+- array of all items
+
+## getaddress
+
+<br>
+
+```sol
+
+function getaddress(
+
+) public returns (address)
+
+```
+
+Get the current contract address
+
+### Return Values:
+
+- address of current contract
+
 # Events:
 
 - [`ItemCreated(uint256 id, string description, address seller, address buyer, uint256 price, bool sold)`](#Market-ItemCreated-uint256-string-address-address-uint256-bool-)
@@ -32,100 +228,50 @@
 
 - [`ErrorMsg(string errorMessage)`](#Market-ErrorMsg-string-)
 
-# Function `constructor(address _sitcoin)` {#Market-constructor-address-}
+## ItemCreated
 
-Sets the SITCoin instance
+<br>
 
- First deploy token contract and then deploy this contract.
+```sol
 
-# Function `createItem(string description, uint256 price) → uint256` {#Market-createItem-string-uint256-}
+ItemCreated(uint256 id, string description, address seller, address buyer, uint256 price, bool sold)
 
-Creates a new item in the market.
-
-## Return Values:
-
-- The current token ID of the new item.
-
-# Function `unlistItem(uint256 _itemId) → bool` {#Market-unlistItem-uint256-}
-
-Seller can remove/unlist unsold item(s) from the market
-
-# Function `purchaseItem(uint256 _itemId) → bool` {#Market-purchaseItem-uint256-}
-
-Buy items from the market
-
-# Function `getItem(uint256 _itemId) → struct Market.Item` {#Market-getItem-uint256-}
-
-Get specific item details
-
-## Return Values:
-
-- Object of selected item
-
-# Function `checkItemExist(uint256 _itemId) → bool` {#Market-checkItemExist-uint256-}
-
-Check if specific item exists in the market
-
-## Parameters:
-
-- `_itemId`: id of the item to check
-
-## Return Values:
-
-- true if item exists, false otherwise
-
-# Function `getItemCount() → uint256` {#Market-getItemCount--}
-
-Shows the count of items in the market (includes sold, unlisted and listed items)
-
-## Return Values:
-
-- total count
-
-# Function `getSoldItemCount() → uint256` {#Market-getSoldItemCount--}
-
-Show all the count of sold items in the market.
-
-## Return Values:
-
-- count of sold items
-
-# Function `getUnsoldItems() → struct Market.Item[]` {#Market-getUnsoldItems--}
-
-Show all unsold items in the market
-
-## Return Values:
-
-- array of all unsold items
-
-# Function `getAllItems() → struct Market.Item[]` {#Market-getAllItems--}
-
-Show all listed items in the market
-
-## Return Values:
-
-- array of all items
-
-# Function `getaddress() → address` {#Market-getaddress--}
-
-Get the current contract address
-
-## Return Values:
-
-- address of current contract
-
-# Event `ItemCreated(uint256 id, string description, address seller, address buyer, uint256 price, bool sold)` {#Market-ItemCreated-uint256-string-address-address-uint256-bool-}
+```
 
 No description
 
-# Event `ItemUnlisted(uint256 id, bool success)` {#Market-ItemUnlisted-uint256-bool-}
+## ItemUnlisted
+
+<br>
+
+```sol
+
+ItemUnlisted(uint256 id, bool success)
+
+```
 
 No description
 
-# Event `ItemPurchased(uint256 id, address buyer, uint256 price, bool success)` {#Market-ItemPurchased-uint256-address-uint256-bool-}
+## ItemPurchased
+
+<br>
+
+```sol
+
+ItemPurchased(uint256 id, address buyer, uint256 price, bool success)
+
+```
 
 No description
 
-# Event `ErrorMsg(string errorMessage)` {#Market-ErrorMsg-string-}
+## ErrorMsg
+
+<br>
+
+```sol
+
+ErrorMsg(string errorMessage)
+
+```
 
 No description

@@ -1,5 +1,12 @@
+# `{{name}}`
+
 {{{natspec.devdoc}}}
 
+{{#each ownModifiers}}
+## `{{name}}({{args}})`
+{{/each}}
+
+{{!-- Functions --}}
 {{#if ownFunctions}}
 # Functions:
 {{#ownFunctions}}
@@ -9,25 +16,30 @@
 {{/ownFunctions}}
 {{/if}}
 
-{{#if ownEvents}}
-# Events:
-{{#ownEvents}}
-- [`{{name}}({{args}})`](#{{anchor}})
-{{/ownEvents}}
-{{/if}}
-
+{{!-- Start looping through functions and printing --}}
 {{#ownFunctions}}
 {{#if (or (eq visibility "public") (eq visibility "external"))}}
-# Function `{{name}}({{args}}){{#if outputs}} → {{outputs}}{{/if}}` {#{{anchor~}} }
+## {{name}}
+{{!-- Use br for newline --}}
+<br>
+```sol
+function {{name}}(
+  {{#natspec.params}}
+  {{#lookup ../args.types @index}}{{/lookup}} {{param}}{{#if @last}}{{else}},{{/if}}
+  {{/natspec.params}}
+) {{visibility}}{{#if outputs}} returns ({{outputs}}){{/if}}
+{{!-- {{name}}({{args}}){{#if outputs}} → {{outputs}}{{/if}} --}}
+```
+
 {{#if natspec.devdoc}}{{natspec.devdoc}}{{else}}No description{{/if}}
 {{#if natspec.params}}
-## Parameters:
+### Parameters:
 {{#natspec.params}}
 - `{{param}}`: {{description}}
 {{/natspec.params}}
 {{/if}}
 {{#if natspec.returns}}
-## Return Values:
+### Return Values:
 {{#natspec.returns}}
 - {{param}} {{description}}
 {{/natspec.returns}}
@@ -35,11 +47,27 @@
 {{/if}}
 {{/ownFunctions}}
 
+{{!-- Events --}}
+{{#if ownEvents}}
+# Events:
 {{#ownEvents}}
-# Event `{{name}}({{args}})` {#{{anchor~}} }
+- [`{{name}}({{args}})`](#{{anchor}})
+{{/ownEvents}}
+{{/if}}
+
+{{!-- Start looping through events --}}
+{{#ownEvents}}
+## {{name}}
+
+{{!-- Use br for newline  --}}
+<br>
+```sol
+{{name}}({{args}})
+```
+
 {{#if natspec.devdoc}}{{natspec.devdoc}}{{else}}No description{{/if}}
 {{#if natspec.params}}
-## Parameters:
+### Parameters:
 {{#natspec.params}}
 - `{{param}}`: {{description}}
 {{/natspec.params}}
