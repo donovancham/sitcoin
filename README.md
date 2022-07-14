@@ -9,6 +9,12 @@ In SIT’s push towards a digital campus, the metaverse that it creates will inh
 - [Generating Documentation](docgen/DOCGEN.md)
 
 ## Changelog
+- v1.6.4-2
+  - Added change listeners
+  - Updated wallet context
+    - Improved information displayed
+    - Added checks to ensure wallet connected
+    - Moved wallet context to layout scope for all pages to get wallet state
 - v1.6.4-1
   - Refactored next JS folders, moved to `./src`
   - Updated web3 App

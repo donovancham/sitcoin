@@ -1,14 +1,16 @@
 import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row'
 import Card from 'react-bootstrap/Card'
 import Image from 'react-bootstrap/Image'
 import Head from 'next/head'
 import Script from 'next/script'
 import Header from './Header'
 
+import WalletContext from '../context/WalletContext'
+
 export default function Layout({ children }) {
+
     return (
-        <>
+        <WalletContext>
             <Container className="container-fluid">
                 <Head>
                     <title>SIT Metaverse</title>
@@ -19,27 +21,31 @@ export default function Layout({ children }) {
                     {/* Only Report module js */}
                     <Script src="dist/notiflix-report-aio-X.X.X.min.js"></Script>
                 </Head>
-                <Header />
+                {/* Navbar and header elements */}
+                {/* <WalletContext> */}
+                    <Header />
+                {/* </WalletContext> */}
+                {/* Main Body */}
                 <Container fluid>
-                    <Row>
-                        {children}
-                    </Row>
+                    {children}
                 </Container>
             </Container>
+            {/* Fixed Footer */}
             <footer>
                 <div className='fixed-bottom'>
                     <Card>
                         <Card.Body>
                             <Card.Link href="https://www.flaticon.com/free-icons/flaticon" title="flaticon icons">
-                                <Image src='/static/flaticon.png' fluid roundedCircle height='70' width='70'/>
+                                <Image src='/static/flaticon.png' fluid roundedCircle height='70' width='70' />
                                 Flaticon icons created by Freepik - Flaticon
+                            </Card.Link>
+                            <Card.Link>
+
                             </Card.Link>
                         </Card.Body>
                     </Card>
                 </div>
             </footer>
-        </>
-
-
+        </WalletContext>
     )
 }
