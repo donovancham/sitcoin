@@ -1,13 +1,14 @@
-import Link from "next/link";
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import Button from 'react-bootstrap/Button';
 import Image from "next/image";
 
-import Wallet from '../components/Wallet'
-import WalletContext from '../context/WalletContext'
+import { connectSamurai, useWalletContext } from '../context/WalletContext';
 
 export default function Header() {
+    const { setAccount, setNetwork, web3 } = useWalletContext()
+
     return (
         <Navbar variant="light" sticky="top">
             <Container>
@@ -21,9 +22,23 @@ export default function Header() {
                 <Navbar.Collapse className="justify-content-end">
                     {/* Connect Wallet Button */}
                     <Navbar.Text>
-                        <WalletContext>
+                        {/* Error Alert message that will pop-up when install fails */}
+                        <Button variant="outline-success" size="md" onClick={async () => {
+                            // Ensure that samurai connected
+                            let result = await connectSamurai(web3)
+                            if (result !== false) {
+                                // Sets wallet account
+                                setAccount(result)
+
+                                // Sets the network
+                                
+                            }
+                        }}>
+                            Connect Wallet
+                        </Button>
+                        {/* <WalletContext>
                             <Wallet />
-                        </WalletContext>
+                        </WalletContext> */}
                     </Navbar.Text>
                 </Navbar.Collapse>
             </Container>

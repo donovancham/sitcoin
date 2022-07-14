@@ -12,13 +12,19 @@ export default function Wallet() {
             <Button variant="outline-success" size="md" onClick={async () => {
                 // Ensure that samurai connected
                 let result = await connectSamurai(web3)
+                console.log(result)
                 if (result !== false) {
-                    Notify.success('Connected to SIT Metaverse')
                     // Sets wallet account
-                    setAccount(result)
+                    setAccount(accounts[0])
+
+                    Notify.success('Connected to SIT Metaverse', {
+                        clickToClose: true
+                    })
                 }
                 else {
-                    Notify.failure('Please allow permissions from wallet to connect account.')
+                    Notify.failure('Please allow permissions from wallet to connect account.', {
+                        clickToClose: true
+                    })
                 }
             }}>
                 Connect Wallet
