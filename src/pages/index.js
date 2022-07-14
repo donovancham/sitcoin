@@ -15,12 +15,12 @@ export default function Index() {
                     <h1>SIT Metaverse</h1>
                 </div>
             </div>
-            <WalletContext>
+            {/* <WalletContext>
                 <Wallet />
-            </WalletContext>
-            <IpfsContext>
+            </WalletContext> */}
+            {/* <IpfsContext>
                 <Ipfs />
-            </IpfsContext>
+            </IpfsContext> */}
             {/* <IpfsComponent /> */}
         </Layout>
     )

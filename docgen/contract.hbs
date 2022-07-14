@@ -22,7 +22,7 @@
 ## {{name}}
 {{!-- Use br for newline --}}
 <br>
-```sol
+```Solidity
 function {{name}}(
   {{#natspec.params}}
   {{#lookup ../args.types @index}}{{/lookup}} {{param}}{{#if @last}}{{else}},{{/if}}
@@ -61,7 +61,7 @@ function {{name}}(
 
 {{!-- Use br for newline  --}}
 <br>
-```sol
+```Solidity
 {{name}}({{args}})
 ```
 
