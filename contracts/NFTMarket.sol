@@ -12,7 +12,7 @@ import {SITcoin} from "./SITcoin.sol";
 
 contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
     /**
-     * @dev To track minted NFTs
+     * @dev To track minted NFTs and items on the market.
      */
     struct NFT {
         uint256 tokenId; //id of NFT in PRC721
@@ -27,20 +27,9 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
         string uri;
         ERC721 nft;
     }
+    
     /**
-     * @dev To track published items on the market
-     */ 
-    // struct Market {
-    //     uint256 itemId; //id of item on the market
-    //     string title;
-    //     uint256 tokenId;
-    //     uint256 price;
-    //     address seller;
-    //     bool sold;
-    //     ERC721 nft;
-    // }
-    /**
-     * @dev To emit event when item is newly added onto the market
+     * @dev To emit event when item is newly added onto the market.
      */
     event NFTListed(
         uint256 itemId, //id of item on the market
@@ -50,7 +39,7 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
         address indexed seller
     );
     /**
-     * @dev To emit event when item is sold on the market
+     * @dev To emit event when item is sold on the market.
      */
     event NFTPurchased(
         uint256 itemId,  //id of item on the market
