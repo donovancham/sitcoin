@@ -1,13 +1,16 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
-import ReactDOM from 'react-dom';
+import { createContext, useContext, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Report } from 'notiflix/build/notiflix-report-aio';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import Web3 from 'web3'
 
+import sitcoin from '../../build/contracts/SITcoin.json'
+
 const WalletContext = createContext()
 const platonMainnet = 100
 const platonDevnet = 210309
+
+const sitcoinAddress = process.env.NEXT_PUBLIC_SITCOIN_ADDRESS
 
 export default function WalletProvider({ children }) {
 
@@ -15,10 +18,51 @@ export default function WalletProvider({ children }) {
     const [account, setAccount] = useState()
     const [network, setNetwork] = useState()
     const [web3, setWeb3] = useState()
-    const [web3a, setWeb3a] = useState()
+    const [tokenContract, setTokenContract] = useState()
+    const [tokenName, setTokenName] = useState()
+    const [tokenSymbol, setTokenSymbol] = useState()
+    const [tokenSupply, setTokenSupply] = useState()
+    const [tokenBalance, setTokenBalance] = useState()
 
     // Runs once during rendering phase.
     useEffect(() => {
+        console.log(`sitcoinaddr => ${sitcoinAddress}`)
+
+        const getContractInfo = async () => {
+            if (!tokenContract) {
+                let contract = new web3.platon.Contract(sitcoin.abi, sitcoinAddress)
+                setTokenContract(contract)
+            }
+
+            try {
+                // Get Token Name
+                let name = await tokenContract.methods.name().call({ from: account })
+                setTokenName(name)
+                console.log(tokenName)
+
+                // Get Token Symbol
+                let symbol = await tokenContract.methods.symbol().call({ from: account })
+                setTokenSymbol(symbol)
+                console.log(tokenSymbol)
+
+                // Get Token Supply
+                let supply = await tokenContract.methods.totalSupply().call({ from: account })
+                setTokenSupply(supply)
+                console.log(tokenSupply)
+
+                // Get User's token balance
+                let balance = await tokenContract.methods.balanceOf(account).call({ from: account })
+                setTokenBalance(balance)
+                console.log(tokenBalance)
+
+                return true
+            }
+            catch (e) {
+                return false
+                
+            }
+        }
+
         // Ensure that PlatON provider is detected
         if (typeof window.platon === 'undefined') {
             Report.info(
@@ -39,10 +83,24 @@ export default function WalletProvider({ children }) {
             })
             : setWeb3(new Web3(platon));
 
+        // Load SITcoin Contract
+        if (account && tokenContract) {
+            if (!getContractInfo()) {
+                Notify.warning('Contract Loading... Click to retry.', {
+                    clickToClose: true,
+                    timeout: 100000
+                }, () => {
+                    getContractInfo();
+                })
+            }
+        }
+
         // Change handler for the account switching
         platon.on('accountsChanged', (accounts) => {
             // Handle the new accounts, or lack thereof.
             // "accounts" will always be an array, but it can be empty.
+            console.log('Account change event fired')
+
             accounts.length
                 // Truthy: Set new account as main account being used
                 ? setAccount(accounts[0])
@@ -51,8 +109,10 @@ export default function WalletProvider({ children }) {
                     clickToClose: true
                 });
 
-            // Get balances again
+            // Get information from token contract
+            if (tokenContract) {
 
+            }
         });
 
         // Change handler for chain change
@@ -85,13 +145,19 @@ export default function WalletProvider({ children }) {
 
         console.log(`Current Network: ${network}`)
 
-        // Load other items
 
-    })
+
+    }, [account, network])
 
     const walletState = {
         account,
         setAccount,
+        network,
+        tokenContract,
+        tokenName,
+        tokenSymbol,
+        tokenSupply,
+        tokenBalance,
         web3
     }
 
@@ -110,7 +176,7 @@ export default function WalletProvider({ children }) {
  */
 export async function connectSamurai(web3) {
     try {
-        console.log(`Current Address: ${platon.selectedAddress}`)
+        // console.log(`Current Address: ${platon.selectedAddress}`)
 
         // Check if account is already connected
         if (platon.selectedAddress == undefined) {
@@ -129,7 +195,7 @@ export async function connectSamurai(web3) {
             })
         }
 
-        return true;
+        return platon.selectedAddress
     }
     catch (e) {
         // User Rejected connection wallet connection

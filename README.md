@@ -3,12 +3,53 @@ The purpose of this project is to create a meticulously designed and defined uni
 
 In SIT’s push towards a digital campus, the metaverse that it creates will inherently have a digital economy where a university cryptocurrency (`$SITC`) will be the fundamental basic currency within this ecosystem. And it is of equally, if not more, vital importance that cryptocurrency is designed and defined properly. The aim is to utilize the virtual campus and `$SITC` to build a cohesive environment for SIT, both virtually and physically.
 
-# Documentation
+## Dependencies
+
+### Environment Dependencies
+- Node JS (v10.18.1 to 14.19.3) 
+- PlatON client
+  - Go (1.16+)
+  - git (2.19.1+)
+  - If Linux (18.04.1 above)
+  - cmake (3.0+)
+
+### Smart Contract Dev Dependencies
+- Platon-truffle
+- Openzeppelin (contract)
+- truffle-assertions (testing)
+- Optional Dependencies
+  - Solidity-docgen (docgen)
+  - solc@0.8.6 (docgen)
+
+### Frontend web3 Dependencies
+- @babel/core
+- Bootstrap
+- IPFS HTTP Client (Used for connecting to IPFS)
+- Next JS
+- Notiflix (JS library for notifications, popups etc.)
+- React JS
+- React Bootstrap
+- PlatON JS SDK
+
+## Documentation
 - [SITCOIN documentation](docgen/SUMMARY.md)
 - [Setup and Installation](docgen/SETUP.md)
 - [Generating Documentation](docgen/DOCGEN.md)
 
 ## Changelog
+- v1.6.4-3
+  - Updated web3 App
+    - Added `.env` to store public environment variables
+    - Updated `Wallet.js` component
+      - Added UI for network information
+      - Added UI for Wallet information
+      - Added UI for transfer `$SITC`
+  - Added documentation
+    - `KeyHolder.sol` documented
+    - `ClaimHolder.sol` documented
+    - `ClaimVerifier.sol` documented
+  - Updated existing documentation docs
+  - Added project dependencies to `README`
 - v1.6.4-2
   - Added change listeners
   - Updated wallet context

@@ -2,13 +2,25 @@
 // https://github.com/trustfractal/erc725/blob/master/contracts/ClaimHolder.sol
 pragma solidity ^0.8.0;
 
-import {ERC735} from "./ERC735.sol";
+import {ERC735} from "./interfaces/ERC735.sol";
 import {KeyHolder} from "./KeyHolder.sol";
 
+/// @title Claim Holder Identity Contract
+/// @notice Digital Identity for users
+/// @dev Implements [ERC725v1](https://github.com/ethereum/EIPs/blob/ede8c26a77eb1ac8fa2d01d8743a8cf259d8d45b/EIPS/eip-725.md) standard for implementing a blockchain identity. It also implements a blockchain identity with key management capabilities to manage its claim and credentials. [ERC735](https://github.com/ethereum/EIPs/issues/735) Claim holder is the standard for managing claims.
+/// Deploying this contract will allow users to manage their identity by interacting with the contract.
 contract ClaimHolder is KeyHolder, ERC735 {
     mapping(bytes32 => Claim) claims;
     mapping(uint256 => bytes32[]) claimsByType;
 
+    /// @dev Adds a claim to the claim holder.
+    /// @param _topic The numeric ID indicating the topic of the claim.
+    /// @param _scheme The encryption scheme.
+    /// @param _issuer The issuer of the claim.
+    /// @param _signature The signature from the issuer.
+    /// @param _data The data appended to the claim that is used prove the signature of the signer.
+    /// @param _uri The location of the claim information.
+    /// @return claimRequestId The ID of the claim that was created.
     function addClaim(
         uint256 _topic,
         uint256 _scheme,
@@ -50,7 +62,14 @@ contract ClaimHolder is KeyHolder, ERC735 {
         return claimId;
     }
 
-    function removeClaim(bytes32 _claimId) public override returns (bool success) {
+    /// @dev Removes a claim from the identity contract.
+    /// @param _claimId The ID of the claim.
+    /// @return success True if successful.
+    function removeClaim(bytes32 _claimId)
+        public
+        override
+        returns (bool success)
+    {
         if (msg.sender != address(this)) {
             require(
                 keyHasPurpose(keccak256(abi.encodePacked(msg.sender)), 1),
@@ -76,6 +95,14 @@ contract ClaimHolder is KeyHolder, ERC735 {
         return true;
     }
 
+    /// @dev Get a claim from the identity contract.
+    /// @param _claimId The ID of the claim.
+    /// @return topic The numeric ID indicating the topic of the claim.
+    /// @return scheme The encryption scheme.
+    /// @return issuer The issuer of the claim.
+    /// @return signature The signature from the issuer.
+    /// @return data The data appended to the claim that is used prove the signature of the signer.
+    /// @return uri The location of the claim information.
     function getClaim(bytes32 _claimId)
         public
         view
@@ -99,6 +126,9 @@ contract ClaimHolder is KeyHolder, ERC735 {
         );
     }
 
+    /// @dev Gets a claim by the topic ID.
+    /// @param _topic The topic ID of the claim.
+    /// @return claimIds The IDs of the claims that match this topic ID for the identity contract.
     function getClaimIdsByTopic(uint256 _topic)
         public
         view
