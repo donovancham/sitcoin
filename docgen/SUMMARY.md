@@ -1,12 +1,12 @@
 # Summary
 * contracts
-  * [AccountManager](docs/AccountManager.md)
   * [ClaimHolder](docs/ClaimHolder.md)
   * [ClaimVerifier](docs/ClaimVerifier.md)
-  * [ERC725](docs/ERC725.md)
-  * [ERC735](docs/ERC735.md)
   * [KeyHolder](docs/KeyHolder.md)
   * [Market](docs/Market.md)
   * [Migrations](docs/Migrations.md)
   * [NFTMarket](docs/NFTMarket.md)
   * [SITcoin](docs/SITcoin.md)
+  * interfaces
+    * [ERC725](docs/interfaces/ERC725.md)
+    * [ERC735](docs/interfaces/ERC735.md)

@@ -1,0 +1,2 @@
+./contracts/ERC725.sol
+./contracts/ERC735.sol

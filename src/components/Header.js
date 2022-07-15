@@ -7,12 +7,12 @@ import Image from "next/image";
 import { connectSamurai, useWalletContext } from '../context/WalletContext';
 
 export default function Header() {
-    const { setAccount, setNetwork, web3 } = useWalletContext()
+    const { setAccount, web3 } = useWalletContext()
 
     return (
         <Navbar variant="light" sticky="top">
             <Container>
-                <Image src="/static/token.png" responsive width="45" height="45" />
+                <Image src="/static/token.png" width="45" height="45" />
                 <Navbar.Brand href="/">
                     SIT Metaverse
                 </Navbar.Brand>
@@ -29,16 +29,10 @@ export default function Header() {
                             if (result !== false) {
                                 // Sets wallet account
                                 setAccount(result)
-
-                                // Sets the network
-                                
                             }
                         }}>
                             Connect Wallet
                         </Button>
-                        {/* <WalletContext>
-                            <Wallet />
-                        </WalletContext> */}
                     </Navbar.Text>
                 </Navbar.Collapse>
             </Container>

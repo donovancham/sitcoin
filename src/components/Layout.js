@@ -22,9 +22,7 @@ export default function Layout({ children }) {
                     <Script src="dist/notiflix-report-aio-X.X.X.min.js"></Script>
                 </Head>
                 {/* Navbar and header elements */}
-                {/* <WalletContext> */}
-                    <Header />
-                {/* </WalletContext> */}
+                <Header />
                 {/* Main Body */}
                 <Container fluid>
                     {children}
