@@ -27,7 +27,7 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
         string uri;
         ERC721 nft;
     }
-    
+
     /**
      * @dev To emit event when item is newly added onto the market.
      */
@@ -75,8 +75,6 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
 
     // tokenId -> NFT
     mapping(uint256 => NFT) public mintedNFTs;
-    // itemId -> Market
-    // mapping(uint256 => Market) public _marketItems;
 
     /** 
      * @dev Sets the token properties and stores the SITCoin instance
@@ -84,8 +82,6 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
      * First deploy token contract and then deploy this contract.
      */
     constructor(address _sitcoin) ERC721("SITC NFT", "SITC") {
-        // receiverAcc = payable(msg.sender);
-        // feePercent = _feePercent;
         sitcoin = SITcoin(_sitcoin);
     }
 
