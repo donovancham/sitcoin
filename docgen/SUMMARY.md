@@ -7,6 +7,3 @@
   * [Migrations](docs/Migrations.md)
   * [NFTMarket](docs/NFTMarket.md)
   * [SITcoin](docs/SITcoin.md)
-  * interfaces
-    * [ERC725](docs/interfaces/ERC725.md)
-    * [ERC735](docs/interfaces/ERC735.md)
