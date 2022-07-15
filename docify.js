@@ -11,7 +11,8 @@ const fs        = require("fs");
 const path      = require("path");
 const spawnSync = require("child_process").spawnSync;
 
-const excludeList  = lines(EXCLUDE_FILE).map(line => INPUT_DIR + "/" + line);
+// const excludeList  = lines(EXCLUDE_FILE).map(line => INPUT_DIR + "/" + line);
+const excludeList = fs.readFileSync(EXCLUDE_FILE).toString().split("\n");
 const relativePath = path.relative(path.dirname(SUMMARY_FILE), OUTPUT_DIR);
 
 function lines(pathName) {
@@ -55,6 +56,7 @@ const args = [
     NODE_DIR + "/solidity-docgen/dist/cli.js",
     "--input="         + INPUT_DIR,
     "--output="        + OUTPUT_DIR,
+    "--exclude="       + 'interfaces',
     "--templates="     + CONFIG_DIR,
     "--solc-module="   + 'solc-0.8.6' /*NODE_DIR + "/solc"*/,
     "--solc-settings=" + JSON.stringify({optimizer: {enabled: true, runs: 200}}),

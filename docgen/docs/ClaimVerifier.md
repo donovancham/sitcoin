@@ -1,97 +1,70 @@
 # `ClaimVerifier`
 
+Interface can be deployed and called as an arbitrary validator in web3 dApp or deployed together with another contract to verify identities and use as access control measure.
+
+
 # Functions:
-
 - [`constructor(address _trustedClaimHolder)`](#ClaimVerifier-constructor-address-)
-
 - [`checkClaim(contract ClaimHolder _identity, uint256 claimType)`](#ClaimVerifier-checkClaim-contract-ClaimHolder-uint256-)
 
-- [`claimIsValid(contract ClaimHolder _identity, uint256 claimType)`](#ClaimVerifier-claimIsValid-contract-ClaimHolder-uint256-)
-
-- [`getRecoveredAddress(bytes sig, bytes32 dataHash)`](#ClaimVerifier-getRecoveredAddress-bytes-bytes32-)
-
 ## constructor
-
 <br>
-
-```sol
-
+```Solidity
 function constructor(
-
+  address _trustedClaimHolder
 ) public
-
 ```
 
-No description
+Initializes with only one valid signer.
 
+### Parameters:
+- `_trustedClaimHolder`: The contract address of the valid claim holder identity contract.
 ## checkClaim
-
 <br>
-
-```sol
-
+```Solidity
 function checkClaim(
-
+  contract ClaimHolder _identity,
+  uint256 claimType
 ) public returns (bool claimValid)
-
 ```
 
-No description
+Ensures that the claim is valid.
 
-## claimIsValid
+### Parameters:
+- `_identity`: The identity requesting verification.
 
-<br>
+- `claimType`: The type of claim to be verified.
 
-```sol
-
-function claimIsValid(
-
-) public returns (bool claimValid)
-
-```
-
-No description
-
-## getRecoveredAddress
-
-<br>
-
-```sol
-
-function getRecoveredAddress(
-
-) public returns (address addr)
-
-```
-
-No description
+### Return Values:
+- claimValid True if valid.
 
 # Events:
-
 - [`ClaimValid(contract ClaimHolder _identity, uint256 claimType)`](#ClaimVerifier-ClaimValid-contract-ClaimHolder-uint256-)
-
 - [`ClaimInvalid(contract ClaimHolder _identity, uint256 claimType)`](#ClaimVerifier-ClaimInvalid-contract-ClaimHolder-uint256-)
 
 ## ClaimValid
 
 <br>
-
-```sol
-
+```Solidity
 ClaimValid(contract ClaimHolder _identity, uint256 claimType)
-
 ```
 
-No description
+Emits when valid claim is verified.
 
+### Parameters:
+- `_identity`: The identity holding the claim to be verified.
+
+- `claimType`: The type of claim being verified.
 ## ClaimInvalid
 
 <br>
-
-```sol
-
+```Solidity
 ClaimInvalid(contract ClaimHolder _identity, uint256 claimType)
-
 ```
 
-No description
+Emits when invalid claim is attempted to be verified.
+
+### Parameters:
+- `_identity`: The identity holding the claim to be verified.
+
+- `claimType`: The type of claim being verified.
