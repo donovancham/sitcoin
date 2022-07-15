@@ -36,10 +36,14 @@ export default function IpfsProvider({ children }) {
                 setVersion(nodeVersion.version);
                 setIsOnline(nodeIsOnline);
 
-                Notify.info('Connected to IPFS')
+                Notify.info('Connected to IPFS', {
+                    clickToClose: true
+                })
             }
             catch (e) {
-                Notify.failure(`The IPFS node is not connected. Please restart the IPFS node and try again. ${e}`)
+                Notify.failure(`The IPFS node is not connected. Please restart the IPFS node and try again. ${e}`, {
+                    clickToClose: true
+                })
             }
         }
 

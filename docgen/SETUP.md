@@ -97,9 +97,9 @@ web3.personal.unlockAccount("<Wallet Address>", "<password>", 999999999)
 git clone https://github.com/donovancham/sitcoin.git
 ```
 
-2. Install dependencies
+2. Install dependencies from `package.json`
 ```sh
-npm install --save-dev <pkgname>
+npm install
 ```
 
 3. Add `truffle-config.js`. Copy exactly
