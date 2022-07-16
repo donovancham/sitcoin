@@ -100,31 +100,32 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
     ) 
         external returns (uint256) 
     {
-        if (_price > 0){
-            NFTCount++;
-            // _safemint -> _mint -> Mapping owner address to token count, 
-            // Mapping from token ID to owner address
-            _safeMint(msg.sender, NFTCount);
-            // maps token ID to token URI
-            _setTokenURI(NFTCount, _tokenURI);
+        require(_price > 0, 'The price cannot be empty');
+        require(bytes(description).length > 0, 'The description cannot be empty');
+        require(bytes(_tokenURI).length > 0, 'The tokenURI cannot be empty');
 
-            
-            mintedNFTs[NFTCount] = NFT (
-                NFTCount,
-                description,
-                _price,
-                msg.sender, //author address
-                address(0), //seller address
-                address(0), //owner address
-                false, //sold
-                false, //published
-                _tokenURI,
-                _nft
-            );
-            return (NFTCount);
-        }
-        emit ErrorMsg("Price must be greater than 0");
-        return (0);
+        
+        NFTCount++;
+        // _safemint -> _mint -> Mapping owner address to token count, 
+        // Mapping from token ID to owner address
+        _safeMint(msg.sender, NFTCount);
+        // maps token ID to token URI
+        _setTokenURI(NFTCount, _tokenURI);
+
+        
+        mintedNFTs[NFTCount] = NFT (
+            NFTCount,
+            description,
+            _price,
+            msg.sender, //author address
+            address(0), //seller address
+            address(0), //owner address
+            false, //sold
+            false, //published
+            _tokenURI,
+            _nft
+        );
+        return (NFTCount);
     }
 
     /**
@@ -272,44 +273,31 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
      */
     function createItem(uint256 _tokenId) external nonReentrant 
     {
-        if (checkNFTExist(_tokenId)) {
-            // Otain NFT item for listing
-            NFT storage NFTItem = mintedNFTs[_tokenId];
-            // Ensure Item not sold or already published, and only author can put item up for sale
-            if (NFTItem.sold == false && 
-                NFTItem.published == false && 
-                NFTItem.author == msg.sender && 
-                NFTItem.owner == address(0)) 
-            {
+        require(checkNFTExist(_tokenId), "NFT does not exist");
 
-                MarketItemCount++;
-            
-                // Transfer ownership of NFT from seller to market
-                // Call setApprovalForAll() before this to allow the market contract to sell the NFT
-                transferFrom(msg.sender, address(this), _tokenId); //from, to, tokenId
+        NFT storage NFTItem = mintedNFTs[_tokenId];
 
-                mintedNFTs[_tokenId].published = true;
-                mintedNFTs[_tokenId].seller = msg.sender;
+        require(NFTItem.sold == false, "NFT is already sold");
+        require(NFTItem.published == false, "NFT is already published");
+        require(NFTItem.author == msg.sender, "You are not the author of this NFT");
+        require(NFTItem.owner == address(0), "NFT is already owned");
 
-                // _marketItems[MarketItemCount] = Market (
-                //     MarketItemCount,
-                //     NFTItem.title,
-                //     NFTItem.tokenId,
-                //     NFTItem.price,
-                //     msg.sender,
-                //     false,
-                //     _nft
-                // );
+        MarketItemCount++;
+    
+        // Transfer ownership of NFT from seller to market
+        // Call setApprovalForAll() before this to allow the market contract to sell the NFT
+        transferFrom(msg.sender, address(this), _tokenId); //from, to, tokenId
 
-                emit NFTListed(
-                    MarketItemCount, //itemId
-                    NFTItem.description, //description
-                    NFTItem.tokenId,
-                    NFTItem.price, //price
-                    msg.sender //seller
-                );
-            }else{emit ErrorMsg("Item sold, published, or not owned by you");} 
-        }else{emit ErrorMsg("Item does not exist");}      
+        mintedNFTs[_tokenId].published = true;
+        mintedNFTs[_tokenId].seller = msg.sender;
+
+        emit NFTListed(
+            MarketItemCount, //itemId
+            NFTItem.description, //description
+            NFTItem.tokenId,
+            NFTItem.price, //price
+            msg.sender //seller
+        );   
     }
 
     /**
@@ -323,40 +311,38 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
     {
         // Check if item for purchase exist on the market
         NFT storage marketItem = mintedNFTs[_tokenId];
-        if (marketItem.published == true && marketItem.seller != address(0) && marketItem.sold == false) {
 
-            // Get the published item on the market
-            // TODO: call increaseAllowance() before this
-            if (sitcoin.transferFrom(msg.sender, marketItem.seller, marketItem.price))
-            {
-                // // transfer NFT Ownership from contract to buyer
-                marketItem.nft.transferFrom(address(this), msg.sender, marketItem.tokenId);
+        require(marketItem.published == true, "Item is not published");
+        require(marketItem.sold == false, "Item is already sold");
+        require(marketItem.seller != msg.sender, "You are the seller of this Item");
+        require(marketItem.seller != address(0), "Item does not exist");
 
-                // Update item in market to sold
-                // _marketItems[_tokenId].sold = true;
+        // Get the published item on the market
+        // TODO: call increaseAllowance() before this
+        if (sitcoin.transferFrom(msg.sender, marketItem.seller, marketItem.price))
+        {
+            // // transfer NFT Ownership from contract to buyer
+            marketItem.nft.transferFrom(address(this), msg.sender, marketItem.tokenId);
 
-                // Update NFT item to sold, and new owner of NFT
-                mintedNFTs[_tokenId].owner = msg.sender;
-                mintedNFTs[_tokenId].sold = true;
+            // Update item in market to sold
+            // _marketItems[_tokenId].sold = true;
 
-                MarketItemSold++;
-                emit NFTPurchased(
-                    _tokenId, //tokenid
-                    marketItem.tokenId, //nft ID
-                    marketItem.price, //price
-                    marketItem.seller, //seller
-                    msg.sender //buyer
-                );
-                return true;
-            }
-            else {
-                emit ErrorMsg("Not enough tokens");
-                return false;
-            }
-        } else {
-            emit ErrorMsg("Item does not exist or already sold");
-            return false;
+            // Update NFT item to sold, and new owner of NFT
+            mintedNFTs[_tokenId].owner = msg.sender;
+            mintedNFTs[_tokenId].sold = true;
+
+            MarketItemSold++;
+            emit NFTPurchased(
+                _tokenId, //tokenid
+                marketItem.tokenId, //nft ID
+                marketItem.price, //price
+                marketItem.seller, //seller
+                msg.sender //buyer
+            );
+            return true;
         }
+        emit ErrorMsg("Error: token transfer failed");
+        return false;
     }
 
     /**
@@ -365,34 +351,29 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
      */
      function unlistItem(uint256 _tokenId) external nonReentrant returns (bool)
      {
-        // check if item is sold
-        if (!marketItemExist(_tokenId)){
-            emit ErrorMsg("Item does not exist");
-            return false;
-        }
-        NFT storage marketItem = mintedNFTs[_tokenId];
+        // check if item exist on the market
+        require(marketItemExist(_tokenId), "Item does not exist");
 
-        // Check if msg.sender is the seller and if item is sold
-        if (marketItem.seller != msg.sender || marketItem.sold){
-            emit ErrorMsg("Only seller can unlist, or item is sold");
-            return false;
+        NFT storage marketItem = mintedNFTs[_tokenId];
+        require(marketItem.seller == msg.sender, "You are not the seller of this Item");
+        require(marketItem.sold == false, "Item is already sold");
+        
+        // Update item in market to unlisted
+
+        // transfer NFT Ownership from market back to author/owner
+        marketItem.nft.transferFrom(address(this), msg.sender, _tokenId);
+        NFT storage NFTItem = mintedNFTs[_tokenId];
+        NFTItem.published = false;
+
+        // Deletes listing on Market but item still exists as NFT
+        if (!marketItemExist(_tokenId)){
+            MarketItemCount--;
+            emit MarketItemUnlisted(_tokenId, true);
+            return true;
         }
         else{
-            // transfer NFT Ownership from market back to author/owner
-            marketItem.nft.transferFrom(address(this), msg.sender, _tokenId);
-            NFT storage NFTItem = mintedNFTs[_tokenId];
-            NFTItem.published = false;
-            // Deletes listing on Market but item still exists as NFT
-            // delete _marketItems[_tokenId];
-            if (!marketItemExist(_tokenId)){
-                MarketItemCount--;
-                emit MarketItemUnlisted(_tokenId, true);
-                return true;
-            }
-            else{
-                emit ErrorMsg("Item still on the market, unable to unlist");
-                return false;
-            }
+            emit ErrorMsg("Item still on the market, unable to unlist");
+            return false;
         }
      }
      

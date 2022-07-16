@@ -2,6 +2,7 @@ const SITcoin = artifacts.require("SITcoin");
 const NFTMarket = artifacts.require("NFTMarket");
 const { dev1, dev1hex, dev2, dev2hex, dev3 } = require("../scripts/walletAddress");
 const { expect } = require("../node_modules/chai/chai");
+const assertTruffle = require("../node_modules/truffle-assertions");
 
 contract("NFTMarket", () => {
     var market;
@@ -83,6 +84,7 @@ contract("NFTMarket", () => {
         })
     });
     describe("Making marketplace items", () => {
+
         it("Should approve marketplace to spend nft", async () => {
             // in IERC721: setApprovalForAll(address operator, bool _approved);
             // user1 approves marketplace to spend nft (is like increase allowance for ERC20)
@@ -122,7 +124,8 @@ contract("NFTMarket", () => {
         })   
     });
     describe("Purchasing marketplace items", () => {
-            // -------------- Test the ability to transfer allowance -----------------
+
+        // -------------- Test the ability to transfer allowance -----------------
         it("Should increase allowance from buyer to NFTMarket contract", async () => {
             await sitc.increaseAllowance(market.address, 30, {from:user2})
             // console.log("increaseAllowance", increaseAllowance)
@@ -165,25 +168,26 @@ contract("NFTMarket", () => {
             expect(balanceInstance.words[0]).to.equal(1) 
         })
         it("Should not allow purchase of sold items", async () => {
-            await market.purchaseItem(1, {from:user3})
+            await assertTruffle.reverts(market.purchaseItem(1, {from:user3}))
         })
         it("Should not allow purchase of non-existence items", async () => {
-            await market.purchaseItem(4, {from:user3})
+            await assertTruffle.reverts(market.purchaseItem(4, {from:user3}))
         })
     });
     describe("List sold or existing items", () => {
         it("Should not publish sold items", async () => {
-            await market.createItem(1,{from: user1})
-            await market.createItem(1,{from: user2})
+            await assertTruffle.reverts(market.createItem(1,{from: user1}))
+            await assertTruffle.reverts(market.createItem(1,{from: user2}))
         })
         it("Should not publish item if not owner", async () => {
-            await market.createItem(2,{from: user1})
+            await assertTruffle.reverts(market.createItem(2,{from: user1}))
         })
         it("Should not publish item if item does not exist", async () => {
-            await market.createItem(3, {from: user2})
+            await assertTruffle.reverts(market.createItem(3, {from: user2}))
         })
     });
     describe("Get unsold items on the market", () => {
+
         it("Should approve marketplace to spend nft", async () => {
             // in IERC721: setApprovalForAll(address operator, bool _approved);
             // user1 approves marketplace to spend nft (is like increase allowance for ERC20)
@@ -228,15 +232,15 @@ contract("NFTMarket", () => {
     describe("Unlist items", () => {
         it("Should fail to unlist non-existence items", async () => {
             // Item does not exist
-            await market.unlistItem(5, {from: user1})
+            await assertTruffle.reverts(market.unlistItem(5, {from: user1}))
         })
         it("Should fail to unlist sold items", async () => {
             // Item is sold
-            await market.unlistItem(1, {from: user1})
+            await assertTruffle.reverts(market.unlistItem(1, {from: user1}))
         })
         it("Should fail to unlist items if not owner", async () => {
             // Item is not owner
-            await market.unlistItem(2, {from: user1})
+            await assertTruffle.reverts(market.unlistItem(2, {from: user1}))
         })
         it("Should unlist items", async () => {
             // Item is owner and not sold

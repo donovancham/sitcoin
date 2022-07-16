@@ -4,6 +4,7 @@
 const Market = artifacts.require("Market")
 const SITcoin = artifacts.require("SITcoin")
 const { dev1, dev2, dev1hex } = require("../scripts/walletAddress")
+const assertTruffle = require("../node_modules/truffle-assertions");
 
 contract("Market", () => {
     var buyer = dev2;
@@ -21,8 +22,7 @@ contract("Market", () => {
 	})
     // -------------- Test for checkItemExist() when market is empty -----------------
     it("Should show item doesn't exist", async () => {
-        let exists = await instance.checkItemExist(1)
-        assert.equal(exists, false, "item shouldn't exist")
+        assert.equal(await instance.checkItemExist(1), false, "item shouldn't exist")
     })
     // -------------- Test transfer of initial tokens to accounts -----------------
     it("should transfer tokens correctly", async () => {
@@ -82,44 +82,33 @@ contract("Market", () => {
     // -------------- Test the ability to transfer allowance -----------------
     it("Should increase allowance from buyer to market contract", async () => {
         await sitInstance.increaseAllowance(instance.address, 10, {from:buyer})
-        // console.log("increaseAllowance", increaseAllowance)
-        let allowance = await sitInstance.allowance(buyer, instance.address)
-        console.log("allowance", allowance)
-        //assert.equal(allowance, 800, "wrong allowance")
+        await sitInstance.allowance(buyer, instance.address).then(function(balance) { balanceInstance = balance})
+        assert.equal(balanceInstance.words[0], 10, "wrong allowance")
     })
     // -------------- Test the ability to buy items -----------------
     it("Should allow item for purchase", async () => {
         await instance.purchaseItem(1, {from: buyer})
         
-        //assert.equal(sold, true, "item not sold")
     })
     it("should delete purchased item from view", async () => {
         let unsold = await instance.getUnsoldItems()
-        // console.log("unsold: ", unsold)
         assert.equal(unsold.length, 1, "unsold item count incorrect")
         assert.equal(unsold[0].description, "Test Item 2", "wrong item at index 0")
     })
     // -------------- Test the ability to unlist items -----------------
     it("Items should be unlisted when applicable", async () => {
-        await instance.unlistItem(1, {from: seller})
-        // console.log("unlist: ", unlist)
-        let checkItemExist = await instance.checkItemExist(1)
-        // console.log("checkItemExist: ", checkItemExist)
-        assert.equal(checkItemExist, true, "item should not be unlisted")
+        await assertTruffle.reverts(instance.unlistItem(1, {from: seller}))
+        assert.equal(await instance.checkItemExist(1), true, "item should not be unlisted")
 
         await instance.unlistItem(2, {from: seller})
-        // console.log("unlist: ", unlist)
         checkItemExist = await instance.checkItemExist(2)
-        // console.log("checkItemExist: ", checkItemExist)
         assert.equal(checkItemExist, false, "item should be unlisted since not sold")
     })
     // -------------- Test that the balance of users involved in transactions are correct -----------------
     it("should check buyer and seller balance", async () => {
         // Given them some tokens first, check if their wallet balance is correct
         let sellerbal = await sitInstance.balanceOf(seller)
-        let buyerbal = await sitInstance.balanceOf(buyer)
-        // console.log("seller balance: ", sellerbal)
-        // console.log("buyer balance: ", buyerbal)
+        let buyerbal = await sitInstance.balanceOf(buyer)     
         assert.equal(sellerbal,810, "seller balance incorrect")
         assert.equal(buyerbal,790, "buyer balance incorrect")
     })
@@ -134,11 +123,7 @@ contract("Market", () => {
     })
     // --------------- Test that users other than seller cannot unlist items -----------------
     it("Should not allow unlisting from users other than the seller", async () => {
-        await instance.unlistItem(3, {from: buyer})
-        // console.log("unlist: ", unlist)
-
-        checkItemExist = await instance.checkItemExist(3)
-        // console.log("checkItemExist: ", checkItemExist)
-        assert.equal(checkItemExist, true, "item should not be unlisted")
+        await assertTruffle.reverts(instance.unlistItem(3, {from: buyer}))   
+        assert.equal(await instance.checkItemExist(3), true, "item should not be unlisted")
     })
 })
