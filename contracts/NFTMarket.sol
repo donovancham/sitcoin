@@ -4,13 +4,14 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 // for NFT
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 // for Token transaction
 //import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {SITcoin} from "./SITcoin.sol";
 
-contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
+contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
     /**
      * @dev To track minted NFTs and items on the market.
      */
@@ -100,10 +101,9 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
     ) 
         external returns (uint256) 
     {
-        require(_price > 0, 'The price cannot be empty');
+        require(_price > 0, 'The price have to be more than 0');
         require(bytes(description).length > 0, 'The description cannot be empty');
         require(bytes(_tokenURI).length > 0, 'The tokenURI cannot be empty');
-
         
         NFTCount++;
         // _safemint -> _mint -> Mapping owner address to token count, 
@@ -112,6 +112,7 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
         // maps token ID to token URI
         _setTokenURI(NFTCount, _tokenURI);
 
+        
         
         mintedNFTs[NFTCount] = NFT (
             NFTCount,
@@ -283,13 +284,11 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
         require(NFTItem.owner == address(0), "NFT is already owned");
 
         MarketItemCount++;
-    
-        // Transfer ownership of NFT from seller to market
-        // Call setApprovalForAll() before this to allow the market contract to sell the NFT
-        transferFrom(msg.sender, address(this), _tokenId); //from, to, tokenId
-
         mintedNFTs[_tokenId].published = true;
         mintedNFTs[_tokenId].seller = msg.sender;
+        // Transfer ownership of NFT from seller to market
+        // Call setApprovalForAll() before this to allow the market contract to sell the NFT
+        NFTItem.nft.safeTransferFrom(msg.sender, address(this), _tokenId); //from, to, tokenId
 
         emit NFTListed(
             MarketItemCount, //itemId
@@ -317,19 +316,14 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
         require(marketItem.seller != msg.sender, "You are the seller of this Item");
         require(marketItem.seller != address(0), "Item does not exist");
 
-        // Get the published item on the market
         // TODO: call increaseAllowance() before this
         if (sitcoin.transferFrom(msg.sender, marketItem.seller, marketItem.price))
         {
-            // // transfer NFT Ownership from contract to buyer
-            marketItem.nft.transferFrom(address(this), msg.sender, marketItem.tokenId);
-
-            // Update item in market to sold
-            // _marketItems[_tokenId].sold = true;
-
+            mintedNFTs[_tokenId].sold = true;
             // Update NFT item to sold, and new owner of NFT
             mintedNFTs[_tokenId].owner = msg.sender;
-            mintedNFTs[_tokenId].sold = true;
+            // // transfer NFT Ownership from contract to buyer
+            marketItem.nft.safeTransferFrom(address(this), msg.sender, marketItem.tokenId);
 
             MarketItemSold++;
             emit NFTPurchased(
@@ -358,15 +352,14 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage {
         require(marketItem.seller == msg.sender, "You are not the seller of this Item");
         require(marketItem.sold == false, "Item is already sold");
         
-        // Update item in market to unlisted
-
-        // transfer NFT Ownership from market back to author/owner
-        marketItem.nft.transferFrom(address(this), msg.sender, _tokenId);
         NFT storage NFTItem = mintedNFTs[_tokenId];
         NFTItem.published = false;
 
+        // transfer NFT Ownership from market back to author/owner
+        marketItem.nft.safeTransferFrom(address(this), msg.sender, _tokenId);
+        
         // Deletes listing on Market but item still exists as NFT
-        if (!marketItemExist(_tokenId)){
+        if (!marketItemExist(_tokenId) && isOwnerOf(_tokenId, msg.sender) == true){
             MarketItemCount--;
             emit MarketItemUnlisted(_tokenId, true);
             return true;
