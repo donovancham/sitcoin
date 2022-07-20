@@ -7,10 +7,10 @@ import Image from "next/image";
 import { connectSamurai, useWalletContext } from '../context/WalletContext';
 
 export default function Header() {
-    const { setAccount, web3 } = useWalletContext()
+    const { setRefresh, account, setAccount, web3 } = useWalletContext()
 
     return (
-        <Navbar variant="light" sticky="top">
+        <Navbar variant="light" sticky="top" className='bg-light bg-gradient'>
             <Container>
                 <Image src="/static/token.png" width="45" height="45" />
                 <Navbar.Brand href="/">
@@ -27,8 +27,14 @@ export default function Header() {
                             // Ensure that samurai connected
                             let result = await connectSamurai(web3)
                             if (result !== false) {
-                                // Sets wallet account
-                                setAccount(result)
+                                if (account === undefined) {
+                                    // Sets wallet account
+                                    setAccount(result)
+                                }
+                                else {
+                                    // Refresh information
+                                    setRefresh(true)
+                                }
                             }
                         }}>
                             Connect Wallet
