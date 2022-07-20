@@ -12,10 +12,10 @@ export default function Index() {
             {/* main app container */}
             <div className="jumbotron p-4">
                 <div className="container text-center">
-                    <h1>SIT Metaverse</h1>
+                    <h1 className='display-1'>SIT Metaverse</h1>
                 </div>
             </div>
-            
+
             <Wallet />
             {/* <IpfsContext>
                 <Ipfs />
