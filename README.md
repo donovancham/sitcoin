@@ -6,20 +6,20 @@ In SIT’s push towards a digital campus, the metaverse that it creates will inh
 ## Dependencies
 
 ### Environment Dependencies
-- Node JS (v10.18.1 to 14.19.3) 
+- Node JS (`10.18.1` to `14.19.3`) 
 - PlatON client
-  - Go (1.16+)
-  - git (2.19.1+)
-  - If Linux (18.04.1 above)
-  - cmake (3.0+)
+  - Go (`1.16+`)
+  - git (`2.19.1+`)
+  - If Linux (`18.04.1` and above)
+  - cmake (`3.0+`)
 
 ### Smart Contract Dev Dependencies
-- Platon-truffle
-- Openzeppelin (contract)
-- truffle-assertions (testing)
+- `platon-truffle` (solidity dev env)
+- `@openzeppelin/contracts` (contract)
+- `truffle-assertions` (testing)
 - Optional Dependencies
-  - Solidity-docgen (docgen)
-  - solc@0.8.6 (docgen)
+  - `solidity-docgen` (docgen)
+  - `solc@0.8.6` (docgen)
 
 ### Frontend web3 Dependencies
 - @babel/core
@@ -37,6 +37,27 @@ In SIT’s push towards a digital campus, the metaverse that it creates will inh
 - [Generating Documentation](docgen/DOCGEN.md)
 
 ## Changelog
+- v1.7
+  - Updated Documentations
+    - Updated guides for setup and installation
+  - Updated web3 App
+    - Updated `Header.js` component
+      - Added refresh state to ensure information variables are updated
+    - Updated `Layout.js` component
+      - Fixed footer issue where content will be blocked by footer
+    - Added `style/style.css`
+      - Custom CSS to fix footer issue
+    - Updated `WalletContext.js` context provider
+      - Added changes to initialization to prevent double loading
+      - Updated to get information from contract
+      - Added contract object instantiation to interact with contract methods
+    - Updated `Wallet.js` component
+      - Added new UI for displaying information
+      - Implemented transfer token function
+        - Added sanitization checks (DOMpurify)
+        - Added validation checks
+        - Added error handling
+        - Added transaction details reporting after complete operation
 - v1.6.4-3
   - Updated web3 App
     - Added `.env` to store public environment variables
