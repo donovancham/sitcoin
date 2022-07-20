@@ -1,6 +1,7 @@
 // Global configuration file
 // Use to keep states between pages
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../style/style.css'
 
 export default function App({ Component, pageProps }) {
     return (

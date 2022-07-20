@@ -23,46 +23,10 @@ export default function WalletProvider({ children }) {
     const [tokenSymbol, setTokenSymbol] = useState()
     const [tokenSupply, setTokenSupply] = useState()
     const [tokenBalance, setTokenBalance] = useState()
+    const [refresh, setRefresh] = useState(false)
 
     // Runs once during rendering phase.
     useEffect(() => {
-        console.log(`sitcoinaddr => ${sitcoinAddress}`)
-
-        const getContractInfo = async () => {
-            if (!tokenContract) {
-                let contract = new web3.platon.Contract(sitcoin.abi, sitcoinAddress)
-                setTokenContract(contract)
-            }
-
-            try {
-                // Get Token Name
-                let name = await tokenContract.methods.name().call({ from: account })
-                setTokenName(name)
-                console.log(tokenName)
-
-                // Get Token Symbol
-                let symbol = await tokenContract.methods.symbol().call({ from: account })
-                setTokenSymbol(symbol)
-                console.log(tokenSymbol)
-
-                // Get Token Supply
-                let supply = await tokenContract.methods.totalSupply().call({ from: account })
-                setTokenSupply(supply)
-                console.log(tokenSupply)
-
-                // Get User's token balance
-                let balance = await tokenContract.methods.balanceOf(account).call({ from: account })
-                setTokenBalance(balance)
-                console.log(tokenBalance)
-
-                return true
-            }
-            catch (e) {
-                return false
-                
-            }
-        }
-
         // Ensure that PlatON provider is detected
         if (typeof window.platon === 'undefined') {
             Report.info(
@@ -75,79 +39,140 @@ export default function WalletProvider({ children }) {
             )
             return
         }
+        else {
+            if (web3 === undefined) {
+                initializeWeb3();
+
+                // Configure network
+                console.log(`Current Chain: ${platon.networkVersion}`)
+    
+                platon.networkVersion === platonMainnet
+                    ? setNetwork('PlatON Main Network')
+                    : setNetwork('PlatON Test Network')
+    
+                console.log(`Current Network: ${network}`)
+            }
+            
+            // Reset refresh if it is set
+            if (refresh) {
+                setRefresh(false)
+                // Refreshes the contract states when called
+                getContractInfo()
+            }
+            // Load user info when account is connected
+            else if (account) {
+                if (getContractInfo() === false) {
+                    Notify.warning('Contract Loading... Click to retry.', {
+                        clickToClose: true,
+                        timeout: 100000
+                    }, () => {
+                        getContractInfo();
+                    })
+                }
+            }
+
+            // Change handler for the account switching
+            platon.on('accountsChanged', (accounts) => {
+                // Handle the new accounts, or lack thereof.
+                // "accounts" will always be an array, but it can be empty.
+                console.log('Account change event fired')
+
+                accounts.length
+                    // Truthy: Set new account as main account being used
+                    ? setAccount(accounts[0])
+                    // Falsy: Show error message
+                    : Notify.warning('Account is not connected. Please connect account for more actions', {
+                        clickToClose: true
+                    });
+
+                // Get information from token contract
+                getContractInfo()
+            });
+
+            // Change handler for chain change
+            platon.on('chainChanged', (chainId) => {
+                // Handle the new chain.
+                // Correctly handling chain changes can be complicated.
+                // We recommend reloading the page unless you have good reason not to.
+                console.log(`New Chain ID: ${chainId}`);
+                window.location.reload();
+            });
+
+            // Handle connection errors
+            platon.on('disconnect', (error) => {
+                Report.failure(
+                    'Connection Error',
+                    `Network was disconnected. Please reload page. Error Message: ${error}`,
+                    'Reload',
+                    () => {
+                        window.location.reload();
+                    }
+                )
+            });
+        }
+
+    }, [account, network, refresh])
+
+    const initializeWeb3 = async () => {
+        // Initialize web3 instance
+        let web3Instance = await new Web3(platon)
+        // Initialize Contract object
+        let contract = await new web3Instance.platon.Contract(sitcoin.abi, sitcoinAddress)
+
+        console.log(`Contract Obj: ${tokenContract}`)
 
         // Loads web3 instance from samurai wallet when page loads
         web3
             ? Notify.info('Web3 object already loaded', {
                 clickToClose: true
             })
-            : setWeb3(new Web3(platon));
+            : setWeb3(web3Instance);
 
-        // Load SITcoin Contract
-        if (account && tokenContract) {
-            if (!getContractInfo()) {
-                Notify.warning('Contract Loading... Click to retry.', {
-                    clickToClose: true,
-                    timeout: 100000
-                }, () => {
-                    getContractInfo();
-                })
-            }
+        // Pre-loads the contract instance
+        tokenContract
+            ? Notify.info('Contract object already loaded', {
+                clickToClose: true
+            })
+            : setTokenContract(contract)
+    }
+
+    // const loadContractObject = async () => {
+    //     if (tokenContract === undefined) {
+    //         let contract = await new web3.platon.Contract(sitcoin.abi, sitcoinAddress)
+    //         setTokenContract(contract)
+
+    //         console.log(`Contract Obj: ${tokenContract}`)
+    //     }
+    // }
+
+    const getContractInfo = async () => {
+        try {
+            // Get Token Name
+            let name = await tokenContract.methods.name().call({ from: account })
+            setTokenName(name)
+            console.log(`Contract Name: ${tokenName}`)
+
+            // Get Token Symbol
+            let symbol = await tokenContract.methods.symbol().call({ from: account })
+            setTokenSymbol(symbol)
+            console.log(`Symbol: ${tokenSymbol}`)
+
+            // Get Token Supply
+            let supply = await tokenContract.methods.totalSupply().call({ from: account })
+            setTokenSupply(supply)
+            console.log(`Supply: ${tokenSupply}`)
+
+            // Get User's token balance
+            let balance = await tokenContract.methods.balanceOf(account).call({ from: account })
+            setTokenBalance(balance)
+            console.log(`Current Account Balance: ${tokenBalance}`)
+
+            return true
         }
-
-        // Change handler for the account switching
-        platon.on('accountsChanged', (accounts) => {
-            // Handle the new accounts, or lack thereof.
-            // "accounts" will always be an array, but it can be empty.
-            console.log('Account change event fired')
-
-            accounts.length
-                // Truthy: Set new account as main account being used
-                ? setAccount(accounts[0])
-                // Falsy: Show error message
-                : Notify.warning('Account is not connected. Please connect account for more actions', {
-                    clickToClose: true
-                });
-
-            // Get information from token contract
-            if (tokenContract) {
-
-            }
-        });
-
-        // Change handler for chain change
-        platon.on('chainChanged', (chainId) => {
-            // Handle the new chain.
-            // Correctly handling chain changes can be complicated.
-            // We recommend reloading the page unless you have good reason not to.
-            console.log(`New Chain ID: ${chainId}`);
-            window.location.reload();
-        });
-
-        // Handle connection errors
-        platon.on('disconnect', (error) => {
-            Report.failure(
-                'Connection Error',
-                `Network was disconnected. Please reload page. Error Message: ${error}`,
-                'Reload',
-                () => {
-                    window.location.reload();
-                }
-            )
-        });
-
-        // Configure network
-        console.log(`Current Chain: ${platon.networkVersion}`)
-
-        platon.networkVersion === platonMainnet
-            ? setNetwork('PlatON Main Network')
-            : setNetwork('PlatON Test Network')
-
-        console.log(`Current Network: ${network}`)
-
-
-
-    }, [account, network])
+        catch (e) {
+            return false
+        }
+    }
 
     const walletState = {
         account,
@@ -158,7 +183,9 @@ export default function WalletProvider({ children }) {
         tokenSymbol,
         tokenSupply,
         tokenBalance,
-        web3
+        web3,
+        setRefresh,
+        getContractInfo,
     }
 
     return (
@@ -190,7 +217,7 @@ export async function connectSamurai(web3) {
             console.log(`Accounts: ${accounts}`)
         }
         else {
-            Notify.info('Account already connected', {
+            Notify.info('Account already connected. Refreshing Info...', {
                 clickToClose: true
             })
         }
