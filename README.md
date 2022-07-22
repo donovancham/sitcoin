@@ -37,6 +37,10 @@ In SIT’s push towards a digital campus, the metaverse that it creates will inh
 - [Generating Documentation](docgen/DOCGEN.md)
 
 ## Changelog
+- Updated `Wallet.js` UI component
+  - Added refresh button
+  - Added button locking when account is already connected
+
 - v1.7
   - Updated Documentations
     - Updated guides for setup and installation
