@@ -1,0 +1,49 @@
+// Migrations for ClaimHolder identity and ClaimVerifier contract
+
+const { owner } = require("../scripts/walletAddress");
+const ClaimHolder = artifacts.require("ClaimHolder");
+const ClaimVerifier = artifacts.require("ClaimVerifier");
+const { initWeb3, getContractAbi } = require("../scripts/web3Module");
+
+const KEY_PURPOSES = {
+    "MANAGEMENT": 1,
+    "CLAIM": 3
+}
+
+const KEY_TYPES = {
+    "ECDSA": 1
+}
+
+const CLAIM_SCHEMES = {
+    "ECDSA": 1
+}
+
+const CLAIM_TYPES = {
+    "SIT_STUDENT": 1,
+    "SIT_FACULTY": 2,
+}
+
+module.exports = (deployer) => {
+    const web3 = initWeb3()
+
+    // Deploy using SIT's signer identity
+    deployer.deploy(ClaimHolder, {from: owner})
+    .then( async () => {
+        // Loads the contract instance to get the deployed address
+        const sitIdentity = await ClaimHolder.deployed()
+
+        // Initializes the contract for calling
+        const claimContract = new web3.platon.Contract(getContractAbi('ClaimHolder'), sitIdentity.address)
+        // Creates a claim key for the owner
+        const ownerClaimKey = web3.utils.keccak256(owner)
+        // Used for signing claims for identities after they have undergone KYC
+        await claimContract.methods.addKey(
+            ownerClaimKey,
+            KEY_PURPOSES.CLAIM,
+            KEY_PURPOSES.ECDSA,
+        ).send({ from: owner })
+        
+        // Deploys the claimverifier contract with SIT Identity as trusted claim issuer
+        await deployer.deploy(ClaimVerifier, sitIdentity.address, {from: owner})
+    })
+};

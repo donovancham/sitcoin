@@ -6,8 +6,8 @@ import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import {ClaimHolder} from "./ClaimHolder.sol";
 
 /// @title Claim Verifier System Contract
-/// @notice An interface to verify claims from identity with the valid signers
-/// @dev Interface can be deployed and called as an arbitrary validator in web3 dApp or deployed together with another contract to verify identities and use as access control measure.
+/// @notice A contract interface to verify claims from identity from a single trusted signer authority
+/// @dev Contract can be deployed and called as an arbitrary validator in web3 dApp to verify identities and use as access control measure.
 contract ClaimVerifier {
     using ECDSA for bytes32;
 
