@@ -1,6 +1,7 @@
 const Web3 = require('web3')
 const fs = require('fs')
 const path = require('path')
+const { owner } = require('./walletAddress')
 
 // Connections for DevNet 1
 const devnetHTTP = "https://devnetopenapi2.platon.network/rpc"
@@ -16,10 +17,13 @@ const devnet2WS = "wss://devnet2openapi.platon.network/ws"
  * @param {string} contract The name of the contract
  * @returns The abi object
  */
-const getContractAbi = async (contract) => {
+const getContractAbi = (contract) => {
     try {
         let filename = path.resolve(__dirname, `../build/contracts/${contract}.json`)
         let parsed = JSON.parse(fs.readFileSync(filename))
+
+        // console.log('File parsed')
+        // console.log(parsed)
         
         return parsed.abi
 
@@ -48,7 +52,7 @@ const initWeb3 = (network = 1) => {
         // Instantiate Web3 for DevNet 1 (default)
         let web3 = new Web3(Web3.givenProvider || devnetHTTP || devnetWS)
         // Set default account
-        web3.platon.defaultAccount = 'lat1rd8c02e905rguunal8ck77ftct0jph2v6zj7cq'
+        web3.platon.defaultAccount = owner
         return web3
     }
     else if (network === 2) {

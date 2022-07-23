@@ -37,6 +37,11 @@ In SIT’s push towards a digital campus, the metaverse that it creates will inh
 - [Generating Documentation](docgen/DOCGEN.md)
 
 ## Changelog
+- v1.7.1
+  - Added Migrations for `ClaimHolder.sol` and `ClaimVerifier.sol`
+    - Creates an identity for SIT
+    - Creates a signer key for SIT
+    - Deploys a `ClaimVerifier` to verify identities
 - v1.7
   - Updated Documentations
     - Updated guides for setup and installation
