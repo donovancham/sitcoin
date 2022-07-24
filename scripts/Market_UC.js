@@ -46,7 +46,7 @@ module.exports = async function(callback) {
         console.log("getAllItems: ", getAllItems) // 2 items (array)
 
         //------------------------ Increase Allowance -------------------------------------
-        await sitc.increaseAllowance(market.address, 400, {from: buyer})
+        await sitc.increaseAllowance(market.address, 20, {from: buyer})
         //----------------------- Check Allowance -----------------------------------------
         let allowance = await sitc.allowance(buyer, market.address)
         console.log(allowance) //400
@@ -79,21 +79,18 @@ module.exports = async function(callback) {
         console.log("unsold: ", unsold) // 1 item (array)
 
         //----------------------- Seller unlist items --------------------------------------
-        let unlistItem = await market.unlistItem(1, {from: seller})
-        console.log("unlistItem: ", unlistItem) //false, because sold
+
         unlistItem = await market.unlistItem(2, {from: seller})
         console.log("unlistItem: ", unlistItem) //true, not sold
         
-        //----------------------- Tries to unlist items not listed by them ------
+        //----------------------- Add and check new items ---------------------------
         addItem = await market.createItem("Test Item 3", 10, {from: seller})
         console.log("addItem: ", addItem) //3
-        unlistItem = await market.unlistItem(3, {from: buyer})
-        console.log("unlistItem: ", unlistItem) //false, wrong seller address
-
-        //----------------------- Check that item is still listed ---------------------------
+        
         itemInfo = await market.getItem(3)
         //{ id: 2, desc: 'Test Item 3', seller: seller addr, buyer: address(0), price: 10, sold: false }
         console.log("itemInfo: ", itemInfo)
+        
         itemExist = await market.checkItemExist(3)
         console.log("itemExist: ", itemExist) //true
 
