@@ -18,7 +18,6 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
     struct NFT {
         uint256 tokenId; //id of NFT in PRC721
         string description;
-        //string description;
         uint256 price;
         address author;
         address seller;
@@ -33,9 +32,8 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
      * @dev To emit event when item is newly added onto the market.
      */
     event NFTListed(
-        uint256 itemId, //id of item on the market
+        uint256 tokenId, //id of item on the market
         string title,
-        uint256 tokenId,
         uint256 price,
         address indexed seller
     );
@@ -231,7 +229,7 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
      */
     function getMyNFTCreations() external view returns (NFT[] memory _myNFTs, uint256 count)
     {
-        require(msg.sender != address(0), "Invalid walletaddress");
+        require(msg.sender != address(0), "Invalid wallet address");
 
         uint256 totalTokens = getMyCreationCount(msg.sender);
         if (totalTokens == 0) 
@@ -291,9 +289,8 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
         NFTItem.nft.safeTransferFrom(msg.sender, address(this), _tokenId); //from, to, tokenId
 
         emit NFTListed(
-            MarketItemCount, //itemId
-            NFTItem.description, //description
             NFTItem.tokenId,
+            NFTItem.description, //description      
             NFTItem.price, //price
             msg.sender //seller
         );   
@@ -316,12 +313,14 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
         require(marketItem.seller != msg.sender, "You are the seller of this Item");
         require(marketItem.seller != address(0), "Item does not exist");
 
+        mintedNFTs[_tokenId].sold = true;
+        // Update NFT item to sold, and new owner of NFT
+        mintedNFTs[_tokenId].owner = msg.sender;
+
         // TODO: call increaseAllowance() before this
         if (sitcoin.transferFrom(msg.sender, marketItem.seller, marketItem.price))
         {
-            mintedNFTs[_tokenId].sold = true;
-            // Update NFT item to sold, and new owner of NFT
-            mintedNFTs[_tokenId].owner = msg.sender;
+            
             // // transfer NFT Ownership from contract to buyer
             marketItem.nft.safeTransferFrom(address(this), msg.sender, marketItem.tokenId);
 
@@ -348,15 +347,14 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
         // check if item exist on the market
         require(marketItemExist(_tokenId), "Item does not exist");
 
-        NFT storage marketItem = mintedNFTs[_tokenId];
-        require(marketItem.seller == msg.sender, "You are not the seller of this Item");
-        require(marketItem.sold == false, "Item is already sold");
-        
         NFT storage NFTItem = mintedNFTs[_tokenId];
+        require(NFTItem.seller == msg.sender, "You are not the seller of this Item");
+        require(NFTItem.sold == false, "Item is already sold");
+        
         NFTItem.published = false;
 
         // transfer NFT Ownership from market back to author/owner
-        marketItem.nft.safeTransferFrom(address(this), msg.sender, _tokenId);
+        NFTItem.nft.safeTransferFrom(address(this), msg.sender, _tokenId);
         
         // Deletes listing on Market but item still exists as NFT
         if (!marketItemExist(_tokenId) && isOwnerOf(_tokenId, msg.sender) == true){
