@@ -68,6 +68,5 @@ test/.placeholder
 build
 .vscode
 truffle-config.js
-scripts/temp.js
 .swc
 @startuml.wsd

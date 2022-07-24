@@ -160,8 +160,6 @@ module.exports = async function(callback) {
         console.log("allItems: ", allItems) //3, including sold
 
         // ------------------------ User unlist NFT from market ------------------------
-        await market.unlistItem(5, {from: user1}) //Error: Item not found
-        await market.unlistItem(1, {from: user1}) //Err
         await market.unlistItem(2, {from: user2}) //success
 
         // ------------------------ Show unsold items --------------------------------
