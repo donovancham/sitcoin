@@ -68,7 +68,7 @@ ls /usr/bin | grep platon
 ```
 
 # DevNet Setup (Linux)
-1. Connect Wallet to DevNet
+1. Connect [Wallet](https://platonnetwork.github.io/docs/en/Samurai_user_manual/) to DevNet
 
 Form Header | Form Data
 -----------|----------
@@ -193,3 +193,7 @@ platon-truffle exec scripts/transferToken.js
 ```sh
 node scripts/transferToken.js
 ```
+
+# Run Web3 dApp
+1. Ensure you are in project root folder
+2. `npm run dev`
