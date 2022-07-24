@@ -12,9 +12,6 @@ interface ERC725 {
 
     event KeyAdded(bytes32 indexed key, uint256 indexed purpose, uint256 indexed keyType);
     event KeyRemoved(bytes32 indexed key, uint256 indexed purpose, uint256 indexed keyType);
-    // event ExecutionRequested(uint256 indexed executionId, address indexed to, uint256 indexed value, bytes data);
-    // event Executed(uint256 indexed executionId, address indexed to, uint256 indexed value, bytes data);
-    // event Approved(uint256 indexed executionId, bool approved);
 
     struct Key {
         uint256 purpose; //e.g., MANAGEMENT_KEY = 1, ACTION_KEY = 2, etc.
@@ -26,6 +23,5 @@ interface ERC725 {
     function keyHasPurpose(bytes32 _key, uint256 purpose) external view returns(bool exists);
     function getKeysByPurpose(uint256 _purpose) external view returns(bytes32[] memory keys);
     function addKey(bytes32 _key, uint256 _purpose, uint256 _keyType) external returns (bool success);
-    // function execute(address _to, uint256 _value, bytes memory _data) external returns (uint256 executionId);
-    // function approve(uint256 _id, bool _approve) external returns (bool success);
+    function removeKey(bytes32 _key) external returns (bool success);
 }

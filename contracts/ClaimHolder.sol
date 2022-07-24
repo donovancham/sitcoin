@@ -28,7 +28,7 @@ contract ClaimHolder is KeyHolder, ERC735 {
         bytes memory _signature,
         bytes memory _data,
         string memory _uri
-    ) public override returns (bytes32 claimRequestId) {
+    ) public onlyOwner override returns (bytes32 claimRequestId) {
         bytes32 claimId = keccak256(abi.encodePacked(_issuer, _topic));
 
         if (msg.sender != address(this)) {
@@ -67,6 +67,7 @@ contract ClaimHolder is KeyHolder, ERC735 {
     /// @return success True if successful.
     function removeClaim(bytes32 _claimId)
         public
+        onlyOwner
         override
         returns (bool success)
     {
@@ -132,6 +133,7 @@ contract ClaimHolder is KeyHolder, ERC735 {
     function getClaimIdsByTopic(uint256 _topic)
         public
         view
+        onlyOwner
         override
         returns (bytes32[] memory claimIds)
     {
