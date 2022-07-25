@@ -52,7 +52,7 @@ Override the existing implementation of 18 decimals _(`$ETH` default)_ for SIT C
 
 ### Return Values:
 
-- uint8 The number of decimals used to get its user representation.
+- `uint8`: The number of decimals used to get its user representation.
 
 ## mint
 

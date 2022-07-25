@@ -56,7 +56,7 @@ Creates a new item in the market.
 
 ### Return Values:
 
-- The current token ID of the new item.
+- `The`: current token ID of the new item.
 
 ## unlistItem
 
@@ -102,7 +102,7 @@ Get specific item details
 
 ### Return Values:
 
-- Object of selected item
+- `Object`: of selected item
 
 ## checkItemExist
 
@@ -126,7 +126,7 @@ Check if specific item exists in the market
 
 ### Return Values:
 
-- true if item exists, false otherwise
+- `true`: if item exists, false otherwise
 
 ## getItemCount
 
@@ -144,7 +144,7 @@ Shows the count of items in the market (includes sold, unlisted and listed items
 
 ### Return Values:
 
-- total count
+- `total`: count
 
 ## getSoldItemCount
 
@@ -162,7 +162,7 @@ Show all the count of sold items in the market.
 
 ### Return Values:
 
-- count of sold items
+- `count`: of sold items
 
 ## getUnsoldItems
 
@@ -180,7 +180,7 @@ Show all unsold items in the market
 
 ### Return Values:
 
-- array of all unsold items
+- `array`: of all unsold items
 
 ## getAllItems
 
@@ -198,7 +198,7 @@ Show all listed items in the market
 
 ### Return Values:
 
-- array of all items
+- `array`: of all items
 
 ## getaddress
 
@@ -216,7 +216,7 @@ Get the current contract address
 
 ### Return Values:
 
-- address of current contract
+- `address`: of current contract
 
 # Events:
 
