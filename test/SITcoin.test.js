@@ -5,9 +5,9 @@ const SITcoin = artifacts.require("SITcoin")
 const { owner, ownerhex, dev1, dev1hex, dev2, dev2hex, dev3, dev3hex } = require("../scripts/walletAddress")
 const truffleAssert = require('truffle-assertions');
 const { initWeb3 } = require('../scripts/web3Module');
+const addressZero = '0x0000000000000000000000000000000000000000';
 
 contract("SITcoin", () => {
-    const addressZero = '0x0000000000000000000000000000000000000000';
     var ownerBal;
     var dev1Bal;
     var dev2Bal;
