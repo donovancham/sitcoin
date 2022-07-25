@@ -39,16 +39,13 @@ contract("Market", () => {
     // -------------- Test checkItemExist() on added items -----------------
     it("Should show item exists", async () => {
         let exists = await instance.checkItemExist(1)
-        // console.log("exists 1: ", exists)
         assert.equal(exists, true, "item does not exist")
         exists = await instance.checkItemExist(2)
-        // console.log("exists 2: ", exists)
         assert.equal(exists, true, "item does not exist")
     })
     // -------------- Test getItem() to make sure market is updated -----------------
     it("get item at index", async () => {
         let item = await instance.getItem(1)
-        // console.log("item 1: ", item)
         assert.equal(item.id, 1, "item count incorrect")
         assert.equal(item.description, "Test Item", "item Description wrong")
         assert.equal(item.seller, sellerhex, "wrong address")
@@ -57,7 +54,6 @@ contract("Market", () => {
         assert.equal(item.sold, false, "wrong sold")
         
         item = await instance.getItem(2)
-        // console.log("item 2: ", item)
         assert.equal(item.id, 2, "item count incorrect")
         assert.equal(item.description, "Test Item 2", "item Description wrong")
         assert.equal(item.seller, sellerhex, "wrong address")
@@ -90,7 +86,7 @@ contract("Market", () => {
         await instance.purchaseItem(1, {from: buyer})
         
     })
-    it("should delete purchased item from view", async () => {
+    it("should not list sold items", async () => {
         let unsold = await instance.getUnsoldItems()
         assert.equal(unsold.length, 1, "unsold item count incorrect")
         assert.equal(unsold[0].description, "Test Item 2", "wrong item at index 0")
