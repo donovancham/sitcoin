@@ -12,7 +12,7 @@ contract("NFTMarket", () => {
     var user2 = dev2;
     var user2hex = dev2hex;
     var user3 = dev3;
-    var URI = "SampleLink";
+    //var URI = "SampleLink";
 
     beforeEach(async () => {
         sitc = await SITcoin.deployed()
@@ -33,7 +33,7 @@ contract("NFTMarket", () => {
 
         it("Should track each minted NFT", async () => {
             //user1 mint an NFT
-            await market.mint("Rubber Ducky", URI, 10, market.address, {from: user1})
+            await market.mint("Rubber Ducky", "SampleLink", 10, market.address, {from: user1})
             // total number of tokens in NFT contract
             await market.getTotalNFTCount().then(function(count) { countInstance = count})
             // Mapping owner address to token count in ERC721 contract
@@ -45,14 +45,14 @@ contract("NFTMarket", () => {
 
             expect(countInstance.words[0]).to.equal(1)
             expect(balanceInstance.words[0]).to.equal(1)    
-            expect(uri).to.equal(URI)
+            expect(uri).to.equal("SampleLink")
         
             //user2 mint an NFT
-            await market.mint("Electro Boy", URI, 10, market.address, {from: user2})
+            await market.mint("Electro Boy", "SampleLink2", 10, market.address, {from: user2})
             //user3 mint an NFT
-            await market.mint("Bro Code", URI, 10, market.address, {from: user3})
+            await market.mint("Bro Code", "SampleLink3", 10, market.address, {from: user3})
             //user1 mint an NFT
-            await market.mint("Maplestory 2070", URI, 10, market.address,{from: user1})
+            await market.mint("Maplestory 2070", "SampleLink4", 10, market.address,{from: user1})
 
             await market.getTotalNFTCount().then(function(count) { countInstance = count})
           
@@ -62,7 +62,7 @@ contract("NFTMarket", () => {
         
             expect(countInstance.words[0]).to.equal(4)
             expect(balanceInstance.words[0]).to.equal(1)    
-            expect(uri).to.equal(URI)
+            expect(uri).to.equal("SampleLink2")
         })
         it("Should update balance of NFT for each user", async () => {
             await market.myOwnedNFTs({from: user1}).then(function(myNFT) { myNFTInstance1 = myNFT})
@@ -139,7 +139,6 @@ contract("NFTMarket", () => {
             // user2 purchase item
             await market.purchaseItem(1, {from: user2})
 
-
             await sitc.balanceOf(user1).then(function(usr1Balance) { usr1BalanceInstance = usr1Balance})
             await sitc.balanceOf(user2).then(function(usr2Balance) { usr2BalanceInstance = usr2Balance})
 
@@ -192,9 +191,6 @@ contract("NFTMarket", () => {
             // in IERC721: setApprovalForAll(address operator, bool _approved);
             // user1 approves marketplace to spend nft (is like increase allowance for ERC20)
             await market.setApprovalForAll(market.address, true, {from: user2})
-
-            await market.setApprovalForAll(market.address, true, {from: user2})
-
             checkapproved = await market.isApprovedForAll(user2, market.address)
             expect(checkapproved).to.equal(true)
         })

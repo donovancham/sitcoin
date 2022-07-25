@@ -1,11 +1,10 @@
 /* eslint-disable no-undef */
 const SITcoin = artifacts.require("SITcoin")
-//dev3 = buyer, dev2 = seller
 const { dev2, dev3, owner } = require("./walletAddress")
 
 module.exports = async function(callback) {
     try{
-        console.log("seller: ", dev1)
+        console.log("seller: ", dev3)
         console.log("buyer: ", dev2)
         console.log("system: ", owner)
 
@@ -15,10 +14,10 @@ module.exports = async function(callback) {
         
         console.log("systemBal: ", systemBal) //100 000
 
-        let trfToSeller = await sitc.transfer(dev1, 800)
+        let trfToSeller = await sitc.transfer(dev3, 800)
         let trfToBuyer = await sitc.transfer(dev2, 800)
         
-        let sellerBal = await sitc.balanceOf(dev1)
+        let sellerBal = await sitc.balanceOf(dev3)
         let buyerBal = await sitc.balanceOf(dev2)
         systemBal = await sitc.balanceOf(owner)
 

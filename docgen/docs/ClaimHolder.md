@@ -2,7 +2,7 @@
 
 Implements [ERC725v1](https://github.com/ethereum/EIPs/blob/ede8c26a77eb1ac8fa2d01d8743a8cf259d8d45b/EIPS/eip-725.md) standard for implementing a blockchain identity. It also implements a blockchain identity with key management capabilities to manage its claim and credentials. [ERC735](https://github.com/ethereum/EIPs/issues/735) Claim holder is the standard for managing claims.
 
-Deploying this contract will allow users to manage their identity by interacting with the contract.
+Deploying this contract will allow users to manage their identity by interacting with the contract. For added security, all functions are protected and only the owner can access the data stored through the identity. Creation and Removal of Keys and Claims can only be done through the user.
 
 # Functions:
 
@@ -13,6 +13,8 @@ Deploying this contract will allow users to manage their identity by interacting
 - [`getClaim(bytes32 _claimId)`](#ClaimHolder-getClaim-bytes32-)
 
 - [`getClaimIdsByTopic(uint256 _topic)`](#ClaimHolder-getClaimIdsByTopic-uint256-)
+
+- [`getVerifyData(uint256 _topic, address _issuer)`](#ClaimHolder-getVerifyData-uint256-address-)
 
 ## addClaim
 
@@ -56,7 +58,7 @@ Adds a claim to the claim holder.
 
 ### Return Values:
 
-- claimRequestId The ID of the claim that was created.
+- `claimRequestId`: The ID of the claim that was created.
 
 ## removeClaim
 
@@ -80,7 +82,7 @@ Removes a claim from the identity contract.
 
 ### Return Values:
 
-- success True if successful.
+- `success`: True if successful.
 
 ## getClaim
 
@@ -104,17 +106,17 @@ Get a claim from the identity contract.
 
 ### Return Values:
 
-- topic The numeric ID indicating the topic of the claim.
+- `topic`: The numeric ID indicating the topic of the claim.
 
-- scheme The encryption scheme.
+- `scheme`: The encryption scheme.
 
-- issuer The issuer of the claim.
+- `issuer`: The issuer of the claim.
 
-- signature The signature from the issuer.
+- `signature`: The signature from the issuer.
 
-- data The data appended to the claim that is used prove the signature of the signer.
+- `data`: The data appended to the claim that is used prove the signature of the signer.
 
-- uri The location of the claim information.
+- `uri`: The location of the claim information.
 
 ## getClaimIdsByTopic
 
@@ -138,4 +140,34 @@ Gets a claim by the topic ID.
 
 ### Return Values:
 
-- claimIds The IDs of the claims that match this topic ID for the identity contract.
+- `claimIds`: The IDs of the claims that match this topic ID for the identity contract.
+
+## getVerifyData
+
+<br>
+
+```Solidity
+
+function getVerifyData(
+
+  uint256 _topic,
+
+  address _issuer
+
+) public returns (bytes signature, bytes data)
+
+```
+
+Gets the data needed to verify claim.
+
+### Parameters:
+
+- `_topic`: The topic ID of the claim.
+
+- `_issuer`: The issuer (contract address) of the claim.
+
+### Return Values:
+
+- `signature`: The signature that the claim was signed with.
+
+- `data`: The data that was signed.
