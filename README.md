@@ -37,6 +37,9 @@ In SIT’s push towards a digital campus, the metaverse that it creates will inh
 - [Generating Documentation](docgen/DOCGEN.md)
 
 ## Changelog
+- v1.7.5
+  - Removed sensitive data from the main commits
+  - Rebased heads but PRs refs unable to update
 - v1.7.4
   - Updated documentations
     - `ClaimHolder.sol`
