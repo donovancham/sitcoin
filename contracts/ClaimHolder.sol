@@ -8,7 +8,7 @@ import {KeyHolder} from "./KeyHolder.sol";
 /// @title Claim Holder Identity Contract
 /// @notice Digital Identity for users
 /// @dev Implements [ERC725v1](https://github.com/ethereum/EIPs/blob/ede8c26a77eb1ac8fa2d01d8743a8cf259d8d45b/EIPS/eip-725.md) standard for implementing a blockchain identity. It also implements a blockchain identity with key management capabilities to manage its claim and credentials. [ERC735](https://github.com/ethereum/EIPs/issues/735) Claim holder is the standard for managing claims.
-/// Deploying this contract will allow users to manage their identity by interacting with the contract.
+/// Deploying this contract will allow users to manage their identity by interacting with the contract. For added security, all functions are protected and only the owner can access the data stored through the identity. Creation and Removal of Keys and Claims can only be done through the user.
 contract ClaimHolder is KeyHolder, ERC735 {
     mapping(bytes32 => Claim) claims;
     mapping(uint256 => bytes32[]) claimsByType;
@@ -144,10 +144,15 @@ contract ClaimHolder is KeyHolder, ERC735 {
         return claimsByType[_topic];
     }
 
-
+    /// @dev Gets the data needed to verify claim.
+    /// @param _topic The topic ID of the claim.
+    /// @param _issuer The issuer (contract address) of the claim.
+    /// @return signature The signature that the claim was signed with.
+    /// @return data The data that was signed.
     function getVerifyData(uint256 _topic, address _issuer)
         public
         view
+        onlyOwner
         returns (bytes memory signature, bytes memory data)
     {
         bytes32 _claimId = claimsByType[_topic][0];

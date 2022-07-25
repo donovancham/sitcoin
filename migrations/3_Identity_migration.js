@@ -1,8 +1,7 @@
 // Migrations for ClaimHolder identity and ClaimVerifier contract
 
-const { owner } = require("../scripts/walletAddress");
+const { owner, ownerhex, studentClaimHex, facultyClaimHex } = require("../scripts/walletAddress");
 const ClaimHolder = artifacts.require("ClaimHolder");
-const ClaimVerifier = artifacts.require("ClaimVerifier");
 const { initWeb3, getContractAbi } = require("../scripts/web3Module");
 
 const KEY_PURPOSES = {
@@ -19,8 +18,8 @@ const CLAIM_SCHEMES = {
 }
 
 const CLAIM_TYPES = {
-    "SIT_STUDENT": 1,
-    "SIT_FACULTY": 2,
+    "SIT_STUDENT": 11,
+    "SIT_FACULTY": 12,
 }
 
 module.exports = (deployer) => {
@@ -34,16 +33,24 @@ module.exports = (deployer) => {
 
         // Initializes the contract for calling
         const claimContract = new web3.platon.Contract(getContractAbi('ClaimHolder'), sitIdentity.address)
-        // Creates a claim key for the owner
-        const ownerClaimKey = web3.utils.keccak256(owner)
+        // Creates a claim key for student claims
+        const studentClaimKey = web3.utils.keccak256(studentClaimHex)
+        
         // Used for signing claims for identities after they have undergone KYC
         await claimContract.methods.addKey(
-            ownerClaimKey,
+            studentClaimKey,
             KEY_PURPOSES.CLAIM,
-            KEY_PURPOSES.ECDSA,
+            KEY_TYPES.ECDSA,
         ).send({ from: owner })
+
+        // Creates a claim key for faculty claims 
+        const facultyClaimKey = web3.utils.keccak256(facultyClaimHex)
         
-        // Deploys the claimverifier contract with SIT Identity as trusted claim issuer
-        await deployer.deploy(ClaimVerifier, sitIdentity.address, {from: owner})
+        // Used for signing claims for identities after they have undergone KYC
+        await claimContract.methods.addKey(
+            facultyClaimKey,
+            KEY_PURPOSES.CLAIM,
+            KEY_TYPES.ECDSA,
+        ).send({ from: owner })
     })
 };
