@@ -64,11 +64,11 @@ Retrieves the key at the mapped position.
 
 ### Return Values:
 
-- purpose The purpose of the key retrieved.
+- `purpose`: The purpose of the key retrieved.
 
-- keyType The type of the key retrieved.
+- `keyType`: The type of the key retrieved.
 
-- key The mapping position of the key retrieved. (Same as param passed in)
+- `key`: The mapping position of the key retrieved. (Same as param passed in)
 
 ## getKeyPurpose
 
@@ -92,7 +92,7 @@ Gets purpose of the key requested.
 
 ### Return Values:
 
-- purpose The purpose of the key retrieved.
+- `purpose`: The purpose of the key retrieved.
 
 ## getKeysByPurpose
 
@@ -116,7 +116,7 @@ Gets the keys of `_purpose` that the identity owns.
 
 ### Return Values:
 
-- _keys The set of keys that have this `_purpose`.
+- `_keys`: The set of keys that have this `_purpose`.
 
 ## addKey
 
@@ -148,7 +148,7 @@ Adds a new key to the identity contract.
 
 ### Return Values:
 
-- success True if successful.
+- `success`: True if successful.
 
 ## removeKey
 
@@ -172,7 +172,7 @@ Removes a key from the identity contract.
 
 ### Return Values:
 
-- success True if successful.
+- `success`: True if successful.
 
 ## keyHasPurpose
 
@@ -200,4 +200,4 @@ Checks if the key requested has the `purpose` property according to what is requ
 
 ### Return Values:
 
-- result True if successful.
+- `result`: True if successful.

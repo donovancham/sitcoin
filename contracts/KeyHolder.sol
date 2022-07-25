@@ -3,6 +3,7 @@
 pragma solidity ^0.8.0;
 
 import {ERC725} from "./interfaces/ERC725.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 /// @title ERC725v1 Key Holder Contract
 /// @notice Creates an identity that can hold and manage keys
@@ -12,23 +13,9 @@ import {ERC725} from "./interfaces/ERC725.sol";
 /// - `3` = CLAIM
 /// - `4` = ENCRYPTION
 /// Keys are byte32 hashed using the `keccak256()` function.
-contract KeyHolder is ERC725 {
-    // uint256 executionNonce;
-
-    // struct Execution {
-    //     address to;
-    //     uint256 value;
-    //     bytes data;
-    //     bool approved;
-    //     bool executed;
-    // }
-
+contract KeyHolder is ERC725, Ownable {
     mapping(bytes32 => Key) keys;
     mapping(uint256 => bytes32[]) keysByPurpose;
-
-    // mapping (uint256 => Execution) executions;
-
-    // event ExecutionFailed(uint256 indexed executionId, address indexed to, uint256 indexed value, bytes data);
 
     /// @dev Initializes the contract by giving the owner of the identity a `MANAGEMENT` key, which is a proof of administration for the identity.
     constructor() {
@@ -49,6 +36,7 @@ contract KeyHolder is ERC725 {
         public
         view
         override
+        onlyOwner
         returns (
             uint256 purpose,
             uint256 keyType,
@@ -60,8 +48,13 @@ contract KeyHolder is ERC725 {
 
     /// @dev Gets purpose of the key requested.
     /// @param _key The key to be retrieved.
-    /// @return purpose The purpose of the key retrieved. 
-    function getKeyPurpose(bytes32 _key) public view returns (uint256 purpose) {
+    /// @return purpose The purpose of the key retrieved.
+    function getKeyPurpose(bytes32 _key)
+        public
+        view
+        onlyOwner
+        returns (uint256 purpose)
+    {
         return (keys[_key].purpose);
     }
 
@@ -72,6 +65,7 @@ contract KeyHolder is ERC725 {
         public
         view
         override
+        onlyOwner
         returns (bytes32[] memory _keys)
     {
         return keysByPurpose[_purpose];
@@ -86,7 +80,7 @@ contract KeyHolder is ERC725 {
         bytes32 _key,
         uint256 _purpose,
         uint256 _type
-    ) public override returns (bool success) {
+    ) public override onlyOwner returns (bool success) {
         require(keys[_key].key != _key, "Key already exists"); // Key should not already exist
         if (msg.sender != address(this)) {
             require(
@@ -106,65 +100,10 @@ contract KeyHolder is ERC725 {
         return true;
     }
 
-    // function approve(uint256 _id, bool _approve)
-    //     public
-    //     returns (bool success)
-    // {
-    //     require(keyHasPurpose(keccak256(msg.sender), 2), "Sender does not have action key");
-
-    //     emit Approved(_id, _approve);
-
-    //     if (_approve == true) {
-    //         executions[_id].approved = true;
-    //         success = executions[_id].to.call.value(executions[_id].value)(executions[_id].data, 0);
-    //         if (success) {
-    //             executions[_id].executed = true;
-    //             emit Executed(
-    //                 _id,
-    //                 executions[_id].to,
-    //                 executions[_id].value,
-    //                 executions[_id].data
-    //             );
-    //             return;
-    //         } else {
-    //             emit ExecutionFailed(
-    //                 _id,
-    //                 executions[_id].to,
-    //                 executions[_id].value,
-    //                 executions[_id].data
-    //             );
-    //             return;
-    //         }
-    //     } else {
-    //         executions[_id].approved = false;
-    //     }
-    //     return true;
-    // }
-
-    // function execute(address _to, uint256 _value, bytes memory _data)
-    //     public
-    //     payable
-    //     returns (uint256 executionId)
-    // {
-    //     require(!executions[executionNonce].executed, "Already executed");
-    //     executions[executionNonce].to = _to;
-    //     executions[executionNonce].value = _value;
-    //     executions[executionNonce].data = _data;
-
-    //     emit ExecutionRequested(executionNonce, _to, _value, _data);
-
-    //     if (keyHasPurpose(keccak256(msg.sender),1) || keyHasPurpose(keccak256(msg.sender),2)) {
-    //         approve(executionNonce, true);
-    //     }
-
-    //     executionNonce++;
-    //     return executionNonce-1;
-    // }
-
     /// @dev Removes a key from the identity contract.
     /// @param _key The key to be removed.
     /// @return success True if successful.
-    function removeKey(bytes32 _key) public returns (bool success) {
+    function removeKey(bytes32 _key) public override onlyOwner returns (bool success) {
         require(keys[_key].key == _key, "No such key");
         emit KeyRemoved(keys[_key].key, keys[_key].purpose, keys[_key].keyType);
 
@@ -184,12 +123,14 @@ contract KeyHolder is ERC725 {
     function keyHasPurpose(bytes32 _key, uint256 _purpose)
         public
         view
+        onlyOwner
         override
         returns (bool result)
     {
-        bool isThere;
+        // bool isThere;
         if (keys[_key].key == 0) return false;
-        isThere = keys[_key].purpose <= _purpose;
-        return isThere;
+        // isThere = keys[_key].purpose <= _purpose;
+        // return isThere;
+        return keys[_key].purpose <= _purpose;
     }
 }
