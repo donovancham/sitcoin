@@ -28,8 +28,11 @@ contract ClaimHolder is KeyHolder, ERC735 {
         bytes memory _signature,
         bytes memory _data,
         string memory _uri
-    ) public onlyOwner override returns (bytes32 claimRequestId) {
+    ) public override onlyOwner returns (bytes32 claimRequestId) {
         bytes32 claimId = keccak256(abi.encodePacked(_issuer, _topic));
+
+        // Ensure mapping does not already exist
+        require(!(claims[claimId].topic > 0), "Claim already exists");
 
         if (msg.sender != address(this)) {
             require(
@@ -67,8 +70,8 @@ contract ClaimHolder is KeyHolder, ERC735 {
     /// @return success True if successful.
     function removeClaim(bytes32 _claimId)
         public
-        onlyOwner
         override
+        onlyOwner
         returns (bool success)
     {
         if (msg.sender != address(this)) {
@@ -108,6 +111,7 @@ contract ClaimHolder is KeyHolder, ERC735 {
         public
         view
         override
+        onlyOwner
         returns (
             uint256 topic,
             uint256 scheme,
@@ -133,10 +137,26 @@ contract ClaimHolder is KeyHolder, ERC735 {
     function getClaimIdsByTopic(uint256 _topic)
         public
         view
-        onlyOwner
         override
+        onlyOwner
         returns (bytes32[] memory claimIds)
     {
         return claimsByType[_topic];
+    }
+
+
+    function getVerifyData(uint256 _topic, address _issuer)
+        public
+        view
+        returns (bytes memory signature, bytes memory data)
+    {
+        bytes32 _claimId = claimsByType[_topic][0];
+
+        require(_issuer == claims[_claimId].issuer, "Issuer is not valid");
+
+        return (
+            claims[_claimId].signature,
+            claims[_claimId].data
+        );
     }
 }
