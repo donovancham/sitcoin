@@ -37,6 +37,40 @@ In SIT’s push towards a digital campus, the metaverse that it creates will inh
 - [Generating Documentation](docgen/DOCGEN.md)
 
 ## Changelog
+- v1.7.4
+  - Updated documentations
+    - `ClaimHolder.sol`
+    - `ERC725.sol`
+    - `ERC735.sol`
+  - Updated `migrations`
+    - Updated `2_SITcoin_migration.js`
+      - Updated initial minted amount to 10,000,000 SITC (10 mil)
+    - Updated `3_Identity_migration.js`
+      - Removed `ClaimVerifier` deployment
+      - Added **SIT_STUDENT** Claim
+      - Added **SIT_FACULTY** Claim
+- v1.7.3
+  - Changed environment variables calling from `.env` to `.env.local` for web app
+  - Untracked `.env` to be used for storage of sensitive local variables
+  - Completed implementation of identity claims verification system
+    - Updated `scripts/web3Module.js` to include function for getting bytecode from compiled contract JSON
+    - Added new wallet addresses for use with SIT identity claim system
+    - Added `dotenv` package for using local env variables
+    - Implemented JS interface in `scripts/identity.js`
+    - JS verification system due to using `web3.platon.personal.sign` not compatible with `web3.eth.sign`
+    - Removing contract-based verification system
+  - Updated Smart Contracts
+    - Removed `ClaimVerifier.sol`
+    - Updated `ClaimHolder.sol`
+      - Added `getVerifyData()` function for reducing exposure to other elements of claim when verifying identity
+- v1.7.2
+  - Added `Ownable` access control measures for `ClaimHolder.sol` and `KeyHolder.sol`
+  - Clean up unimplemented sections of `ERC725.sol` and `KeyHolder.sol`
+- v1.7.1
+  - Added Migrations for `ClaimHolder.sol` and `ClaimVerifier.sol`
+    - Creates an identity for SIT
+    - Creates a signer key for SIT
+    - Deploys a `ClaimVerifier` to verify identities
 - v1.7
   - Updated Documentations
     - Updated guides for setup and installation
