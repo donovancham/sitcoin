@@ -39,6 +39,25 @@ const getContractAbi = (contract) => {
 }
 
 /**
+ * Gets the contract bytecode from compiled contracts folder
+ * 
+ * @param {string} contract The name of the contract
+ * @returns The bytecode object
+ */
+ const getContractByteCode = (contract) => {
+    try {
+        let filename = path.resolve(__dirname, `../build/contracts/${contract}.json`)
+        let parsed = JSON.parse(fs.readFileSync(filename))
+        
+        return parsed.bytecode
+    }
+    catch (err) {
+        console.log("Contract name does not exist")
+        console.log(err)
+    }
+}
+
+/**
  * Instantiates a `Web3` object using the available connections.
  * Allows connection to two networks:
  * 1 - Platon Development Network 1
@@ -66,5 +85,6 @@ const initWeb3 = (network = 1) => {
 
 module.exports = {
     initWeb3,
-    getContractAbi
+    getContractAbi,
+    getContractByteCode
 }

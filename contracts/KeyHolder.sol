@@ -123,6 +123,7 @@ contract KeyHolder is ERC725, Ownable {
     function keyHasPurpose(bytes32 _key, uint256 _purpose)
         public
         view
+        onlyOwner
         override
         returns (bool result)
     {
