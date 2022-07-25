@@ -84,7 +84,7 @@ Mint a new NFT
 
 ### Return Values:
 
-- The id of the item created.
+- `The`: id of the item created.
 
 ## isOwnerOf
 
@@ -112,7 +112,7 @@ Check if wallet address (user) is owner of a particular NFT
 
 ### Return Values:
 
-- True if the user owns the NFT, false otherwise
+- `True`: if the user owns the NFT, false otherwise
 
 ## getSymbol
 
@@ -130,7 +130,7 @@ Get the symbol of the token
 
 ### Return Values:
 
-- token symbol
+- `token`: symbol
 
 ## getName
 
@@ -148,7 +148,7 @@ Get the name of the token
 
 ### Return Values:
 
-- token name
+- `token`: name
 
 ## myOwnedNFTs
 
@@ -166,9 +166,9 @@ Get the total number of NFT owned (minted and bought) by the user
 
 ### Return Values:
 
-- _myNFTs Number of NFTs the user owns
+- `_myNFTs`: Number of NFTs the user owns
 
-- count Number of NFTs the user owns
+- `count`: Number of NFTs the user owns
 
 ## getMyNFTCreations
 
@@ -186,9 +186,9 @@ Get all the NFT that is created by the author
 
 ### Return Values:
 
-- _myNFTs NFTs created by the author
+- `_myNFTs`: NFTs created by the author
 
-- count Number of NFTs the author created
+- `count`: Number of NFTs the author created
 
 ## getTotalNFTCount
 
@@ -206,7 +206,7 @@ Get total number of NFTs minted
 
 ### Return Values:
 
-- Number of NFTs minted
+- `Number`: of NFTs minted
 
 ## createItem
 
@@ -244,7 +244,7 @@ Purchase NFT from the market
 
 ### Return Values:
 
-- true if item is sold, false if otherwise
+- `true`: if item is sold, false if otherwise
 
 ## unlistItem
 
@@ -262,7 +262,7 @@ Unpublish items on the market
 
 ### Return Values:
 
-- true if item is successfully unlisted, false otherwise
+- `true`: if item is successfully unlisted, false otherwise
 
 ## getaddress
 
@@ -280,7 +280,7 @@ Get the address of current contract
 
 ### Return Values:
 
-- Address of current contract
+- `Address`: of current contract
 
 ## getTotalMarketItems
 
@@ -298,7 +298,7 @@ Get total number of items on the market, excluding unlisted items
 
 ### Return Values:
 
-- Number of items on the market
+- `Number`: of items on the market
 
 ## getAllMarketItems
 
@@ -316,9 +316,9 @@ Get the all items published on the market
 
 ### Return Values:
 
-- allItems sll Market items
+- `allItems`: sll Market items
 
-- count number of Market items
+- `count`: number of Market items
 
 ## getUnsoldItems
 
@@ -336,9 +336,9 @@ Get the all unsold items published on the market
 
 ### Return Values:
 
-- unsold All unsold market items
+- `unsold`: All unsold market items
 
-- count number of unsold Market items
+- `count`: number of unsold Market items
 
 # Events:
 
@@ -360,7 +360,7 @@ NFTListed(uint256 itemId, string title, uint256 tokenId, uint256 price, address 
 
 ```
 
-To emit event when item is newly added onto the market
+To emit event when item is newly added onto the market.
 
 ## NFTPurchased
 
@@ -372,7 +372,7 @@ NFTPurchased(uint256 itemId, uint256 tokenId, uint256 price, address seller, add
 
 ```
 
-To emit event when item is sold on the market
+To emit event when item is sold on the market.
 
 ## MarketItemUnlisted
 
