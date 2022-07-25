@@ -6,6 +6,7 @@ import Web3 from 'web3'
 
 import sitcoin from '../../build/contracts/SITcoin.json'
 
+// Creates the context that can be wrapped around consumers to deliver context
 const WalletContext = createContext()
 const platonMainnet = 100
 const platonDevnet = 210309
@@ -174,6 +175,7 @@ export default function WalletProvider({ children }) {
         }
     }
 
+    // State variables for other pages to get context
     const walletState = {
         account,
         setAccount,

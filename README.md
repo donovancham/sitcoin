@@ -41,6 +41,11 @@ In SIT’s push towards a digital campus, the metaverse that it creates will inh
   - Updated `Wallet.js` UI component
     - Added refresh button
     - Added button locking when account is already connected
+  - Added `NFTMarket.js` Context
+    - Gets information about market from contract
+    - Sets states to be used in `Marketplace.js` component
+  - Update `Header.js` component
+    - Removed placeholder links on navbar
 - v1.7.5
   - Removed sensitive data from the main commits
   - Rebased heads but PRs refs unable to update

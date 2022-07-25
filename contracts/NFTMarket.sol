@@ -262,10 +262,6 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
         return NFTCount;
     }
 
-
-
-
-
     /**
      * @dev Add NFT into the market for purchase
      * @param _tokenId Token identifier number

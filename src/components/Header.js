@@ -3,6 +3,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import Image from "next/image";
+import Link from 'next/link'
 
 import { connectSamurai, useWalletContext } from '../context/WalletContext';
 
@@ -60,9 +61,8 @@ export default function Header() {
                 <Navbar.Brand href="/">
                     SIT Metaverse
                 </Navbar.Brand>
-                <Nav.Link href="#action1">Home</Nav.Link>
-                <Nav.Link href="#action1">Home</Nav.Link>
-                <Nav.Link href="#action1">Home</Nav.Link>
+                {/* Insert any navigation links you need here */}
+                {/* <Nav.Link href="/">Home</Nav.Link> */}
                 <Navbar.Collapse className="justify-content-end">
                     {/* Refresh Button */}
                     <Navbar.Text>

@@ -18,7 +18,7 @@ import DOMPurify from 'isomorphic-dompurify';
 import { useWalletContext } from '../context/WalletContext';
 
 export default function Wallet() {
-    // Loads context variables
+    // Load context variables
     const {
         account,
         network,
@@ -43,7 +43,7 @@ export default function Wallet() {
         await tokenContract.methods.transfer(to, amount).estimateGas({ from: account })
             .then( async (gasAmount) => {
                 console.log(`Estimated gas = ${gasAmount}`)
-                tokenContract.methods.transfer(to, amount).send({ from: account, gas: gasAmount * 2 })
+                await tokenContract.methods.transfer(to, amount).send({ from: account, gas: gasAmount * 2 })
                 .then( (receipt) => {
                     console.log(receipt)
 
@@ -143,7 +143,7 @@ export default function Wallet() {
         return true
     }
 
-    const handleSubmit = (event) => {
+    const transferTokens = (event) => {
         if (tokenBalance === undefined) {
             Notify.failure('Please connect wallet before transferring', {
                 clickToClose: true
@@ -170,7 +170,7 @@ export default function Wallet() {
         else {
             // Check if address is valid
             if (web3.utils.isBech32Address(address) === false) {
-                Notify.failure('Address is not ATON bech32 format!', {
+                Notify.failure('Address is not PlatON bech32 format!', {
                     clickToClose: true
                 })
                 event.preventDefault();
@@ -269,7 +269,7 @@ export default function Wallet() {
                             <Card.Body>
                                 <Card.Title>Transfer Tokens</Card.Title>
                                 {/* Transfer tokens form */}
-                                <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                                <Form noValidate validated={validated} onSubmit={transferTokens}>
                                     {/* Address Input */}
                                     <Form.Group className="mb-3" controlId="transferAddress">
                                         <Form.Label className='h6'>Receiver Address</Form.Label>
