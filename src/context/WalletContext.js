@@ -24,7 +24,7 @@ export default function WalletProvider({ children }) {
     const [tokenSymbol, setTokenSymbol] = useState()
     const [tokenSupply, setTokenSupply] = useState()
     const [tokenBalance, setTokenBalance] = useState()
-    const [refresh, setRefresh] = useState(false)
+    const [refresh, setRefresh] = useState(0)
 
     // Runs once during rendering phase.
     useEffect(() => {
@@ -53,23 +53,9 @@ export default function WalletProvider({ children }) {
     
                 console.log(`Current Network: ${network}`)
             }
-            
-            // Reset refresh if it is set
-            if (refresh) {
-                setRefresh(false)
-                // Refreshes the contract states when called
-                getContractInfo()
-            }
-            // Load user info when account is connected
-            else if (account) {
-                if (getContractInfo() === false) {
-                    Notify.warning('Contract Loading... Click to retry.', {
-                        clickToClose: true,
-                        timeout: 100000
-                    }, () => {
-                        getContractInfo();
-                    })
-                }
+
+            if (account) {
+                getContractInfo();
             }
 
             // Change handler for the account switching
@@ -116,7 +102,7 @@ export default function WalletProvider({ children }) {
 
     const initializeWeb3 = async () => {
         // Initialize web3 instance
-        let web3Instance = await new Web3(platon)
+        let web3Instance = new Web3(platon)
         // Initialize Contract object
         let contract = await new web3Instance.platon.Contract(sitcoin.abi, sitcoinAddress)
 
@@ -136,15 +122,6 @@ export default function WalletProvider({ children }) {
             })
             : setTokenContract(contract)
     }
-
-    // const loadContractObject = async () => {
-    //     if (tokenContract === undefined) {
-    //         let contract = await new web3.platon.Contract(sitcoin.abi, sitcoinAddress)
-    //         setTokenContract(contract)
-
-    //         console.log(`Contract Obj: ${tokenContract}`)
-    //     }
-    // }
 
     const getContractInfo = async () => {
         try {
@@ -186,6 +163,7 @@ export default function WalletProvider({ children }) {
         tokenSupply,
         tokenBalance,
         web3,
+        refresh,
         setRefresh,
         getContractInfo,
     }

@@ -1,5 +1,7 @@
 # `Market`
 
+The predecessor to the NFT Market. It serves as an initial draft to plan out the infrastructure to be used for the NFT Market contract.
+
 # Functions:
 
 - [`constructor(address _sitcoin)`](#Market-constructor-address-)
@@ -32,13 +34,17 @@
 
 function constructor(
 
+  address _sitcoin
+
 ) public
 
 ```
 
-Sets the SITCoin instance
+Constructor that initializes the market contract. Requires the token contract to be initialized together.
 
- First deploy token contract and then deploy this contract.
+### Parameters:
+
+- `_sitcoin`: The address of the token contract to be used in the market.
 
 ## createItem
 
@@ -48,15 +54,25 @@ Sets the SITCoin instance
 
 function createItem(
 
-) external returns (uint256)
+  string description,
+
+  uint256 price
+
+) external returns (uint256 _id)
 
 ```
 
 Creates a new item in the market.
 
+### Parameters:
+
+- `description`: The description of the new `item`.
+
+- `price`: The price of the new `item`.
+
 ### Return Values:
 
-- `The`: current token ID of the new item.
+- `_id`: The current token ID of the new item.
 
 ## unlistItem
 
@@ -66,11 +82,21 @@ Creates a new item in the market.
 
 function unlistItem(
 
-) external returns (bool)
+  uint256 _itemId
+
+) external returns (bool _success)
 
 ```
 
-Seller can remove/unlist unsold item(s) from the market
+Seller can remove/unlist unsold item(s) from the market 
+
+### Parameters:
+
+- `_itemId`: The ID of the `item` to be unlisted.
+
+### Return Values:
+
+- `_success`: Indicates whether the item was successfully removed.
 
 ## purchaseItem
 
@@ -80,11 +106,21 @@ Seller can remove/unlist unsold item(s) from the market
 
 function purchaseItem(
 
-) external returns (bool)
+  uint256 _itemId
+
+) external returns (bool _success)
 
 ```
 
 Buy items from the market
+
+### Parameters:
+
+- `_itemId`: The ID of the `item` to be bought.
+
+### Return Values:
+
+- `_success`: Indicates whether the `item` is successfully bought.
 
 ## getItem
 
@@ -94,15 +130,21 @@ Buy items from the market
 
 function getItem(
 
-) external returns (struct Market.Item)
+  uint256 _itemId
+
+) external returns (struct Market.Item _item)
 
 ```
 
-Get specific item details
+Gets the information pertaining to an item.
+
+### Parameters:
+
+- `_itemId`: The ID of the `item` to retrieve the info from.
 
 ### Return Values:
 
-- `Object`: of selected item
+- `_item`: The `item` object.
 
 ## checkItemExist
 
@@ -114,7 +156,7 @@ function checkItemExist(
 
   uint256 _itemId
 
-) public returns (bool)
+) public returns (bool _success)
 
 ```
 
@@ -122,11 +164,11 @@ Check if specific item exists in the market
 
 ### Parameters:
 
-- `_itemId`: id of the item to check
+- `_itemId`: id of the item to check.
 
 ### Return Values:
 
-- `true`: if item exists, false otherwise
+- `_success`: true if item exists, false otherwise.
 
 ## getItemCount
 
@@ -136,7 +178,7 @@ Check if specific item exists in the market
 
 function getItemCount(
 
-) public returns (uint256)
+) public returns (uint256 _totalItemCount)
 
 ```
 
@@ -144,7 +186,7 @@ Shows the count of items in the market (includes sold, unlisted and listed items
 
 ### Return Values:
 
-- `total`: count
+- `_totalItemCount`: The total number of items in the market.
 
 ## getSoldItemCount
 
@@ -154,7 +196,7 @@ Shows the count of items in the market (includes sold, unlisted and listed items
 
 function getSoldItemCount(
 
-) public returns (uint256)
+) public returns (uint256 _soldItemCount)
 
 ```
 
@@ -162,7 +204,7 @@ Show all the count of sold items in the market.
 
 ### Return Values:
 
-- `count`: of sold items
+- `_soldItemCount`: count of sold items.
 
 ## getUnsoldItems
 
@@ -172,15 +214,15 @@ Show all the count of sold items in the market.
 
 function getUnsoldItems(
 
-) external returns (struct Market.Item[])
+) external returns (struct Market.Item[] _unsoldItemArray)
 
 ```
 
-Show all unsold items in the market
+Show all unsold items in the market.
 
 ### Return Values:
 
-- `array`: of all unsold items
+- `_unsoldItemArray`: array of all unsold items.
 
 ## getAllItems
 
@@ -190,15 +232,15 @@ Show all unsold items in the market
 
 function getAllItems(
 
-) external returns (struct Market.Item[])
+) external returns (struct Market.Item[] _listedItemsArray)
 
 ```
 
-Show all listed items in the market
+Show all listed items in the market.
 
 ### Return Values:
 
-- `array`: of all items
+- `_listedItemsArray`: array of all items.
 
 ## getaddress
 
@@ -208,7 +250,7 @@ Show all listed items in the market
 
 function getaddress(
 
-) public returns (address)
+) public returns (address _contractAddress)
 
 ```
 
@@ -216,11 +258,11 @@ Get the current contract address
 
 ### Return Values:
 
-- `address`: of current contract
+- `_contractAddress`: address of current contract
 
 # Events:
 
-- [`ItemCreated(uint256 id, string description, address seller, address buyer, uint256 price, bool sold)`](#Market-ItemCreated-uint256-string-address-address-uint256-bool-)
+- [`ItemCreated(uint256 id, string description, uint256 price)`](#Market-ItemCreated-uint256-string-uint256-)
 
 - [`ItemUnlisted(uint256 id, bool success)`](#Market-ItemUnlisted-uint256-bool-)
 
@@ -234,11 +276,19 @@ Get the current contract address
 
 ```Solidity
 
-ItemCreated(uint256 id, string description, address seller, address buyer, uint256 price, bool sold)
+ItemCreated(uint256 id, string description, uint256 price)
 
 ```
 
-No description
+Event should be fired when an item is created.
+
+### Parameters:
+
+- `id`: The identifier number of the item.
+
+- `description`: The item description.
+
+- `price`: The price of the item.
 
 ## ItemUnlisted
 
@@ -250,7 +300,13 @@ ItemUnlisted(uint256 id, bool success)
 
 ```
 
-No description
+Event should be fired when an item is attempted to be removed from listing.
+
+### Parameters:
+
+- `id`: The identifier number of the item.
+
+- `success`: Indicates whether the item is successfully unlisted.
 
 ## ItemPurchased
 
@@ -262,7 +318,17 @@ ItemPurchased(uint256 id, address buyer, uint256 price, bool success)
 
 ```
 
-No description
+Event should be fired when an item is purchased
+
+### Parameters:
+
+- `id`: The identifier number of the item.
+
+- `buyer`: The address of the buyer account if the item has been bought.
+
+- `price`: The price of the item.
+
+- `success`: Indicates whether the item is successfully purchased.
 
 ## ErrorMsg
 
@@ -274,4 +340,8 @@ ErrorMsg(string errorMessage)
 
 ```
 
-No description
+Event should be fired when an error has occurred
+
+### Parameters:
+
+- `errorMessage`: The error message that should be logged.

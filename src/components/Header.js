@@ -8,7 +8,7 @@ import Link from 'next/link'
 import { connectSamurai, useWalletContext } from '../context/WalletContext';
 
 export default function Header() {
-    const { setRefresh, account, setAccount, web3 } = useWalletContext()
+    const { refresh, setRefresh, account, setAccount, web3 } = useWalletContext()
 
     const connectButton = () => {
         return (
@@ -22,7 +22,7 @@ export default function Header() {
                     }
                     else {
                         // Refresh information
-                        setRefresh(true)
+                        setRefresh(refresh + 1)
                     }
                 }
             }}>
@@ -42,12 +42,7 @@ export default function Header() {
     const refreshButton = () => {
         return (
             <Button variant="outline-dark" size="md" onClick={async () => {
-                // Ensure that samurai connected
-                let result = await connectSamurai(web3)
-                if (result !== false) {
-                    // Refresh information
-                    setRefresh(true)
-                }
+                setRefresh(refresh + 1)
             }}>
                 Refresh
             </Button>
@@ -62,7 +57,7 @@ export default function Header() {
                     SIT Metaverse
                 </Navbar.Brand>
                 {/* Insert any navigation links you need here */}
-                {/* <Nav.Link href="/">Home</Nav.Link> */}
+                <Nav.Link href="/nftmarket">NFT Market</Nav.Link>
                 <Navbar.Collapse className="justify-content-end">
                     {/* Refresh Button */}
                     <Navbar.Text>

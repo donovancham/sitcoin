@@ -14,6 +14,7 @@ const spawnSync = require("child_process").spawnSync;
 // const excludeList  = lines(EXCLUDE_FILE).map(line => INPUT_DIR + "/" + line);
 const excludeList = fs.readFileSync(EXCLUDE_FILE).toString().split("\n");
 const relativePath = path.relative(path.dirname(SUMMARY_FILE), OUTPUT_DIR);
+const DIAGRAM_DIR = path.relative(path.dirname(SUMMARY_FILE), "./docgen/diagrams");
 
 function lines(pathName) {
     return fs.readFileSync(pathName, {encoding: "utf8"}).split("\r").join("").split("\n");
@@ -44,7 +45,31 @@ function fix(pathName) {
     }
 }
 
-fs.writeFileSync (SUMMARY_FILE, "# Summary\n");
+fs.writeFileSync (SUMMARY_FILE, "# SITCOIN Docs\n");
+fs.appendFileSync(SUMMARY_FILE, `
+## Documentation Generator
+1. Ensure that \`solidity-docgen\` is installed to version **0.5.11**. If this project is cloned you can just run \`npm i\` to install dependencies.
+
+2. Make sure that the \`solc\` is installed with alias \`solc-0.8.6\`.
+\`\`\`sh
+npm i -D solc-0.8.6@npm:solc@0.8.6
+\`\`\`
+
+3. Run the documentation script to generate the docs
+\`\`\`sh
+npm run docify
+\`\`\`
+
+## Editing Documentation Template
+Edit the \`contract.hbs\` file in the \`docgen/\` folder to change the structure and generation of docs.
+`);
+// Add diagrams
+fs.appendFileSync(SUMMARY_FILE, `## UML Diagrams\n`);
+fs.appendFileSync(SUMMARY_FILE, `### SITCOIN Token component:\n![SITCOIN Token Component UML](${DIAGRAM_DIR}/sitcoin.png)\n`);
+fs.appendFileSync(SUMMARY_FILE, `### NFT Market component:\n![NFT Market Component UML](${DIAGRAM_DIR}/nft-market.png)\n`);
+fs.appendFileSync(SUMMARY_FILE, `### Digital Identity component:\n![Digital Identity Component UML](${DIAGRAM_DIR}/digital-identity.png)\n`);
+fs.appendFileSync(SUMMARY_FILE, `## Contract Documentation Links\n`);
+
 // fs.writeFileSync (".gitbook.yaml", "root: ./\n");
 // fs.appendFileSync(".gitbook.yaml", "structure:\n");
 // fs.appendFileSync(".gitbook.yaml", "  readme: " + README_FILE + "\n");
