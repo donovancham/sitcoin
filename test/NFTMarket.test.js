@@ -12,7 +12,6 @@ contract("NFTMarket", () => {
     var user2 = dev2;
     var user2hex = dev2hex;
     var user3 = dev3;
-    //var URI = "SampleLink";
 
     beforeEach(async () => {
         sitc = await SITcoin.deployed()

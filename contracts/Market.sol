@@ -6,8 +6,6 @@ import {SITcoin} from "./SITcoin.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-//import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-
 /// @title Market Contract
 /// @notice Creates a market where items can be traded.
 /// @dev The predecessor to the NFT Market. It serves as an initial draft to plan out the infrastructure to be used for the NFT Market contract.
