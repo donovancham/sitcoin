@@ -283,7 +283,7 @@ const main = (async () => {
     )
 
     // Create signature from successful claim
-    const signature = await web3.platon.personal.sign(hashedData, studentClaim, process.env.PW)
+    const signature = await web3.platon.personal.sign(hashedData, studentClaim, process.env.STUDENT_CLAIM_PW)
 
     console.log(`Signature: ${signature} (${signature.length})\n`)
 

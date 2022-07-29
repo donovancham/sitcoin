@@ -4,6 +4,12 @@ The purpose of this project is to create a meticulously designed and defined uni
 In SIT’s push towards a digital campus, the metaverse that it creates will inherently have a digital economy where a university cryptocurrency (`$SITC`) will be the fundamental basic currency within this ecosystem. And it is of equally, if not more, vital importance that cryptocurrency is designed and defined properly. The aim is to utilize the virtual campus and `$SITC` to build a cohesive environment for SIT, both virtually and physically.
 
 ## SITCOIN Poster
+![SITCOIN Poster](docgen/poster/ITP_Gp14_SITCoinInitiative_Poster.jpg)
+
+## Poster Video
+You may watch the poster video for a short 5 minute summary of the project.
+
+[![SITCOIN Poster Thumbnail](https://img.youtube.com/vi/4fBHaSYol2I/0.jpg)](https://www.youtube.com/watch?v=4fBHaSYol2I)
 
 ## Dependencies
 
@@ -40,6 +46,12 @@ In SIT’s push towards a digital campus, the metaverse that it creates will inh
 - [Generating Documentation](docgen/DOCGEN.md)
 
 ## Changelog
+- v1.7.9
+  - Updated tests
+    - Commented out `console.log` to improve result printing in Market
+    - Fixed `NFTMarket.sol` tests
+  - Updated main page
+    - Added poster and poster video elements to improve project description in `README`
 - v1.7.8
   - Updated `refresh` state in `WalletContext.js`
     - Changed from `bool` to `int`

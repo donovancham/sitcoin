@@ -196,4 +196,9 @@ node scripts/transferToken.js
 
 # Run Web3 dApp
 1. Ensure you are in project root folder
-2. `npm run dev`
+2. Add `.env` file in project root. Add the following code
+```
+STUDENT_CLAIM_PW="<student claim account password>"
+FACULTY_CLAIM_PW="<faculty claim account password>"
+```
+3. `npm run dev`

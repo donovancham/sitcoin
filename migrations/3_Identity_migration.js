@@ -33,6 +33,7 @@ module.exports = (deployer) => {
 
         // Initializes the contract for calling
         const claimContract = new web3.platon.Contract(getContractAbi('ClaimHolder'), sitIdentity.address)
+        
         // Creates a claim key for student claims
         const studentClaimKey = web3.utils.keccak256(studentClaimHex)
         
