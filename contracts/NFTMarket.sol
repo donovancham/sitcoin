@@ -8,13 +8,23 @@ import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 // for NFT
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 // for Token transaction
-//import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {SITcoin} from "./SITcoin.sol";
 
-/// 
+/// @title NFT Market Contract
+/// @notice Creates an NFT market where minted NFT items can be traded.
+/// @dev NFT Market that only has NFT item up for sale. NFT has to be minted first before it can be listed onto the market for sale. It is a derivative of the Market contract.
 contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
     /**
-     * @dev To track minted NFTs and items on the market.
+    * @dev To track minted NFTs and items on the market.
+    * @member tokenId The identifier number of the item.
+    * @member description The item description.
+    * @member price The price of the item.
+    * @member author The address of the user that minted the NFT.
+    * @member seller The address of the seller account.
+    * @member owner The address of the buyer account if the item has been bought.
+    * @member sold Indicates whether the item has been sold.
+    * @member published Indicates whether the item exists on the market.
+    * @member nft The address of the NFT contract.
      */
     struct NFT {
         uint256 tokenId; //id of NFT in PRC721
