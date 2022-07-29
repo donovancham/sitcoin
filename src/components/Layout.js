@@ -12,7 +12,7 @@ export default function Layout({ children }) {
 
     return (
         <WalletContext>
-            <Container className="container-fluid">
+            <Container fluid>
                 <Head>
                     <title>SIT Metaverse</title>
                     <meta charSet="UTF-8" />

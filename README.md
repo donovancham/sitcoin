@@ -3,6 +3,8 @@ The purpose of this project is to create a meticulously designed and defined uni
 
 In SIT’s push towards a digital campus, the metaverse that it creates will inherently have a digital economy where a university cryptocurrency (`$SITC`) will be the fundamental basic currency within this ecosystem. And it is of equally, if not more, vital importance that cryptocurrency is designed and defined properly. The aim is to utilize the virtual campus and `$SITC` to build a cohesive environment for SIT, both virtually and physically.
 
+## SITCOIN Poster
+
 ## Dependencies
 
 ### Environment Dependencies
@@ -25,6 +27,7 @@ In SIT’s push towards a digital campus, the metaverse that it creates will inh
 - @babel/core
 - Bootstrap
 - IPFS HTTP Client (Used for connecting to IPFS)
+- isomorphic-dompurify
 - Next JS
 - Notiflix (JS library for notifications, popups etc.)
 - React JS
@@ -37,6 +40,24 @@ In SIT’s push towards a digital campus, the metaverse that it creates will inh
 - [Generating Documentation](docgen/DOCGEN.md)
 
 ## Changelog
+- v1.7.8
+  - Updated `refresh` state in `WalletContext.js`
+    - Changed from `bool` to `int`
+- v1.7.7
+  - Updated documentation
+    - Added diagrams for smart contract documentation summary
+    - Added documentation for `Market.sol`
+    - Added documentation for `NFTMarket.sol`
+    - Update `docify.js` to auto generate better Summary file
+- v1.7.6
+  - Updated `Wallet.js` UI component
+    - Added refresh button
+    - Added button locking when account is already connected
+  - Added `NFTMarket.js` Context
+    - Gets information about market from contract
+    - Sets states to be used in `Marketplace.js` component
+  - Update `Header.js` component
+    - Removed placeholder links on navbar
 - v1.7.5
   - Removed sensitive data from the main commits
   - Rebased heads but PRs refs unable to update

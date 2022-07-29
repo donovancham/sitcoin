@@ -11,6 +11,7 @@ import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 //import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {SITcoin} from "./SITcoin.sol";
 
+/// 
 contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
     /**
      * @dev To track minted NFTs and items on the market.
@@ -27,19 +28,25 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
         string uri;
         ERC721 nft;
     }
-
-    /**
-     * @dev To emit event when item is newly added onto the market.
-     */
+    
+    /// @dev To emit event when item is newly added onto the market.
+    /// @param tokenId The ID of the NFT minted.
+    /// @param description The description of the NFT item.
+    /// @param price The price of the NFT item.
+    /// @param seller The address of the seller account.
     event NFTListed(
-        uint256 tokenId, //id of item on the market
-        string title,
+        uint256 tokenId, // NFT ID
+        string description,
         uint256 price,
         address indexed seller
     );
-    /**
-     * @dev To emit event when item is sold on the market.
-     */
+    
+    /// @dev To emit event when item is sold on the market.
+    /// @param itemId The ID of the item in the market.
+    /// @param tokenId The NFT ID.
+    /// @param price The price of the item.
+    /// @param seller The address of the seller account.
+    /// @param buyer The address of the buyer account.
     event NFTPurchased(
         uint256 itemId,  //id of item on the market
         uint256 tokenId,
@@ -47,16 +54,17 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
         address indexed seller,
         address indexed buyer
     );
-    /**
-     * @dev To emit event when item is unlisted on the market
-     */
+    
+    /// @dev To emit event when item is unlisted on the market.
+    /// @param itemId The ID of the item in the market.
+    /// @param success Indicates whether the action performed is successful. 
     event MarketItemUnlisted(
         uint256 itemId,
         bool success
     );
-    /**
-     * @dev To emit event when transactional error occurs
-    */
+
+    /// @dev To emit event when transactional error occurs. Used to log error messages on the chain.
+    /// @param errorMessage The error message to be logged.
     event ErrorMsg(
         string errorMessage
     );
@@ -76,20 +84,19 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
     mapping(uint256 => NFT) public mintedNFTs;
 
     /** 
-     * @dev Sets the token properties and stores the SITCoin instance
-     * @param _sitcoin Address of SITcoin contract
-     * First deploy token contract and then deploy this contract.
+     * @dev Sets the token properties and stores the SITCoin instance. First deploy token contract and then deploy this contract.
+     * @param _sitcoin Address of SITcoin contract.
      */
     constructor(address _sitcoin) ERC721("SITC NFT", "SITC") {
         sitcoin = SITcoin(_sitcoin);
     }
 
     /**
-     * @dev Mint a new NFT
+     * @dev Mint a new NFT.
      * @param description Description of the NFT.
-     * @param _tokenURI Link to the digital asset
-     * @param _price Price of the NFT
-     * @return The id of the item created.
+     * @param _tokenURI Link to the digital asset.
+     * @param _price Price of the NFT.
+     * @return _itemID The id of the item created.
      */
     function mint(
         string memory description,
@@ -97,7 +104,7 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
         uint256 _price,
         ERC721 _nft
     ) 
-        external returns (uint256) 
+        external returns (uint256 _itemID) 
     {
         require(_price > 0, 'The price have to be more than 0');
         require(bytes(description).length > 0, 'The description cannot be empty');
@@ -109,8 +116,6 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
         _safeMint(msg.sender, NFTCount);
         // maps token ID to token URI
         _setTokenURI(NFTCount, _tokenURI);
-
-        
         
         mintedNFTs[NFTCount] = NFT (
             NFTCount,
@@ -128,15 +133,15 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
     }
 
     /**
-    * @dev Check if wallet address (user) is owner of a particular NFT
-    * @param tokenId The token ID of the NFT to be checked
-    * @param account The account number to check against
-    * @return True if the user owns the NFT, false otherwise
+    * @dev Check if wallet address (user) is owner of a particular NFT.
+    * @param tokenId The token ID of the NFT to be checked.
+    * @param account The account number to check against.
+    * @return _success True if the user owns the NFT, false otherwise.
     */
     function isOwnerOf(uint256 tokenId, address account)
         public
         view
-        returns (bool)
+        returns (bool _success)
     {
         address owner = ownerOf(tokenId);
         if (owner != address(0)) {
@@ -147,26 +152,27 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
     }
 
     /**
-     * @dev Get the symbol of the token
-     * @return token symbol
+     * @dev Get the symbol of the token.
+     * @return _symbol token symbol
      */
-    function getSymbol() external view returns (string memory) {
+    function getSymbol() external view returns (string memory _symbol) {
         return symbol(); // SITC
     }
 
     /**
-     * @dev Get the name of the token
-     * @return token name
+     * @dev Get the name of the token.
+     * @return _name token name
      */
-    function getName() external view returns (string memory) {
+    function getName() external view returns (string memory _name) {
         return name(); //SITC NFT
     }
 
     /**
-     * @dev Check if a specific NFT is minted or not
-     * @return true if the NFT is minted else false
+     * @dev Check if a specific NFT is minted or not.
+     * @param _tokenId The ID of the NFT.
+     * @return _nftMinted true if the NFT is minted else false.
      */
-    function checkNFTExist(uint256 _tokenId) internal view returns (bool) {
+    function checkNFTExist(uint256 _tokenId) internal view returns (bool _nftMinted) {
         // Item id cannot be below 0
         if (_tokenId > 0 && mintedNFTs[_tokenId].author != address(0)) {
             return true;
@@ -176,9 +182,9 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
     }
 
     /**
-     * @dev Get the total number of NFT owned (minted and bought) by the user
-     * @return _myNFTs Number of NFTs the user owns
-     * @return count Number of NFTs the user owns
+     * @dev Get the total number of NFT owned (minted and bought) by the user.
+     * @return _myNFTs Number of NFTs the user owns.
+     * @return count Number of NFTs the user owns.
      */
     function myOwnedNFTs() external view returns (NFT[] memory _myNFTs, uint256 count)
     {
@@ -206,8 +212,9 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
     }
 
     /**
-     * @dev Get the total number of NFT minted by user
-     * @return count Number of NFTs the author created
+     * @dev Get the total number of NFT minted by user.
+     * @param author The address of the NFT creator.
+     * @return count Number of NFTs the author created.
      */
     function getMyCreationCount(address author) internal view returns (uint256 count) {
     
@@ -223,9 +230,9 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
     }
 
     /**
-     * @dev Get all the NFT that is created by the author
-     * @return _myNFTs NFTs created by the author
-     * @return count Number of NFTs the author created
+     * @dev Get all the NFT that is created by the author.
+     * @return _myNFTs NFTs created by the author.
+     * @return count Number of NFTs the author created.
      */
     function getMyNFTCreations() external view returns (NFT[] memory _myNFTs, uint256 count)
     {
@@ -255,20 +262,16 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
     }
 
     /**
-     * @dev Get total number of NFTs minted
-     * @return Number of NFTs minted
+     * @dev Get total number of NFTs minted.
+     * @return totalNftCount Number of NFTs minted.
      */
-    function getTotalNFTCount() external view returns (uint256) {
+    function getTotalNFTCount() external view returns (uint256 totalNftCount) {
         return NFTCount;
     }
 
-
-
-
-
     /**
-     * @dev Add NFT into the market for purchase
-     * @param _tokenId Token identifier number
+     * @dev Add NFT into the market for purchase.
+     * @param _tokenId Token identifier number.
      */
     function createItem(uint256 _tokenId) external nonReentrant 
     {
@@ -297,13 +300,14 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
     }
 
     /**
-     * @dev Purchase NFT from the market
-     * @return true if item is sold, false if otherwise
+     * @dev Purchase NFT from the market.
+     * @param _tokenId The ID of the NFT item.
+     * @return _success true if item is sold, false if otherwise.
      */
     function purchaseItem(uint256 _tokenId)
         external
         nonReentrant
-        returns (bool)
+        returns (bool _success)
     {
         // Check if item for purchase exist on the market
         NFT storage marketItem = mintedNFTs[_tokenId];
@@ -340,9 +344,10 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
 
     /**
      * @dev Unpublish items on the market
-     * @return true if item is successfully unlisted, false otherwise
+     * @param _tokenId The ID of the NFT item.
+     * @return _success true if item is successfully unlisted, false otherwise
      */
-     function unlistItem(uint256 _tokenId) external nonReentrant returns (bool)
+     function unlistItem(uint256 _tokenId) external nonReentrant returns (bool _success)
      {
         // check if item exist on the market
         require(marketItemExist(_tokenId), "Item does not exist");
@@ -370,16 +375,18 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
      
     /**
      * @dev Get the address of current contract
-     * @return Address of current contract
+     * @return contractAddress Address of current contract
      */
-    function getaddress() public view returns (address) {
+    function getaddress() public view returns (address contractAddress) {
         return address(this);
     }
+
     /** 
      * @dev Check if item exist in the market
-     * @return true if item exist, false if not
+     * @param _tokenId The ID of the NFT item.
+     * @return itemExists true if item exist, false if not
      */
-    function marketItemExist(uint256 _tokenId) internal view returns (bool) {
+    function marketItemExist(uint256 _tokenId) internal view returns (bool itemExists) {
         // Item id cannot be below 0
         if (_tokenId > 0) {
             // Get the item at the index
@@ -394,9 +401,9 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
 
     /**
      * @dev Get total number of items on the market, excluding unlisted items
-     * @return Number of items on the market
+     * @return marketItemCount Number of items on the market
      */
-    function getTotalMarketItems() external view returns (uint256) {
+    function getTotalMarketItems() external view returns (uint256 marketItemCount) {
         return MarketItemCount - unlistedItemCount;
     }
 

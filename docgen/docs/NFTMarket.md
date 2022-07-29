@@ -46,13 +46,11 @@ function constructor(
 
 ```
 
-Sets the token properties and stores the SITCoin instance
+Sets the token properties and stores the SITCoin instance. First deploy token contract and then deploy this contract.
 
 ### Parameters:
 
-- `_sitcoin`: Address of SITcoin contract
-
-First deploy token contract and then deploy this contract.
+- `_sitcoin`: Address of SITcoin contract.
 
 ## mint
 
@@ -68,23 +66,23 @@ function mint(
 
   uint256 _price
 
-) external returns (uint256)
+) external returns (uint256 _itemID)
 
 ```
 
-Mint a new NFT
+Mint a new NFT.
 
 ### Parameters:
 
 - `description`: Description of the NFT.
 
-- `_tokenURI`: Link to the digital asset
+- `_tokenURI`: Link to the digital asset.
 
-- `_price`: Price of the NFT
+- `_price`: Price of the NFT.
 
 ### Return Values:
 
-- `The`: id of the item created.
+- `_itemID`: The id of the item created.
 
 ## isOwnerOf
 
@@ -98,21 +96,21 @@ function isOwnerOf(
 
   address account
 
-) public returns (bool)
+) public returns (bool _success)
 
 ```
 
-Check if wallet address (user) is owner of a particular NFT
+Check if wallet address (user) is owner of a particular NFT.
 
 ### Parameters:
 
-- `tokenId`: The token ID of the NFT to be checked
+- `tokenId`: The token ID of the NFT to be checked.
 
-- `account`: The account number to check against
+- `account`: The account number to check against.
 
 ### Return Values:
 
-- `True`: if the user owns the NFT, false otherwise
+- `_success`: True if the user owns the NFT, false otherwise.
 
 ## getSymbol
 
@@ -122,15 +120,15 @@ Check if wallet address (user) is owner of a particular NFT
 
 function getSymbol(
 
-) external returns (string)
+) external returns (string _symbol)
 
 ```
 
-Get the symbol of the token
+Get the symbol of the token.
 
 ### Return Values:
 
-- `token`: symbol
+- `_symbol`: token symbol
 
 ## getName
 
@@ -140,15 +138,15 @@ Get the symbol of the token
 
 function getName(
 
-) external returns (string)
+) external returns (string _name)
 
 ```
 
-Get the name of the token
+Get the name of the token.
 
 ### Return Values:
 
-- `token`: name
+- `_name`: token name
 
 ## myOwnedNFTs
 
@@ -162,13 +160,13 @@ function myOwnedNFTs(
 
 ```
 
-Get the total number of NFT owned (minted and bought) by the user
+Get the total number of NFT owned (minted and bought) by the user.
 
 ### Return Values:
 
-- `_myNFTs`: Number of NFTs the user owns
+- `_myNFTs`: Number of NFTs the user owns.
 
-- `count`: Number of NFTs the user owns
+- `count`: Number of NFTs the user owns.
 
 ## getMyNFTCreations
 
@@ -182,13 +180,13 @@ function getMyNFTCreations(
 
 ```
 
-Get all the NFT that is created by the author
+Get all the NFT that is created by the author.
 
 ### Return Values:
 
-- `_myNFTs`: NFTs created by the author
+- `_myNFTs`: NFTs created by the author.
 
-- `count`: Number of NFTs the author created
+- `count`: Number of NFTs the author created.
 
 ## getTotalNFTCount
 
@@ -198,15 +196,15 @@ Get all the NFT that is created by the author
 
 function getTotalNFTCount(
 
-) external returns (uint256)
+) external returns (uint256 totalNftCount)
 
 ```
 
-Get total number of NFTs minted
+Get total number of NFTs minted.
 
 ### Return Values:
 
-- `Number`: of NFTs minted
+- `totalNftCount`: Number of NFTs minted.
 
 ## createItem
 
@@ -222,11 +220,11 @@ function createItem(
 
 ```
 
-Add NFT into the market for purchase
+Add NFT into the market for purchase.
 
 ### Parameters:
 
-- `_tokenId`: Token identifier number
+- `_tokenId`: Token identifier number.
 
 ## purchaseItem
 
@@ -236,15 +234,21 @@ Add NFT into the market for purchase
 
 function purchaseItem(
 
-) external returns (bool)
+  uint256 _tokenId
+
+) external returns (bool _success)
 
 ```
 
-Purchase NFT from the market
+Purchase NFT from the market.
+
+### Parameters:
+
+- `_tokenId`: The ID of the NFT item.
 
 ### Return Values:
 
-- `true`: if item is sold, false if otherwise
+- `_success`: true if item is sold, false if otherwise.
 
 ## unlistItem
 
@@ -254,15 +258,21 @@ Purchase NFT from the market
 
 function unlistItem(
 
-) external returns (bool)
+  uint256 _tokenId
+
+) external returns (bool _success)
 
 ```
 
 Unpublish items on the market
 
+### Parameters:
+
+- `_tokenId`: The ID of the NFT item.
+
 ### Return Values:
 
-- `true`: if item is successfully unlisted, false otherwise
+- `_success`: true if item is successfully unlisted, false otherwise
 
 ## getaddress
 
@@ -272,7 +282,7 @@ Unpublish items on the market
 
 function getaddress(
 
-) public returns (address)
+) public returns (address contractAddress)
 
 ```
 
@@ -280,7 +290,7 @@ Get the address of current contract
 
 ### Return Values:
 
-- `Address`: of current contract
+- `contractAddress`: Address of current contract
 
 ## getTotalMarketItems
 
@@ -290,7 +300,7 @@ Get the address of current contract
 
 function getTotalMarketItems(
 
-) external returns (uint256)
+) external returns (uint256 marketItemCount)
 
 ```
 
@@ -298,7 +308,7 @@ Get total number of items on the market, excluding unlisted items
 
 ### Return Values:
 
-- `Number`: of items on the market
+- `marketItemCount`: Number of items on the market
 
 ## getAllMarketItems
 
@@ -342,7 +352,7 @@ Get the all unsold items published on the market
 
 # Events:
 
-- [`NFTListed(uint256 itemId, string title, uint256 tokenId, uint256 price, address seller)`](#NFTMarket-NFTListed-uint256-string-uint256-uint256-address-)
+- [`NFTListed(uint256 tokenId, string description, uint256 price, address seller)`](#NFTMarket-NFTListed-uint256-string-uint256-address-)
 
 - [`NFTPurchased(uint256 itemId, uint256 tokenId, uint256 price, address seller, address buyer)`](#NFTMarket-NFTPurchased-uint256-uint256-uint256-address-address-)
 
@@ -356,11 +366,21 @@ Get the all unsold items published on the market
 
 ```Solidity
 
-NFTListed(uint256 itemId, string title, uint256 tokenId, uint256 price, address seller)
+NFTListed(uint256 tokenId, string description, uint256 price, address seller)
 
 ```
 
 To emit event when item is newly added onto the market.
+
+### Parameters:
+
+- `tokenId`: The ID of the NFT minted.
+
+- `description`: The description of the NFT item.
+
+- `price`: The price of the NFT item.
+
+- `seller`: The address of the seller account.
 
 ## NFTPurchased
 
@@ -374,6 +394,18 @@ NFTPurchased(uint256 itemId, uint256 tokenId, uint256 price, address seller, add
 
 To emit event when item is sold on the market.
 
+### Parameters:
+
+- `itemId`: The ID of the item in the market.
+
+- `tokenId`: The NFT ID.
+
+- `price`: The price of the item.
+
+- `seller`: The address of the seller account.
+
+- `buyer`: The address of the buyer account.
+
 ## MarketItemUnlisted
 
 <br>
@@ -384,7 +416,13 @@ MarketItemUnlisted(uint256 itemId, bool success)
 
 ```
 
-To emit event when item is unlisted on the market
+To emit event when item is unlisted on the market.
+
+### Parameters:
+
+- `itemId`: The ID of the item in the market.
+
+- `success`: Indicates whether the action performed is successful.
 
 ## ErrorMsg
 
@@ -396,4 +434,8 @@ ErrorMsg(string errorMessage)
 
 ```
 
-To emit event when transactional error occurs
+To emit event when transactional error occurs. Used to log error messages on the chain.
+
+### Parameters:
+
+- `errorMessage`: The error message to be logged.
