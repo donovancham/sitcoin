@@ -10,22 +10,24 @@ import { connectSamurai, useWalletContext } from '../context/WalletContext';
 export default function Header() {
     const { refresh, setRefresh, account, setAccount, web3 } = useWalletContext()
 
+    const initializeWallet = async () => {
+        // Ensure that samurai connected
+        let result = await connectSamurai(web3)
+        if (result !== false) {
+            if (account === undefined) {
+                // Sets wallet account
+                setAccount(result)
+            }
+            else {
+                // Refresh information
+                setRefresh(refresh + 1)
+            }
+        }
+    }
+
     const connectButton = () => {
         return (
-            <Button variant="outline-success" size="md" onClick={async () => {
-                // Ensure that samurai connected
-                let result = await connectSamurai(web3)
-                if (result !== false) {
-                    if (account === undefined) {
-                        // Sets wallet account
-                        setAccount(result)
-                    }
-                    else {
-                        // Refresh information
-                        setRefresh(refresh + 1)
-                    }
-                }
-            }}>
+            <Button variant="outline-success" size="md" onClick={initializeWallet}>
                 Connect Wallet
             </Button>
         )
@@ -57,7 +59,7 @@ export default function Header() {
                     SIT Metaverse
                 </Navbar.Brand>
                 {/* Insert any navigation links you need here */}
-                <Nav.Link href="/nftmarket">NFT Market</Nav.Link>
+                <Nav.Link href="/nftmarket" disabled={account ? false : true}>NFT Market</Nav.Link>
                 <Navbar.Collapse className="justify-content-end">
                     {/* Refresh Button */}
                     <Navbar.Text>

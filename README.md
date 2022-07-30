@@ -46,6 +46,12 @@ You may watch the poster video for a short 5 minute summary of the project.
 - [Generating Documentation](docgen/DOCGEN.md)
 
 ## Changelog
+- v1.8.0
+  - Updated web3 dApp
+    - Added `Marketplace` component for NFT Market UI
+    - Added `nftmarket` page to load NFT Market UI separately
+    - Added `NFTMarketContext` for loading NFT Market info
+    - Updated `Header` to lock Navbar elements before user connects account
 - v1.7.9
   - Updated tests
     - Commented out `console.log` to improve result printing in Market
