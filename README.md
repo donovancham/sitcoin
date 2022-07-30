@@ -48,10 +48,17 @@ You may watch the poster video for a short 5 minute summary of the project.
 ## Changelog
 - v1.8.0
   - Updated web3 dApp
-    - Added `Marketplace` component for NFT Market UI
-    - Added `nftmarket` page to load NFT Market UI separately
-    - Added `NFTMarketContext` for loading NFT Market info
-    - Updated `Header` to lock Navbar elements before user connects account
+    - Market Component
+      - Added `Marketplace` component for NFT Market UI
+      - Added `nftmarket` page to load NFT Market UI separately
+      - Added `NFTMarketContext` for loading NFT Market info
+      - Updated `Header` to lock Navbar elements before user connects account
+      - Implemented NFT creation section
+    - Transfer Tokens Component
+      - Added Server-side validation features
+      - Added dynamic checkers for updating validation elements `onChange`
+      - Removed previous validation usages
+      - Improved gas efficiency for transactions (2x down to 1.1x)
 - v1.7.9
   - Updated tests
     - Commented out `console.log` to improve result printing in Market

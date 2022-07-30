@@ -124,6 +124,7 @@ export default function NftMarketProvider({ children }) {
         myOwnedNftCount,
         myNftCreations,
         myCreationCount,
+        getMarketInfo,
     }
 
     return (

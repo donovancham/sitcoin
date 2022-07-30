@@ -36,100 +36,141 @@ export default function Wallet() {
     // Form validation criteria for transferring tokens
     const [validated, setValidated] = useState(false);
 
+    const [addressValidated, setAddressValidated] = useState(false);
+    const [amountValidated, setAmountValidated] = useState(false);
+
     const transferFunds = async (to, amount) => {
         // Execute Transfer
         Loading.hourglass('Executing Transfer...')
 
         await tokenContract.methods.transfer(to, amount).estimateGas({ from: account })
-            .then( async (gasAmount) => {
-                console.log(`Estimated gas = ${gasAmount}`)
-                await tokenContract.methods.transfer(to, amount).send({ from: account, gas: gasAmount * 2 })
-                .then( (receipt) => {
-                    console.log(receipt)
+            .then(async (gasAmount) => {
+                console.log(`Estimated gas = ${gasAmount}, ${typeof (gasAmount)}`)
+                await tokenContract.methods.transfer(to, amount)
+                    .send({ from: account, gas: Math.floor(gasAmount * 1.1) })
+                    .then((receipt) => {
+                        console.log(receipt)
 
-                    Report.success(
-                        'Transfer Successful',
-                        `
+                        Report.success(
+                            'Transfer Successful',
+                            `
+                            <div class="container-lg">
+                            <ul class="list-group list-group-horizontal">
+                                    <li class="list-group-item list-group-item-primary col-md-4">Transaction Hash</li>
+                                    <li class="list-group-item list-group-item-action col-md-6 text-wrap">
+                                        ${receipt.transactionHash}
+                                    </li>
+                                </ul>
+                                <ul class="list-group list-group-horizontal">
+                                    <li class="list-group-item list-group-item-primary col-md-4">Transaction Hash</li>
+                                    <li class="list-group-item list-group-item-action col-md-6">
+                                        <a class='text-wrap'>${receipt.transactionHash}</a>
+                                    </li>
+                                </ul>
+                                <ul class="list-group list-group-horizontal">
+                                    <li class="list-group-item list-group-item-dark col-md-4">Gas</li>
+                                    <li class="list-group-item list-group-item-action">
+                                        ${
+                                            // Convert to von first before converting back to LAT
+                                            web3.utils.fromVon(
+                                                web3.utils.toVon(receipt.cumulativeGasUsed.toString(), 'gvon'),
+                                                'lat') + ' ' + 'LAT'
+                                        }
+                                    </li>
+                                </ul>
+                                <ul class="list-group list-group-horizontal">
+                                    <li class="list-group-item list-group-item-danger col-md-4">From</li>
+                                    <li class="list-group-item list-group-item-action">${receipt.events.Transfer.returnValues.from}</li>
+                                </ul>
+                                <ul class="list-group list-group-horizontal">
+                                    <li class="list-group-item list-group-item-success col-md-4">To</li>
+                                    <li class="list-group-item list-group-item-action">${receipt.events.Transfer.returnValues.to}</li>
+                                </ul>
+                                <ul class="list-group list-group-horizontal">
+                                    <li class="list-group-item list-group-item-warning col-md-4">Amount</li>
+                                    <li class="list-group-item list-group-item-action">
+                                        ${receipt.events.Transfer.returnValues.value + ' ' + tokenSymbol}
+                                    </li>
+                                </ul>
+                                <ul class="list-group list-group-horizontal">
+                                    <li class="list-group-item list-group-item-info col-md-4">Status</li>
+                                    <li class="list-group-item list-group-item-action">${receipt.status}</li>
+                                </ul>
+                            </div>
+                            `,
+                            'Okay',
+                            {
+                                width: '650px',
+                                messageMaxLength: 3000,
+                                plainText: false
+                            }
+                        )
 
-                        <div class="container-lg">
-                            <ul class="list-group list-group-horizontal">
-                                <li class="list-group-item list-group-item-primary col-md-4">Transaction Hash</li>
-                                <li class="list-group-item list-group-item-action">${receipt.transactionHash}</li>
-                            </ul>
-                            <ul class="list-group list-group-horizontal">
-                                <li class="list-group-item list-group-item-primary col-md-4">Transaction Hash</li>
-                                <li class="list-group-item list-group-item-action col-md-6">${receipt.transactionHash}</li>
-                            </ul>
-                            <ul class="list-group list-group-horizontal">
-                                <li class="list-group-item list-group-item-dark col-md-4">Gas</li>
-                                <li class="list-group-item list-group-item-action">
-                                    ${
-                                    // Convert to von first before converting back to LAT
-                                    web3.utils.fromVon(
-                                        web3.utils.toVon(receipt.cumulativeGasUsed.toString(), 'gvon'),
-                                        'lat'
-                                    ) + ' ' + 'LAT'
-                                    }
-                                </li>
-                            </ul>
-                            <ul class="list-group list-group-horizontal">
-                                <li class="list-group-item list-group-item-danger col-md-4">From</li>
-                                <li class="list-group-item list-group-item-action">${receipt.events.Transfer.returnValues.from}</li>
-                            </ul>
-                            <ul class="list-group list-group-horizontal">
-                                <li class="list-group-item list-group-item-success col-md-4">To</li>
-                                <li class="list-group-item list-group-item-action">${receipt.events.Transfer.returnValues.to}</li>
-                            </ul>
-                            <ul class="list-group list-group-horizontal">
-                                <li class="list-group-item list-group-item-warning col-md-4">Amount</li>
-                                <li class="list-group-item list-group-item-action">
-                                    ${receipt.events.Transfer.returnValues.value + ' ' + tokenSymbol}
-                                </li>
-                            </ul>
-                            <ul class="list-group list-group-horizontal">
-                                <li class="list-group-item list-group-item-info col-md-4">Status</li>
-                                <li class="list-group-item list-group-item-action">${receipt.status}</li>
-                            </ul>
-                        </div>
-                        `,
-                        'Okay',
-                        {
-                            width: '650px',
-                            messageMaxLength: 3000,
-                            plainText: false
-                        }
-                    )
-
-                    // Update States
-                    getContractInfo()
-                    
-
-                    Loading.remove()
-                })
-                .catch( (error) => {
-                    console.log(error)
-                    Report.failure(
-                        'Error',
-                        `${error.message} (${error.code})`,
-                        'Okay'
-                    )
-                    
-                    Loading.remove()
-                })
+                        // Update States
+                        getContractInfo()
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                        Report.failure(
+                            'Error',
+                            `${error.message} (${error.code})`,
+                            'Okay'
+                        )
+                    })
             })
             .catch((err) => {
                 console.log(err)
             })
+
+        Loading.remove()
+    }
+
+    const transferTokens = (event) => {
+        // Prevents page from reloading
+        event.preventDefault();
+
+        if (tokenBalance === undefined) {
+            Notify.failure('Please connect wallet before transferring', {
+                clickToClose: true
+            })
+        }
+        else {
+            const form = event.currentTarget;
+            console.log(`Form Valid? ${form.checkValidity()}`)
+
+            const address = DOMPurify.sanitize(document.querySelector('#transferAddress').value)
+            const amount = DOMPurify.sanitize(document.querySelector('#transferAmount').value)
+
+            if (form.checkValidity() === true && addressValidated && amountValidated) {
+                transferFunds(address, amount);
+            }
+        }
+    };
+
+    function validateAddress(address) {
+        // Check if address is valid
+        if (web3.utils.isBech32Address(address) === false) {
+            return false
+        }
+
+        if (address == account) {
+            Notify.failure('Cannot send yourself SIT coins! Please input another address.', {
+                clickToClose: true
+            })
+
+            return false
+        }
+
+        return true
     }
 
     const validateAmount = (amount) => {
         // Chops off any decimal places and converts to number
         const amt = Math.floor(Number(amount))
 
+        console.log(`Amount: ${amt}`)
+
         if (amt <= 0) {
-            Notify.failure('Amount cannot be 0 or less.', {
-                clickToClose: true
-            })
             return false
         }
 
@@ -143,59 +184,12 @@ export default function Wallet() {
         return true
     }
 
-    const transferTokens = (event) => {
-        if (tokenBalance === undefined) {
-            Notify.failure('Please connect wallet before transferring', {
-                clickToClose: true
-            })
-            event.preventDefault();
-            event.stopPropagation();
-            return
+    function checkValid() {
+        if (addressValidated && amountValidated) {
+            return true
         }
-
-        const form = event.currentTarget;
-
-        // Sanitize user inputs before processing
-        const address = DOMPurify.sanitize(document.querySelector('#transferAddress').value)
-        const amount = DOMPurify.sanitize(document.querySelector('#transferAmount').value)
-
-        console.log(`Form Valid? ${form.checkValidity()}`)
-
-        // Runs Client-side validation before server-side
-        // Check if form is valid according to HTML validation
-        if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-        else {
-            // Check if address is valid
-            if (web3.utils.isBech32Address(address) === false) {
-                Notify.failure('Address is not PlatON bech32 format!', {
-                    clickToClose: true
-                })
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            // Ensure sending to another address, not self
-            else if (address == account) {
-                Notify.failure('Cannot send yourself SIT coins! Please input another address.', {
-                    clickToClose: true
-                })
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            // Check if amount is valid
-            else if (validateAmount(amount) === false) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            else {
-                transferFunds(address, amount);
-            }
-        }
-
-        setValidated(true);
-    };
+        return false
+    }
 
     return (
         <Container>
@@ -225,7 +219,7 @@ export default function Wallet() {
                                     <ListGroup.Item variant='danger' className='col-md-4'>
                                         <h5>Network Connected</h5>
                                     </ListGroup.Item>
-                                    <ListGroup.Item action>
+                                    <ListGroup.Item className='col'>
                                         {network ? network : notConnected}
                                     </ListGroup.Item>
                                 </ListGroup>
@@ -234,7 +228,7 @@ export default function Wallet() {
                                     <ListGroup.Item variant='warning' className='col-md-4'>
                                         <h5>Token Supply</h5>
                                     </ListGroup.Item>
-                                    <ListGroup.Item action>
+                                    <ListGroup.Item className='col'>
                                         {tokenSupply ? tokenSupply : notConnected}
                                     </ListGroup.Item>
                                 </ListGroup>
@@ -249,7 +243,7 @@ export default function Wallet() {
                                     <ListGroup.Item variant='primary' className='col-md-4'>
                                         <h5>Wallet Address</h5>
                                     </ListGroup.Item>
-                                    <ListGroup.Item action>
+                                    <ListGroup.Item className='col'>
                                         {account ? account : notConnected}
                                     </ListGroup.Item>
                                 </ListGroup>
@@ -258,7 +252,7 @@ export default function Wallet() {
                                     <ListGroup.Item variant='info' className='col-md-4'>
                                         <h5>{tokenName} {' '}Balance</h5>
                                     </ListGroup.Item>
-                                    <ListGroup.Item action>
+                                    <ListGroup.Item className='col'>
                                         {tokenBalance ? tokenBalance + ' ' + tokenSymbol : notConnected}
                                     </ListGroup.Item>
                                 </ListGroup>
@@ -278,6 +272,19 @@ export default function Wallet() {
                                             type="text"
                                             placeholder="Receiver Address"
                                             size='lg'
+                                            onChange={() => {
+                                                // Sanitize user inputs before processing
+                                                const address = DOMPurify.sanitize(document.querySelector('#transferAddress').value)
+
+                                                // Set valid state according to server side validation rules
+                                                validateAddress(address) ? setAddressValidated(true) : setAddressValidated(false)
+
+                                                // Check if form is validated and ready to submit
+                                                checkValid() ? setValidated(true) : setValidated(false)
+                                                console.log(`Validated: ${validated}`)
+                                            }}
+                                            isValid={addressValidated}
+                                            isInvalid={!addressValidated}
                                         />
                                         {/* Valid Feedback */}
                                         <Form.Control.Feedback>
@@ -295,6 +302,19 @@ export default function Wallet() {
                                             required
                                             type="number"
                                             placeholder="SITC to transfer"
+                                            onChange={() => {
+                                                // Sanitize user inputs before processing
+                                                const amount = DOMPurify.sanitize(document.querySelector('#transferAmount').value)
+
+                                                // Set valid state according to server side validation rules
+                                                validateAmount(amount) ? setAmountValidated(true) : setAmountValidated(false)
+
+                                                // Check if form is validated and ready to submit
+                                                checkValid() ? setValidated(true) : setValidated(false)
+                                                console.log(`Validated: ${validated}`)
+                                            }}
+                                            isValid={amountValidated}
+                                            isInvalid={!amountValidated}
                                         />
                                         {/* Valid Feedback */}
                                         <Form.Control.Feedback>
@@ -302,11 +322,11 @@ export default function Wallet() {
                                         </Form.Control.Feedback>
                                         {/* Invalid Feedback */}
                                         <Form.Control.Feedback type='invalid'>
-                                            Please enter a positive number
+                                            Amount cannot be 0 or less.
                                         </Form.Control.Feedback>
                                     </Form.Group>
                                     {/* Submit button */}
-                                    <Button variant="success" type="submit">
+                                    <Button variant="success" type="submit" disabled={tokenBalance ? false : true}>
                                         Transfer
                                     </Button>
                                 </Form>

@@ -23,6 +23,8 @@ export default function Layout({ children }) {
                     <Script src="dist/notiflix-report-aio-X.X.X.min.js"></Script>
                     {/* Only Loading module js */}
                     <Script src="dist/notiflix-loading-aio-X.X.X.min.js"></Script>
+                    {/* Only Confirm module js */}
+                    <Script src="dist/notiflix-confirm-aio-X.X.X.min.js"></Script>
                 </Head>
                 {/* Navbar and header elements */}
                 <Header />
