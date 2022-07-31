@@ -46,6 +46,27 @@ You may watch the poster video for a short 5 minute summary of the project.
 - [Generating Documentation](docgen/DOCGEN.md)
 
 ## Changelog
+- v1.8.1
+  - Added `.env.local` setup guide
+  - Updated web3 dApp
+    - Market Component
+      - UI
+        - Added modal form for "Create NFT"
+        - Added modal form for "Manage Allowance"
+        - Added `approval` grant to allow Market to manage NFT sales for user
+      - Added Market approval function required to Create NFTs
+      - Create NFT implemented
+      - View NFT implemented
+      - Buy NFT implemented
+      - List NFT for sale implemented
+      - Unlist NFT from sale implemented
+      - Added checks to against the NFT data to determine user's role (owner, creator)
+      - Added `allowance` management functions to manage users allowance to Market Contract
+    - Market Context
+      - Added `approval` checks in the `useEffect` component to refresh `approval` status on load and event triggers
+    - Wallet Context
+      - Updated `useEffect` to separate the event triggers that calls the updaters
+      - Added `allowance` as a state to update on each refresh
 - v1.8.0
   - Updated web3 dApp
     - Market Component

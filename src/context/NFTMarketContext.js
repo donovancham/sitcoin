@@ -33,6 +33,7 @@ export default function NftMarketProvider({ children }) {
     const [myOwnedNftCount, setMyOwnedNftCount] = useState()
     const [myNftCreations, setMyNftCreations] = useState()
     const [myCreationCount, setMyCreationCount] = useState()
+    const [approvalStatus, setApprovalStatus] = useState(false)
 
     useEffect(() => {
         // Put all functions in async mode to load sequentially
@@ -109,6 +110,21 @@ export default function NftMarketProvider({ children }) {
         setMyCreationCount(nftCreations['count'])
         console.log(`My NFT Creations (${myCreationCount}): `)
         console.log(myNftCreations)
+
+        // Get approval status
+        let approved = await nftMarketContract.methods
+            .isApprovedForAll(account, nftMarketContract.options.address)
+            .call({ from: account })
+            .catch((error) => {
+                console.log(error)
+                Report.failure(
+                    'Error',
+                    `${error.message} (${error.code})`,
+                    'Okay'
+                )
+            }) 
+        
+        setApprovalStatus(approved)
     }
 
     // State variables for other pages to get context
@@ -124,6 +140,7 @@ export default function NftMarketProvider({ children }) {
         myOwnedNftCount,
         myNftCreations,
         myCreationCount,
+        approvalStatus,
         getMarketInfo,
     }
 

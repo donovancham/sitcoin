@@ -102,7 +102,7 @@ git clone https://github.com/donovancham/sitcoin.git
 npm install
 ```
 
-3. Add `truffle-config.js`. Copy exactly
+3. Add `truffle-config.js`. Copy exactly:
 ```js
 module.exports = {
     /**
@@ -177,7 +177,9 @@ platon-truffle compile
 platon-truffle migrate
 ```
 
-5. Run Tests
+5. After compiling, add the addresses of the deployed contracts to the environment file `.env.local` (if configuring for web3 app deployment)
+
+6. Run Tests
 ```sh
 platon-truffle test
 platon-truffle test --show-events
@@ -196,9 +198,23 @@ node scripts/transferToken.js
 
 # Run Web3 dApp
 1. Ensure you are in project root folder
+
 2. Add `.env` file in project root. Add the following code
+```dosini
+STUDENT_CLAIM_PW= # <student claim account password>
+FACULTY_CLAIM_PW= # <faculty claim account password>
 ```
-STUDENT_CLAIM_PW="<student claim account password>"
-FACULTY_CLAIM_PW="<faculty claim account password>"
+
+3. Configure `.env.local` server environments
+```dosini
+# PlatON Testnet Connections
+NEXT_PUBLIC_DEVNET_RPC = https://devnetopenapi2.platon.network/rpc
+NEXT_PUBLIC_DEVNET_WS = wss://devnetopenapi2.platon.network/ws
+
+# Contract Addresses
+NEXT_PUBLIC_SITCOIN_ADDRESS = # <Insert deployed SITCOIN contract address>
+NEXT_PUBLIC_NFTMARKET_ADDRESS = # <Insert deployed NFTMARKET contract address>
+NEXT_PUBLIC_SITOWNER_IDENTITY_ADDRESS = # <Insert deployed ClaimHolder contract address>
 ```
-3. `npm run dev`
+
+4. `npm run dev`

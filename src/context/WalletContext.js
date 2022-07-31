@@ -24,6 +24,7 @@ export default function WalletProvider({ children }) {
     const [tokenSymbol, setTokenSymbol] = useState()
     const [tokenSupply, setTokenSupply] = useState()
     const [tokenBalance, setTokenBalance] = useState()
+    const [allowance, setAllowance] = useState()
     const [refresh, setRefresh] = useState(0)
 
     // Runs once during rendering phase.
@@ -46,11 +47,11 @@ export default function WalletProvider({ children }) {
 
                 // Configure network
                 console.log(`Current Chain: ${platon.networkVersion}`)
-    
+
                 platon.networkVersion === platonMainnet
                     ? setNetwork('PlatON Main Network')
                     : setNetwork('PlatON Test Network')
-    
+
                 console.log(`Current Network: ${network}`)
             }
 
@@ -98,7 +99,14 @@ export default function WalletProvider({ children }) {
             });
         }
 
-    }, [account, network, refresh])
+    }, [account, network])
+
+    // Use this event listener to refresh and update contract info
+    useEffect(() => {
+        if (account) {
+            getContractInfo();
+        }
+    }, [refresh])
 
     const initializeWeb3 = async () => {
         // Initialize web3 instance
@@ -145,6 +153,14 @@ export default function WalletProvider({ children }) {
             setTokenBalance(balance)
             console.log(`Current Account Balance: ${tokenBalance}`)
 
+            // Get User's current allowance given to Market
+            let granted = await tokenContract.methods
+                .allowance(account, process.env.NEXT_PUBLIC_NFTMARKET_ADDRESS)
+                .call({ from: account })
+
+            setAllowance(granted)
+            console.log(`Current Allowance: ${allowance}`)
+
             return true
         }
         catch (e) {
@@ -156,6 +172,7 @@ export default function WalletProvider({ children }) {
     const walletState = {
         account,
         setAccount,
+        allowance,
         network,
         tokenContract,
         tokenName,
