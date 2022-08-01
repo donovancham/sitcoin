@@ -39,6 +39,7 @@ You may watch the poster video for a short 5 minute summary of the project.
 - React JS
 - React Bootstrap
 - PlatON JS SDK
+- NextAuth
 
 ## Documentation
 - [SITCOIN documentation](docgen/SUMMARY.md)
@@ -46,6 +47,14 @@ You may watch the poster video for a short 5 minute summary of the project.
 - [Generating Documentation](docgen/DOCGEN.md)
 
 ## Changelog
+- v1.8.3
+  - Updated web3 dApp
+    - Wallet Component
+      - Added `burn` token implementation
+- v1.8.2
+  - Updated web3 dApp
+    - Market Component
+      - Added Horizontal layout for NFTs to be displayed
 - v1.8.1
   - Added `.env.local` setup guide
   - Updated web3 dApp

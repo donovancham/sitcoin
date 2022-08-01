@@ -39,6 +39,9 @@ export default function Wallet() {
     const [addressValidated, setAddressValidated] = useState(false);
     const [amountValidated, setAmountValidated] = useState(false);
 
+    // Form validation criteria for burning tokens
+    const [burnValidated, setBurnValidated] = useState(false);
+
     const transferFunds = async (to, amount) => {
         // Execute Transfer
         Loading.hourglass('Executing Transfer...')
@@ -71,11 +74,11 @@ export default function Wallet() {
                                     <li class="list-group-item list-group-item-dark col-md-4">Gas</li>
                                     <li class="list-group-item list-group-item-action">
                                         ${
-                                            // Convert to von first before converting back to LAT
-                                            web3.utils.fromVon(
-                                                web3.utils.toVon(receipt.cumulativeGasUsed.toString(), 'gvon'),
-                                                'lat') + ' ' + 'LAT'
-                                        }
+                            // Convert to von first before converting back to LAT
+                            web3.utils.fromVon(
+                                web3.utils.toVon(receipt.cumulativeGasUsed.toString(), 'gvon'),
+                                'lat') + ' ' + 'LAT'
+                            }
                                     </li>
                                 </ul>
                                 <ul class="list-group list-group-horizontal">
@@ -147,6 +150,56 @@ export default function Wallet() {
         }
     };
 
+    async function burnTokens(amount) {
+        // Ensure that user has sufficient tokens to burn
+        if (amount > tokenBalance) {
+            Report.warning(
+                'Insufficient Tokens',
+                `Please do not burn more tokens that what you own. Balance: ${tokenBalance}, Burning: ${amount}`,
+                'Okay'
+            )
+        }
+        else {
+            Loading.hourglass('Burning Tokens...')
+
+            await tokenContract.methods.burn(amount)
+                .estimateGas({ from: account })
+                .then(async (gasAmount) => {
+                    console.log(`Estimated gas = ${gasAmount}`)
+                    await tokenContract.methods.burn(amount)
+                        .send({ from: account, gas: Math.floor(gasAmount * 1.1) })
+                        .then((receipt) => {
+                            Report.success(
+                                'Burnt Tokens',
+                                `${amount} SITC successfully burnt!`,
+                                'Okay'
+                            )
+
+                            // Update States
+                            getContractInfo()
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                            Report.failure(
+                                'Error',
+                                `${error.message} (${error.code})`,
+                                'Okay'
+                            )
+                        })
+                })
+                .catch((error) => {
+                    console.log(error)
+                    Report.failure(
+                        'Error',
+                        `${error.message} (${error.code})`,
+                        'Okay'
+                    )
+                })
+
+            Loading.remove()
+        }
+    }
+
     function validateAddress(address) {
         // Check if address is valid
         if (web3.utils.isBech32Address(address) === false) {
@@ -193,7 +246,6 @@ export default function Wallet() {
 
     return (
         <Container>
-
             <Tab.Container id='wallet-info' defaultActiveKey='network'>
                 <Card className='bg-light'>
                     <Card.Header>
@@ -206,6 +258,9 @@ export default function Wallet() {
                             </Nav.Item>
                             <Nav.Item>
                                 <Nav.Link eventKey='transfer' href='#transfer'>Transfer</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link eventKey='burn' href='#burn'>Burn Tokens</Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </Card.Header>
@@ -328,6 +383,49 @@ export default function Wallet() {
                                     {/* Submit button */}
                                     <Button variant="success" type="submit" disabled={tokenBalance ? false : true}>
                                         Transfer
+                                    </Button>
+                                </Form>
+                            </Card.Body>
+                        </Tab.Pane>
+                        {/* Burn Tokens Tab */}
+                        <Tab.Pane eventKey='burn' title='Burn Tokens'>
+                            <Card.Body>
+                                <Card.Title>Burn Tokens</Card.Title>
+                                {/* Transfer tokens form */}
+                                <Form noValidate validated={burnValidated} onSubmit={(e) => {
+                                    e.preventDefault();
+                                    const amount = DOMPurify.sanitize(document.querySelector('#burnAmount').value)
+                                    burnTokens(amount)
+                                }}>
+                                    {/* Amount input */}
+                                    <Form.Group className="mb-3" controlId="burnAmount">
+                                        <Form.Label className='h6'>Amount</Form.Label>
+                                        <Form.Control
+                                            required
+                                            type="number"
+                                            placeholder="Tokens to Burn"
+                                            onChange={() => {
+                                                // Sanitize user inputs before processing
+                                                const amount = DOMPurify.sanitize(document.querySelector('#burnAmount').value)
+
+                                                // Set valid state according to server side validation rules
+                                                validateAmount(amount) ? setBurnValidated(true) : setBurnValidated(false)
+                                            }}
+                                            isValid={burnValidated}
+                                            isInvalid={!burnValidated}
+                                        />
+                                        {/* Valid Feedback */}
+                                        <Form.Control.Feedback>
+                                            Ok!
+                                        </Form.Control.Feedback>
+                                        {/* Invalid Feedback */}
+                                        <Form.Control.Feedback type='invalid'>
+                                            Amount cannot be 0 or less.
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+                                    {/* Submit button */}
+                                    <Button variant="danger" type="submit" disabled={tokenBalance ? false : true}>
+                                        Burn
                                     </Button>
                                 </Form>
                             </Card.Body>
