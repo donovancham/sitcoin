@@ -47,6 +47,11 @@ You may watch the poster video for a short 5 minute summary of the project.
 - [Generating Documentation](docgen/DOCGEN.md)
 
 ## Changelog
+- v1.8.5
+  - Updated web3 dApp
+    - Market Component
+      - Added wallet balance to manage allowance modal for better UX
+      - Added checks to verify that allowance to grant does not exceed current wallet balance
 - v1.8.4
   - Updated web3 dApp
     - Login Component

@@ -29,6 +29,7 @@ export default function Marketplace() {
         refresh,
         setRefresh,
         tokenContract,
+        tokenBalance,
         web3
     } = useWalletContext()
 
@@ -65,7 +66,7 @@ export default function Marketplace() {
     const [optionValidated, setOptionValidated] = useState(false)
 
     // Functions for displaying or hiding nft form modal
-    const handleCreateNftFormShow = () => { 
+    const handleCreateNftFormShow = () => {
         setCreateNftValidated(false)
         setCreateNftFormShow(true)
     }
@@ -118,10 +119,17 @@ export default function Marketplace() {
         // Check if there are any items on the market currently
         if (nftCount != 0 && nftArray !== undefined) {
             // Add the cards displaying NFT items
-            for (let nft of nftArray) {
-                // console.log(`${nft['description']}: ${nft['author']}`)
-                content.push(nftItemCard(nft))
-            }
+            content.push(
+                <Table responsive>
+                    <thead>
+                        {nftArray.map((nft) => (
+                            <th>
+                                {nftItemCard(nft)}
+                            </th>
+                        ))}
+                    </thead>
+                </Table>
+            )
         }
 
         return content
@@ -187,7 +195,7 @@ export default function Marketplace() {
                     {/* Buy button to buy NFTs */}
                     {
                         // Ensure user does not own displayed NFT
-                        (owner !== account ? author !== account : false) &&
+                        (owner !== account ? author !== account : false) && !nft['sold'] &&
                         <Button variant='outline-primary' onClick={async () => { await buyNft(nft['tokenId'], nft['price']) }}>
                             Buy NFT
                         </Button>
@@ -244,54 +252,63 @@ export default function Marketplace() {
     }
 
     async function grantAllowance(amount) {
-        // Give allowance to Market Contract to allow transfer of funds
-        Confirm.show(
-            'Give Allowance',
-            `Would you allow Market Contract to manage ${amount} SITC on your behalf?`,
-            'Confirm',
-            'Cancel',
-            async () => {
-                Loading.hourglass('Giving allowance...')
+        if (amount > tokenBalance) {
+            Report.warning(
+                'Unable to process',
+                `You do not have ${amount} SITC in wallet balance.`,
+                'Okay'
+            )
+        }
+        else {
+            // Give allowance to Market Contract to allow transfer of funds
+            Confirm.show(
+                'Give Allowance',
+                `Would you allow Market Contract to manage ${amount} SITC on your behalf?`,
+                'Confirm',
+                'Cancel',
+                async () => {
+                    Loading.hourglass('Giving allowance...')
 
-                // Create market item to list item for sale and change status
-                await tokenContract.methods.increaseAllowance(nftMarketContract.options.address, amount)
-                    .estimateGas({ from: account })
-                    .then(async (gasAmount) => {
-                        console.log(`Estimated gas = ${gasAmount}`)
-                        await tokenContract.methods.increaseAllowance(nftMarketContract.options.address, amount)
-                            .send({ from: account, gas: Math.floor(gasAmount * 1.1) })
-                            .then(async (receipt) => {
-                                console.log(receipt)
-                                Report.success(
-                                    'Allowance Granted',
-                                    `Granted Market an allowance of ${amount} SITC.`,
-                                    'Okay'
-                                )
+                    // Create market item to list item for sale and change status
+                    await tokenContract.methods.increaseAllowance(nftMarketContract.options.address, amount)
+                        .estimateGas({ from: account })
+                        .then(async (gasAmount) => {
+                            console.log(`Estimated gas = ${gasAmount}`)
+                            await tokenContract.methods.increaseAllowance(nftMarketContract.options.address, amount)
+                                .send({ from: account, gas: Math.floor(gasAmount * 1.1) })
+                                .then(async (receipt) => {
+                                    console.log(receipt)
+                                    Report.success(
+                                        'Allowance Granted',
+                                        `Granted Market an allowance of ${amount} SITC.`,
+                                        'Okay'
+                                    )
 
-                                // Update Allowance
-                                setRefresh(refresh + 1)
-                            })
-                            .catch((error) => {
-                                console.log(error)
-                                Report.failure(
-                                    'Error',
-                                    `${error.message} (${error.code})`,
-                                    'Okay'
-                                )
-                            })
-                    })
-                    .catch((error) => {
-                        console.log(error)
-                        Report.failure(
-                            'Error',
-                            `${error.message} (${error.code})`,
-                            'Okay'
-                        )
-                    })
+                                    // Update Allowance
+                                    setRefresh(refresh + 1)
+                                })
+                                .catch((error) => {
+                                    console.log(error)
+                                    Report.failure(
+                                        'Error',
+                                        `${error.message} (${error.code})`,
+                                        'Okay'
+                                    )
+                                })
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                            Report.failure(
+                                'Error',
+                                `${error.message} (${error.code})`,
+                                'Okay'
+                            )
+                        })
 
-                Loading.remove()
-            }
-        )
+                    Loading.remove()
+                }
+            )
+        }
     }
 
     async function removeAllowance(amount) {
@@ -427,12 +444,12 @@ export default function Marketplace() {
                         .then(async (gasAmount) => {
                             console.log(`Estimated gas = ${gasAmount}`)
                             await nftMarketContract.methods.purchaseItem(tokenId)
-                                .send({ from: account, gas: Math.floor(gasAmount * 1.1) })
-                                .then(async (receipt) => {
+                                .send({ from: account, gas: Math.floor(gasAmount * 1.4) })
+                                .then((receipt) => {
                                     console.log(receipt)
                                     Report.success(
                                         'Success',
-                                        `NFT #${tokenId}" has been bought successfully!`,
+                                        `NFT #${tokenId} has been bought successfully!`,
                                         'Okay'
                                     )
 
@@ -855,6 +872,10 @@ export default function Marketplace() {
                         <div className="h3 text-primary">
                             Current Allowance:
                             <div className="h4 text-info">{allowance} SITC</div>
+                        </div>
+                        <div className="h3 text-success">
+                            Wallet Balance:
+                            <div className="h4 text-dark">{tokenBalance} SITC</div>
                         </div>
 
                         {/* Amount input */}

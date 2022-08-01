@@ -73,6 +73,7 @@ export default function WalletProvider({ children }) {
                         clickToClose: true
                     });
 
+                console.log(`Current Account: ${accounts[0]}`)
                 // Get information from token contract
                 getContractInfo()
             });
