@@ -47,6 +47,18 @@ You may watch the poster video for a short 5 minute summary of the project.
 - [Generating Documentation](docgen/DOCGEN.md)
 
 ## Changelog
+- v1.8.4
+  - Updated web3 dApp
+    - Login Component
+      - Identity Management
+        - Deploy new identity contract **(Incomplete)**
+        - Get Identity Data feature implemented
+      - KYC Process
+        - UI Implemented
+        - Adding signed claim feature not implemented **(Incomplete)** 
+      - Login Feature
+        - Added login framework using NextAuth JS 
+        - Create API Route for verifying signature **(Incomplete)**
 - v1.8.3
   - Updated web3 dApp
     - Wallet Component

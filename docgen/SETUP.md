@@ -201,11 +201,17 @@ node scripts/transferToken.js
 
 2. Add `.env` file in project root. Add the following code
 ```dosini
+STUDENT_CLAIM_ACCOUNT= # <Insert address here (lat1z... format)>
 STUDENT_CLAIM_PW= # <student claim account password>
+
+FACULTY_CLAIM_ACCOUNT= # <Insert address here (lat1z... format)>
 FACULTY_CLAIM_PW= # <faculty claim account password>
 ```
 
 3. Configure `.env.local` server environments
+
+Secret key for `NEXTAUTH` can be generated [here](https://github.com/nextauthjs/next-auth/issues/3245#issuecomment-974772884)
+
 ```dosini
 # PlatON Testnet Connections
 NEXT_PUBLIC_DEVNET_RPC = https://devnetopenapi2.platon.network/rpc
@@ -215,6 +221,9 @@ NEXT_PUBLIC_DEVNET_WS = wss://devnetopenapi2.platon.network/ws
 NEXT_PUBLIC_SITCOIN_ADDRESS = # <Insert deployed SITCOIN contract address>
 NEXT_PUBLIC_NFTMARKET_ADDRESS = # <Insert deployed NFTMARKET contract address>
 NEXT_PUBLIC_SITOWNER_IDENTITY_ADDRESS = # <Insert deployed ClaimHolder contract address>
+
+# Auth Secret
+NEXTAUTH_SECRET = # <Add generated secret here>
 ```
 
-4. `npm run dev`
+4. Start the server with `npm run dev`

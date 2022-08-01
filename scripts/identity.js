@@ -62,7 +62,7 @@ const main = (async () => {
 
     var gas;
 
-    console.log('Deploying User Identity...\n')
+    console.log('\n ############## 1. Deploying User Identity... ############## \n')
 
     // Create user identity
     const userIdentity = new web3.platon.Contract(claimHolderAbi, {
@@ -72,10 +72,10 @@ const main = (async () => {
         data: claimHolderBytecode,
     })
 
-    console.log('userID Contract:')
-    console.log('from: ' + userIdentity.options.from)
-    console.log('gas price (to use for tx): ' + userIdentity.options.gasPrice + 'von')
-    console.log('Max gas limit: ' + userIdentity.options.gas + 'von\n')
+    // console.log('userID Contract:')
+    // console.log('from: ' + userIdentity.options.from)
+    // console.log('gas price (to use for tx): ' + userIdentity.options.gasPrice + 'von')
+    // console.log('Max gas limit: ' + userIdentity.options.gas + 'von\n')
 
     await userIdentity.deploy().estimateGas()
         .then((estimatedGas) => {
@@ -90,24 +90,25 @@ const main = (async () => {
         gas: gas,
     })
         .on('error', function (error) {
-            console.log('ERRROR')
+            console.log('ERROR')
             console.log(error)
         })
         .on('transactionHash', function (transactionHash) {
-            console.log('Transaction Hash:')
-            console.log(transactionHash)
+            console.log(`Transaction Hash: ${transactionHash}`)
         })
         .on('receipt', function (receipt) {
-            console.log('New Contract Address: ' + receipt.contractAddress) // contains the new contract address
+            console.log(`New Contract Address: ${receipt.contractAddress}`) // contains the new contract address
             // console.log('Receipt:')
             // console.log(receipt)
         })
         .then(function (newContractInstance) {
-            console.log(newContractInstance.options.address) // instance with the new contract address
+            // console.log(newContractInstance.options.address) // instance with the new contract address
         });
 
     // // Create user identity
     // const userIdentity = new web3.platon.Contract(claimHolderAbi, 'lat1hz9e8ud7tara2elmk3usrz9x3h6cdychq55mfc', { from: user })
+
+    console.log('\n ############## Current Keys on User Identity ############## \n')
 
     await userIdentity.methods.getKeysByPurpose(KEY_PURPOSES.MANAGEMENT).call({ from: user }, (error, result) => {
         error
@@ -128,7 +129,7 @@ const main = (async () => {
     //         : console.log('Key: ' + result + '\n')
     // })
 
-    console.log('Deploying SIT Identity...' + '\n')
+    console.log('\n ############## 2. Deploying SIT Identity... ############## \n')
 
     const sitIdentity = new web3.platon.Contract(claimHolderAbi, {
         from: owner,
@@ -154,16 +155,15 @@ const main = (async () => {
             console.log(error)
         })
         .on('transactionHash', function (transactionHash) {
-            console.log('Transaction Hash:')
-            console.log(transactionHash)
+            console.log(`Transaction Hash: ${transactionHash}`)
         })
         .on('receipt', function (receipt) {
-            console.log('New Contract Address: ' + receipt.contractAddress) // contains the new contract address
+            console.log(`New Contract Address: ${receipt.contractAddress}`) // contains the new contract address
             // console.log('Receipt:')
             // console.log(receipt)
         })
         .then(function (newContractInstance) {
-            console.log(newContractInstance.options.address) // instance with the new contract address
+            // console.log(newContractInstance.options.address) // instance with the new contract address
         });
 
     const sitIdentityAddress = sitIdentity.options.address
@@ -176,11 +176,11 @@ const main = (async () => {
     //         : console.log('Key: ' + result + '\n')
     // })
 
-    console.log('\nAdding SIT Claim Signer Key...' + '\n')
+    console.log('\n ############## 3. Adding SIT Claim Signer Key... ############## \n')
 
     // Creates a claim key for the owner
     const studentClaimKey = web3.utils.soliditySha3(studentClaimHex)
-    console.log(`Hashed key: ${studentClaimKey}`)
+    console.log(`Student Claim (Signer Key) Hashed key: ${studentClaimKey}`)
 
     await sitIdentity.methods.addKey(
         studentClaimKey,
@@ -257,7 +257,7 @@ const main = (async () => {
     // })
 
     // Sign KYC Claim
-    console.log('\nSelf-signing SIT claim...' + '\n')
+    console.log('\n ############## 4. Self-signing SIT claim... ############## \n')
 
     // Getting the claim key data from SIT Identity
     let tx = await sitIdentity.methods.getKey(studentClaimKey).call({ from: owner })
@@ -267,7 +267,9 @@ const main = (async () => {
     delete tx['1']
     delete tx['2']
 
-    console.log(JSON.stringify(tx))
+    console.log(`The data used to create signature: ${JSON.stringify(tx)}\n`)
+
+    console.log(`Hash is created with current epoch time as salt (time + data)`)
 
     // Use current epoch time as salt for the signature
     // Add the hash of the Claim Key object from SIT Identity
@@ -275,6 +277,9 @@ const main = (async () => {
 
     // Use current epoch time as salt for the signature
     const dataHex = web3.utils.asciiToHex(meaningfulData)
+    console.log(`Data hex after hashing data together: ${dataHex}`)
+
+    console.log('Creating hashed data: (userIdentity.address, CLAIM_TYPES.SIT_STUDENT, dataHex) \n')
     // This is the data to be signed
     const hashedData = web3.utils.soliditySha3(
         userIdentity.options.address,   // User Identity Address
@@ -285,9 +290,11 @@ const main = (async () => {
     // Create signature from successful claim
     const signature = await web3.platon.personal.sign(hashedData, studentClaim, process.env.STUDENT_CLAIM_PW)
 
+    console.log(`Using an account to sign the key, requires password of the account + data to be signed ->`)
+    console.log(`web3.platon.personal.sign(hashedData, studentClaim, process.env.STUDENT_CLAIM_PW)`)
     console.log(`Signature: ${signature} (${signature.length})\n`)
 
-    console.log('\nAdding new claim...')
+    console.log('\n ############## 5. Student adds signed Claim ############## \n')
 
     await userIdentity.methods.addClaim(
         CLAIM_TYPES.SIT_STUDENT,    // Type of claim
@@ -319,14 +326,16 @@ const main = (async () => {
         })
         .then((receipt) => {
             console.log(receipt)
-            console.log(JSON.stringify(receipt.events.ClaimAdded.returnValues))
+            console.log('\nClaim Object:\n')
+            console.log(receipt.events.ClaimAdded.returnValues)
             userClaim = receipt.events.ClaimAdded.returnValues
         })
         .catch(console.error)
 
-    console.log('\nPre checks before validation...\n')
+    console.log('\n############## Checking Data before validation ##############\n')
 
     // Ensure user identity has student claim
+    console.log('Ensure user identity has student claim')
     console.log(`Student Claim Key: ${studentClaimKey}`)
 
     await sitIdentity.methods.keyHasPurpose(studentClaimKey, KEY_PURPOSES.CLAIM).call({ from: owner }, (error, result) => {
@@ -344,20 +353,19 @@ const main = (async () => {
     await userIdentity.methods.getClaim(claimId).call({ from: user }, (error, result) => {
         error
             ? console.log(error)
-            : console.log(`Claim Key: \n${JSON.stringify(result)}\n`)
+            : console.log(`Claim Key: \n`); console.log(result);
     })
 
-
-
-    console.log('\nChecking claim is valid...\n')
+    console.log('\n############## 6. Claim Validation Process ##############\n')
 
     // Get the claim data from the user identity
     const claimData = await userIdentity.methods.getVerifyData(CLAIM_TYPES.SIT_STUDENT, sitIdentityAddress)
-        .call({ from: owner })
+        .call({ from: user })
         .catch(console.error)
 
-    console.log(claimData)
+    console.log(`The data used to sign the claim: ${claimData}`)
 
+    console.log(`Recovering the signer address from the signature...\n`)
     async function recover(userIdentityAddress, claimType, claimData, signer) {
         // Extract the hash and signature
         let data = claimData['data']
@@ -374,6 +382,8 @@ const main = (async () => {
 
         return recovered
     }
+
+    console.log('\n############## Ensure claim signer is the same as the signer key in SIT Identity ##############\n')
 
     async function validate(identityAddress, recovered, contractOwner) {
         const trustedIdentity = new web3.platon.Contract(claimHolderAbi, identityAddress)

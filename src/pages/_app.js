@@ -2,10 +2,13 @@
 // Use to keep states between pages
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../style/style.css'
+import { SessionProvider } from 'next-auth/react';
 
 export default function App({ Component, pageProps }) {
     return (
-        <Component {...pageProps} />
+        <SessionProvider session={pageProps.session} refetchInterval={0}>
+            <Component {...pageProps} />
+        </SessionProvider>
     )
 }
 
