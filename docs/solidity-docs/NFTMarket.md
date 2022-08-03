@@ -1,5 +1,7 @@
 # `NFTMarket`
 
+NFT Market that only has NFT item up for sale. NFT has to be minted first before it can be listed onto the market for sale. It is a derivative of the Market contract.
+
 # Functions:
 
 - [`constructor(address _sitcoin)`](#NFTMarket-constructor-address-)
@@ -64,7 +66,9 @@ function mint(
 
   string _tokenURI,
 
-  uint256 _price
+  uint256 _price,
+
+  contract ERC721 _nft
 
 ) external returns (uint256 _itemID)
 
@@ -79,6 +83,8 @@ Mint a new NFT.
 - `_tokenURI`: Link to the digital asset.
 
 - `_price`: Price of the NFT.
+
+- `_nft`: The address of the NFT contract.
 
 ### Return Values:
 

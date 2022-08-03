@@ -11,7 +11,7 @@ npm i -D solc-0.8.6@npm:solc@0.8.6
 npm run docify
 ```
 
-4. Access the docs [here](docgen/SUMMARY.md)
+1. Access the docs [here](SUMMARY.md)
 
 ## Editing Documentation Template
 Edit the `contract.hbs` file in the `docgen/` folder to change the structure and generation of docs.

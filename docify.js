@@ -1,11 +1,12 @@
 // https://forum.openzeppelin.com/t/incorporating-solidity-docgen-into-your-project/1882
+
 const NODE_DIR     = "node_modules";
 const INPUT_DIR    = "./contracts";
-const CONFIG_DIR   = "./docgen";
-const OUTPUT_DIR   = "./docgen/docs";
-const README_FILE  = "./docgen/README.md";
-const SUMMARY_FILE = "./docgen/SUMMARY.md";
-const EXCLUDE_FILE = "./docgen/exclude.txt";
+const CONFIG_DIR   = "./docs";
+const OUTPUT_DIR   = "./docs/solidity-docs";
+const README_FILE  = "./docs/README.md";
+const SUMMARY_FILE = "./docs/SUMMARY.md";
+const EXCLUDE_FILE = "./docs/exclude.txt";
 
 const fs        = require("fs");
 const path      = require("path");
@@ -14,7 +15,7 @@ const spawnSync = require("child_process").spawnSync;
 // const excludeList  = lines(EXCLUDE_FILE).map(line => INPUT_DIR + "/" + line);
 const excludeList = fs.readFileSync(EXCLUDE_FILE).toString().split("\n");
 const relativePath = path.relative(path.dirname(SUMMARY_FILE), OUTPUT_DIR);
-const DIAGRAM_DIR = path.relative(path.dirname(SUMMARY_FILE), "./docgen/diagrams");
+const DIAGRAM_DIR = path.relative(path.dirname(SUMMARY_FILE), "./docs/diagrams");
 
 function lines(pathName) {
     return fs.readFileSync(pathName, {encoding: "utf8"}).split("\r").join("").split("\n");
@@ -45,7 +46,13 @@ function fix(pathName) {
     }
 }
 
-fs.writeFileSync (SUMMARY_FILE, "# SITCOIN Docs\n");
+fs.writeFileSync (SUMMARY_FILE, "# SITCOIN Project Docs\n");
+fs.appendFileSync(SUMMARY_FILE, `
+This page documents the solidity contract files used to create the backend system for the SIT Coin project that runs on the PlatON blockchain. There are three main components:
+- SITCOIN Token Component
+- NFT Market Component
+- Digital Identity Component
+`);
 fs.appendFileSync(SUMMARY_FILE, `
 ## Documentation Generator
 1. Ensure that \`solidity-docgen\` is installed to version **0.5.11**. If this project is cloned you can just run \`npm i\` to install dependencies.
@@ -64,11 +71,25 @@ npm run docify
 Edit the \`contract.hbs\` file in the \`docgen/\` folder to change the structure and generation of docs.
 `);
 // Add diagrams
-fs.appendFileSync(SUMMARY_FILE, `## UML Diagrams\n`);
-fs.appendFileSync(SUMMARY_FILE, `### SITCOIN Token component:\n![SITCOIN Token Component UML](${DIAGRAM_DIR}/sitcoin.png)\n`);
-fs.appendFileSync(SUMMARY_FILE, `### NFT Market component:\n![NFT Market Component UML](${DIAGRAM_DIR}/nft-market.png)\n`);
-fs.appendFileSync(SUMMARY_FILE, `### Digital Identity component:\n![Digital Identity Component UML](${DIAGRAM_DIR}/digital-identity.png)\n`);
-fs.appendFileSync(SUMMARY_FILE, `## Contract Documentation Links\n`);
+fs.appendFileSync(SUMMARY_FILE, `
+## UML Diagrams
+`);
+fs.appendFileSync(SUMMARY_FILE, `
+### SITCOIN Token component:
+![SITCOIN Token Component UML](${DIAGRAM_DIR}/sitcoin.png)
+`);
+fs.appendFileSync(SUMMARY_FILE, `
+### NFT Market component:
+![NFT Market Component UML](${DIAGRAM_DIR}/nft-market.png)
+`);
+fs.appendFileSync(SUMMARY_FILE, `
+### Digital Identity component:
+![Digital Identity Component UML](${DIAGRAM_DIR}/digital-identity.png)
+`);
+fs.appendFileSync(SUMMARY_FILE, `
+## Contract Documentation Links
+
+`);
 
 // fs.writeFileSync (".gitbook.yaml", "root: ./\n");
 // fs.appendFileSync(".gitbook.yaml", "structure:\n");
@@ -90,6 +111,6 @@ const args = [
 
 const result = spawnSync("node", args, {stdio: ["inherit", "inherit", "pipe"]});
 if (result.stderr.length > 0)
-    throw new Error(result.stderr);
+    throw new Error(result.stderr.toString());
 
 fix(OUTPUT_DIR);

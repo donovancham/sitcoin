@@ -179,6 +179,13 @@ platon-truffle migrate
 
 5. After compiling, add the addresses of the deployed contracts to the environment file `.env.local` (if configuring for web3 app deployment)
 
+```dosini
+# Contract Addresses
+NEXT_PUBLIC_SITCOIN_ADDRESS = "lat1yvc4665ffylz4sacqrddn0lckd90keucmvrpph"
+NEXT_PUBLIC_NFTMARKET_ADDRESS = "lat1nsl36wydra848h2497wz8xdfja6w4q3fd7w4l6"
+NEXT_PUBLIC_SITOWNER_IDENTITY_ADDRESS = "lat1frkq00v0laxuzzm02p4t6xn00cmhjqe2ldn4t4"
+```
+
 6. Run Tests
 ```sh
 platon-truffle test
