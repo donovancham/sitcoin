@@ -111,6 +111,7 @@ contract("Market", () => {
     // --------------- Test that Items are added and listed correctly -----------------
     it("Should add item 3 onto the market", async () => {
         // console.log(await instance.createItem("Test Item 3", 30, {from: seller}))
+        await instance.createItem("Test Item 3", 30, {from: seller})
         all = await instance.getAllItems()
         assert.equal(all.length, 3, "all item count incorrect")
         assert.equal(all[0].description, "Test Item", "wrong item at index 0")

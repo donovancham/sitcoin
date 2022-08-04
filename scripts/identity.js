@@ -54,10 +54,6 @@ const claimHolderBytecode = getContractByteCode('ClaimHolder')
 
 const user = dev2
 
-function recover(hash, sig, signer) {
-
-}
-
 const main = (async () => {
 
     var gas;
