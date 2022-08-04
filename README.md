@@ -3,11 +3,49 @@ The purpose of this project is to create a meticulously designed and defined uni
 
 In SIT’s push towards a digital campus, the metaverse that it creates will inherently have a digital economy where a university cryptocurrency (`$SITC`) will be the fundamental basic currency within this ecosystem. And it is of equally, if not more, vital importance that cryptocurrency is designed and defined properly. The aim is to utilize the virtual campus and `$SITC` to build a cohesive environment for SIT, both virtually and physically.
 
+## Project Deliverables
+The task is to ultimately deliver a POC demonstration that shows the feasibility of the adoption of a university cryptocurrency. The POC demonstration should be able to demonstrate that the tokenomics proposed is feasible to be implemented on a blockchain platform backend. 
+
+1. Whitepaper
+   - Literature survey
+   - Use Cases
+   - Tokenomics proposed
+2. Select Companies to partner to work on POC
+   - Wanxiang group with PlatON blockchain selected
+   - Hashkey DID for digital identity requirements
+3. POC implementation
+   - Select use cases from tokenomics to implement
+     - SIT Coin **(Token contract)**
+     - Market use case **(NFT Marketplace)**
+     - Identity Verification for permissioned access control requirements **(Digital Identity)**
+   - Showcase use cases from tokenomics as part of feasibility demonstration
+
 ## SITCOIN Poster
+![SITCOIN Poster](docs/poster/ITP_Gp14_SITCoinInitiative_Poster.jpg)
 
-## Dependencies
+## Poster Video
+You may watch the poster video for a short 5 minute summary of the project.
 
-### Environment Dependencies
+[![SITCOIN Poster Thumbnail](https://img.youtube.com/vi/4fBHaSYol2I/0.jpg)](https://www.youtube.com/watch?v=4fBHaSYol2I)
+
+## Documentation Links
+- [SITCOIN Project documentation](docs/SUMMARY.md)
+- [Web3 dApp documentation](docs/web3dapp.md)
+- [Setup and Installation](docs/SETUP.md)
+
+## Dev Notes
+### Pull Requests
+- Merge main to working branch and resolve conflicts before merge
+- Ensure that `platon-truffle tests` are run and all tests pass before merging.
+
+### Testing
+- Write tests according to use case scenarios
+- Try to cover all code when writing tests
+- Priority coverage for functions to be used in use cases
+
+### Dependencies
+
+#### Environment Dependencies
 - Node JS (`10.18.1` to `14.19.3`) 
 - PlatON client
   - Go (`1.16+`)
@@ -15,15 +53,15 @@ In SIT’s push towards a digital campus, the metaverse that it creates will inh
   - If Linux (`18.04.1` and above)
   - cmake (`3.0+`)
 
-### Smart Contract Dev Dependencies
+#### Smart Contract Dev Dependencies
 - `platon-truffle` (solidity dev env)
 - `@openzeppelin/contracts` (contract)
 - `truffle-assertions` (testing)
 - Optional Dependencies
-  - `solidity-docgen` (docgen)
-  - `solc@0.8.6` (docgen)
+  - `solidity-docgen` (documentation)
+  - `solc@0.8.6` (documentation)
 
-### Frontend web3 Dependencies
+#### Frontend web3 Dependencies
 - @babel/core
 - Bootstrap
 - IPFS HTTP Client (Used for connecting to IPFS)
@@ -33,13 +71,174 @@ In SIT’s push towards a digital campus, the metaverse that it creates will inh
 - React JS
 - React Bootstrap
 - PlatON JS SDK
+- NextAuth
+- jsdoc (documentation)
 
-## Documentation
-- [SITCOIN documentation](docgen/SUMMARY.md)
-- [Setup and Installation](docgen/SETUP.md)
-- [Generating Documentation](docgen/DOCGEN.md)
+
+## Project Features
+
+### Smart Contracts
+- [x] SITCOIN
+	- [x] `ERC-20` Burnable
+	- [x] Access Controls (RBAC)
+	- [x] Mintable
+	- [x] 0 decimal place
+- [x] NFT Market
+	- [x] `ERC-721` URI Storage
+	- [x] Market Functions
+		- [x] Create
+		- [x] Delete
+		- [x] View
+		- [x] Buy
+  		- [x] Execute token transfers
+  		- [x] NFT ownership transfer
+- [x] Digital Identity (Self-Sovereign Identity)
+	- [x] `ClaimHolder.sol`
+		- [x] `KeyHolder.sol`
+			- [x] `ERC-725v1` (Identity)
+		- [x] `ERC-735` (Claims)
+	- [x] Verify Claim
+		- [x] JS Implementation using **"PlatON JS SDK"**
+			- [x] `web3.platon.personal.sign` to generate signature
+			- [x] `web3.platon.personal.ecRecover` to recover address
+			- [x] Verified by checking `recover(signature, dataHash)` = signer address
+
+### Future Improvements List
+- SIT Coin
+  - Permits (Gasless transactions) 
+	- [EIP-712: Domain](https://eips.ethereum.org/EIPS/eip-712)
+	- Gas Relay Station [(OpenGSN)](https://opengsn.org/)
+- NFT Market
+  - Update Market Item
+  - IPFS integration
+	- Gas Cost Optimization
+- Digital Identity
+	- [Hashkey DID](https://www.hashkey.id/home)
+    - Await for update of Hashkey DID (Soul-bound Tokens, Credentials)
+    - Cross-chain features for testing interactions without requiring Hashkey DID to deploy to testnet
+- Upgradable Contracts [(OpenZeppelin Upgradeable)](https://docs.openzeppelin.com/upgrades-plugins/1.x/)
+
+### Web3 dApp
+- [ ] Login
+  - [ ] Deploy new Identity
+  - [x] View Identity Details
+	- [ ] KYC Process
+		- [ ] Get signed Claim (Claim = Proof of identity)
+	- [ ] Login verification
+		- [ ] Sign in framework
+		- [ ] Verify Claim feature
+- [x] Wallet
+	- [x] Network
+		- [x] Connected Network
+		- [x] SITC Supply
+	- [x] Account
+		- [x] My Address
+		- [x] SITC Balance
+	- [x] Transfer Tokens
+	- [x] Burn Tokens
+- [x] Marketplace
+	- [x] Manage
+		- [x] Create
+		- [x] Delete
+		- [x] List my items
+	- [x] List all items
+	- [x] Buy Item
+
+The implementation of the Login feature was not able to be completed fully **on the web3 dApp** on the project delivery deadline. However the implementation has already been shown to be working from the [JS script](scripts/identity.js) before the development of the dApp. 
+
 
 ## Changelog
+- v1.9.0 (Final update from ITP (2021/22 T3) Group 14)
+  - Added documentation in `README.md`
+    - Project Deliverables
+    - Project Features
+    - Writing Tests
+    - Pull Requests workflow
+  - Updated documentation folder from `docgen` to `docs`
+  - Comments added for web3 dApp components
+    - Cleaned unused imports
+    - Unfinished sections marked with `@todo` jsdoc tags
+    - Added jsdoc styled comments for documenting
+      - [x] `components`
+      - [x] `context`
+  - Minor web3 dApp updates
+    - Fixed form not validating issue for `AllowanceForm` in `Marketplace.js`
+    - Fixed form not validating issue for `CreateNFTForm` in `Marketplace.js`
+  - Testing
+    - All tests ran and fixed
+    - Added `ClaimHolder.test.js`
+
+- v1.8.6
+  - Added documentation for web3 dApp
+    - Component functions
+    - TODO comments for unfinished sections
+  - Added documentation for project requirements and implementation status
+- v1.8.5
+  - Updated web3 dApp
+    - Market Component
+      - Added wallet balance to manage allowance modal for better UX
+      - Added checks to verify that allowance to grant does not exceed current wallet balance
+- v1.8.4
+  - Updated web3 dApp
+    - Login Component
+      - Identity Management
+        - Deploy new identity contract **(Incomplete)**
+        - Get Identity Data feature implemented
+      - KYC Process
+        - UI Implemented
+        - Adding signed claim feature not implemented **(Incomplete)** 
+      - Login Feature
+        - Added login framework using NextAuth JS 
+        - Create API Route for verifying signature **(Incomplete)**
+- v1.8.3
+  - Updated web3 dApp
+    - Wallet Component
+      - Added `burn` token implementation
+- v1.8.2
+  - Updated web3 dApp
+    - Market Component
+      - Added Horizontal layout for NFTs to be displayed
+- v1.8.1
+  - Added `.env.local` setup guide
+  - Updated web3 dApp
+    - Market Component
+      - UI
+        - Added modal form for "Create NFT"
+        - Added modal form for "Manage Allowance"
+        - Added `approval` grant to allow Market to manage NFT sales for user
+      - Added Market approval function required to Create NFTs
+      - Create NFT implemented
+      - View NFT implemented
+      - Buy NFT implemented
+      - List NFT for sale implemented
+      - Unlist NFT from sale implemented
+      - Added checks to against the NFT data to determine user's role (owner, creator)
+      - Added `allowance` management functions to manage users allowance to Market Contract
+    - Market Context
+      - Added `approval` checks in the `useEffect` component to refresh `approval` status on load and event triggers
+    - Wallet Context
+      - Updated `useEffect` to separate the event triggers that calls the updaters
+      - Added `allowance` as a state to update on each refresh
+- v1.8.0
+  - Updated web3 dApp
+    - Market Component
+      - Added `Marketplace` component for NFT Market UI
+      - Added `nftmarket` page to load NFT Market UI separately
+      - Added `NFTMarketContext` for loading NFT Market info
+      - Updated `Header` to lock Navbar elements before user connects account
+      - Implemented NFT creation section
+    - Transfer Tokens Component
+      - Added Server-side validation features
+      - Added dynamic checkers for updating validation elements `onChange`
+      - Removed previous validation usages
+      - Improved gas efficiency for transactions (2x down to 1.1x)
+
+- v1.7.9
+  - Updated tests
+    - Commented out `console.log` to improve result printing in Market
+    - Fixed `NFTMarket.sol` tests
+  - Updated main page
+    - Added poster and poster video elements to improve project description in `README`
 - v1.7.8
   - Updated `refresh` state in `WalletContext.js`
     - Changed from `bool` to `int`
@@ -116,6 +315,7 @@ In SIT’s push towards a digital campus, the metaverse that it creates will inh
         - Added validation checks
         - Added error handling
         - Added transaction details reporting after complete operation
+
 - v1.6.4-3
   - Updated web3 App
     - Added `.env` to store public environment variables

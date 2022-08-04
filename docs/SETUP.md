@@ -102,7 +102,7 @@ git clone https://github.com/donovancham/sitcoin.git
 npm install
 ```
 
-3. Add `truffle-config.js`. Copy exactly
+3. Add `truffle-config.js`. Copy exactly:
 ```js
 module.exports = {
     /**
@@ -177,7 +177,16 @@ platon-truffle compile
 platon-truffle migrate
 ```
 
-5. Run Tests
+5. After compiling, add the addresses of the deployed contracts to the environment file `.env.local` (if configuring for web3 app deployment)
+
+```dosini
+# Contract Addresses
+NEXT_PUBLIC_SITCOIN_ADDRESS = "lat1yvc4665ffylz4sacqrddn0lckd90keucmvrpph"
+NEXT_PUBLIC_NFTMARKET_ADDRESS = "lat1nsl36wydra848h2497wz8xdfja6w4q3fd7w4l6"
+NEXT_PUBLIC_SITOWNER_IDENTITY_ADDRESS = "lat1frkq00v0laxuzzm02p4t6xn00cmhjqe2ldn4t4"
+```
+
+6. Run Tests
 ```sh
 platon-truffle test
 platon-truffle test --show-events
@@ -196,4 +205,32 @@ node scripts/transferToken.js
 
 # Run Web3 dApp
 1. Ensure you are in project root folder
-2. `npm run dev`
+
+2. Add `.env` file in project root. Add the following code
+```dosini
+STUDENT_CLAIM_ACCOUNT= # <Insert address here (lat1z... format)>
+STUDENT_CLAIM_PW= # <student claim account password>
+
+FACULTY_CLAIM_ACCOUNT= # <Insert address here (lat1z... format)>
+FACULTY_CLAIM_PW= # <faculty claim account password>
+```
+
+3. Configure `.env.local` server environments
+
+Secret key for `NEXTAUTH` can be generated [here](https://github.com/nextauthjs/next-auth/issues/3245#issuecomment-974772884)
+
+```dosini
+# PlatON Testnet Connections
+NEXT_PUBLIC_DEVNET_RPC = https://devnetopenapi2.platon.network/rpc
+NEXT_PUBLIC_DEVNET_WS = wss://devnetopenapi2.platon.network/ws
+
+# Contract Addresses
+NEXT_PUBLIC_SITCOIN_ADDRESS = # <Insert deployed SITCOIN contract address>
+NEXT_PUBLIC_NFTMARKET_ADDRESS = # <Insert deployed NFTMARKET contract address>
+NEXT_PUBLIC_SITOWNER_IDENTITY_ADDRESS = # <Insert deployed ClaimHolder contract address>
+
+# Auth Secret
+NEXTAUTH_SECRET = # <Add generated secret here>
+```
+
+4. Start the server with `npm run dev`

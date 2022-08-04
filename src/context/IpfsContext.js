@@ -3,6 +3,16 @@ import { create } from 'ipfs-http-client'
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { useRouter } from "next/router";
 
+/**
+ * Context for IPFS, used to grab IPFS connection information and create 
+ * IPFS connection instance. 
+ * 
+ * @module IpfsProvider
+ * @todo Implement add file to IPFS
+ * @todo Implement read file from IPFS
+ * @todo Implement decoding standards (if any) to read encrypted data 
+ * stored in IPFS files
+ */
 
 const IpfsContext = createContext()
 

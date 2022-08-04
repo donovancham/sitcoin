@@ -2,7 +2,7 @@
 
 ERC20 token implemented with controlled supply that allows minting and burning of tokens. This token is designed to be deployed on the PlatON blockchain, which requires compatibility with the `PRC20` fungible token standard. `PRC20` is fully compatible with `ERC20` so openzeppelin's `ERC20` implementation can be used to provide standard `ERC20` functional implementations without any conflicts.
 
-Implemented access control using openzeppelin's `AccessControl` library. This implementation allows supply on demand by allowing more tokens to be minted as demand increases. The minting of tokens can only be done calling the `mint()` function from a privileged address with the 'MINTER' role. 
+Implemented access control using openzeppelin's `AccessControl` library. This implementation allows supply on demand by allowing more tokens to be minted as demand increases. The minting of tokens can only be done calling the `mint()` function from a privileged address with the 'MINTER' role.
 
 # Functions:
 

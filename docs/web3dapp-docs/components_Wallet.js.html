@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/Wallet.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/Wallet.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState } from 'react';
+import Container from 'react-bootstrap/Container';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import ListGroup from 'react-bootstrap/ListGroup';
+import Nav from 'react-bootstrap/Nav';
+import Tab from 'react-bootstrap/Tab';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { Loading } from 'notiflix/build/notiflix-loading-aio';
+import { Report } from 'notiflix/build/notiflix-report-aio';
+import Form from 'react-bootstrap/Form';
+import DOMPurify from 'isomorphic-dompurify';
+
+import { useWalletContext } from '../context/WalletContext';
+
+/**
+ * @fileOverview The Wallet Component
+ * @author Donovan Cham
+ * 
+ * @example
+ * import WalletContext from '../context/WalletContext'
+ * import Wallet from '../components/Wallet'
+ * 
+ * export default function Homepage {
+ *   return (
+ *      &lt;WalletContext>
+ *        &lt;Wallet />
+ *      &lt;/WalletContext>
+ *   )
+ * }
+ */
+
+/**
+ * Component for the Wallet UI. Provides functionality to allow 
+ * users to view basic information about their wallet and perform 
+ * actions such as transfer tokens or burn tokens.
+ * 
+ * @module Wallet
+ */
+
+export default function Wallet() {
+    /**
+     * Imports the state variables for the wallet component. Get states 
+     * that hold the wallet information to be displayed to the user. The 
+     * `refresh` state variable is used to refresh the context states 
+     * and updates the states rendered for other components and pages.
+     * 
+     * @see {@link module:WalletProvider|WalletContext}
+     * @see {@link module:WalletProvider~getContractInfo|WalletContext}
+     * 
+     * @const {Object} WalletContextState 
+     * @property {String} account - The connected user wallet account
+     * @property {String} network - The currently connected network
+     * @property {String} tokenContract - The `SITcoin` contract instance
+     * @property {String} tokenName - The token name
+     * @property {String} tokenSymbol - The token symbol
+     * @property {String} tokenSupply - The token supply
+     * @property {String} tokenBalance - The token balance of the user 
+     * wallet
+     * @property {Object} web3 - The web3 instance
+     * @property {function} getContractInfo - Refreshes state information 
+     * for the token contract variables
+     */
+    const {
+        account,
+        network,
+        tokenContract,
+        tokenName,
+        tokenSymbol,
+        tokenSupply,
+        tokenBalance,
+        web3,
+        getContractInfo,
+    } = useWalletContext()
+
+    // Constant to render to the UI when not user wallet not connected
+    const notConnected = 'Loading...'
+
+    /**
+     * Form validation criteria for both transfer token and burn token 
+     * forms.
+     * 
+     * @const {Object} TokenFormState
+     * @property {Boolean} addressValidated Validation flag for `address` input
+     * @property {Dispatch&lt;SetStateAction&lt;Boolean>>} setAddressValidated 
+     * Sets the validation state for the `address` input
+     * @property {Boolean} amountValidated Validation flag for `amount` input
+     * @property {Dispatch&lt;SetStateAction&lt;Boolean>>} setAmountValidated 
+     * Sets the validation state for the `amount` input
+     * @property {Boolean} validated Validation flag for `transferToken` form
+     * @property {Dispatch&lt;SetStateAction&lt;Boolean>>} setValidated 
+     * Sets the overall validation state for the `transferToken` form
+     * @property {Boolean} burnValidated Validation flag for `burnToken` form
+     * @property {Dispatch&lt;SetStateAction&lt;Boolean>>} setBurnValidated 
+     * Sets the overall validation state for the `burnToken` form
+     */
+    const [addressValidated, setAddressValidated] = useState(false);
+    const [amountValidated, setAmountValidated] = useState(false);
+    const [validated, setValidated] = useState(false);
+    const [burnValidated, setBurnValidated] = useState(false);
+
+    /**
+     * Transfers tokens from the user wallet to another wallet.
+     * 
+     * @async
+     * @function transferFunds
+     * @param {String} to The wallet address to send the tokens to
+     * @param {Number} amount The amount of money to send
+     */
+    const transferFunds = async (to, amount) => {
+        // Execute Transfer
+        Loading.hourglass('Executing Transfer...')
+
+        await tokenContract.methods.transfer(to, amount).estimateGas({ from: account })
+            .then(async (gasAmount) => {
+                console.log(`Estimated gas = ${gasAmount}, ${typeof (gasAmount)}`)
+                await tokenContract.methods.transfer(to, amount)
+                    .send({ from: account, gas: Math.floor(gasAmount * 1.1) })
+                    .then((receipt) => {
+                        console.log(receipt)
+
+                        // Display the transaction results to the user
+                        Report.success(
+                            'Transfer Successful',
+                            `
+                            &lt;div class="container-lg">
+                            &lt;ul class="list-group list-group-horizontal">
+                                    &lt;li class="list-group-item list-group-item-primary col-md-4">Transaction Hash&lt;/li>
+                                    &lt;li class="list-group-item list-group-item-action col-md-6 text-wrap">
+                                        ${receipt.transactionHash}
+                                    &lt;/li>
+                                &lt;/ul>
+                                &lt;ul class="list-group list-group-horizontal">
+                                    &lt;li class="list-group-item list-group-item-primary col-md-4">Transaction Hash&lt;/li>
+                                    &lt;li class="list-group-item list-group-item-action col-md-6">
+                                        &lt;a class='text-wrap'>${receipt.transactionHash}&lt;/a>
+                                    &lt;/li>
+                                &lt;/ul>
+                                &lt;ul class="list-group list-group-horizontal">
+                                    &lt;li class="list-group-item list-group-item-dark col-md-4">Gas&lt;/li>
+                                    &lt;li class="list-group-item list-group-item-action">
+                                        ${
+                            // Convert to von first before converting back to LAT
+                            web3.utils.fromVon(
+                                web3.utils.toVon(receipt.cumulativeGasUsed.toString(), 'gvon'),
+                                'lat') + ' ' + 'LAT'
+                            }
+                                    &lt;/li>
+                                &lt;/ul>
+                                &lt;ul class="list-group list-group-horizontal">
+                                    &lt;li class="list-group-item list-group-item-danger col-md-4">From&lt;/li>
+                                    &lt;li class="list-group-item list-group-item-action">${receipt.events.Transfer.returnValues.from}&lt;/li>
+                                &lt;/ul>
+                                &lt;ul class="list-group list-group-horizontal">
+                                    &lt;li class="list-group-item list-group-item-success col-md-4">To&lt;/li>
+                                    &lt;li class="list-group-item list-group-item-action">${receipt.events.Transfer.returnValues.to}&lt;/li>
+                                &lt;/ul>
+                                &lt;ul class="list-group list-group-horizontal">
+                                    &lt;li class="list-group-item list-group-item-warning col-md-4">Amount&lt;/li>
+                                    &lt;li class="list-group-item list-group-item-action">
+                                        ${receipt.events.Transfer.returnValues.value + ' ' + tokenSymbol}
+                                    &lt;/li>
+                                &lt;/ul>
+                                &lt;ul class="list-group list-group-horizontal">
+                                    &lt;li class="list-group-item list-group-item-info col-md-4">Status&lt;/li>
+                                    &lt;li class="list-group-item list-group-item-action">${receipt.status}&lt;/li>
+                                &lt;/ul>
+                            &lt;/div>
+                            `,
+                            'Okay',
+                            {
+                                width: '650px',
+                                messageMaxLength: 3000,
+                                plainText: false
+                            }
+                        )
+
+                        // Update States
+                        getContractInfo()
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                        Report.failure(
+                            'Error',
+                            `${error.message} (${error.code})`,
+                            'Okay'
+                        )
+                    })
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+
+        Loading.remove()
+    }
+
+    /**
+     * Handles the validation of the `transferToken` form when the submit 
+     * button is clicked. If validated, {@link transferFunds} function 
+     * will be called to transfer tokens. If not validated, user will not 
+     * be able to proceed.
+     * 
+     * @function transferTokens
+     * @param {React.MouseEvent&lt;HTMLElement>} event The event fired after 
+     * the submit button is clicked
+     */
+    const transferTokens = (event) => {
+        // Prevents page from reloading
+        event.preventDefault();
+
+        // Ensure that the wallet is connected
+        if (tokenBalance === undefined) {
+            Notify.failure('Please connect wallet before transferring', {
+                clickToClose: true
+            })
+        }
+        else {
+            const form = event.currentTarget;
+            console.log(`Form Valid? ${form.checkValidity()}`)
+
+            const address = DOMPurify.sanitize(document.querySelector('#transferAddress').value)
+            const amount = DOMPurify.sanitize(document.querySelector('#transferAmount').value)
+
+            // Ensure that the form is valid and the other inputs are validated
+            if (form.checkValidity() === true &amp;&amp; addressValidated &amp;&amp; amountValidated) {
+                transferFunds(address, amount);
+            }
+        }
+    };
+
+    /**
+     * Burns the amount specified that the user's wallet owns.
+     * 
+     * @async
+     * @function burnTokens
+     * @param {Number} amount The amount to be burnt
+     */
+    async function burnTokens(amount) {
+        // Ensure that user has sufficient tokens to burn
+        if (amount > tokenBalance) {
+            Report.warning(
+                'Insufficient Tokens',
+                `Please do not burn more tokens that what you own. Balance: ${tokenBalance}, Burning: ${amount}`,
+                'Okay'
+            )
+        }
+        else {
+            Loading.hourglass('Burning Tokens...')
+
+            await tokenContract.methods.burn(amount)
+                .estimateGas({ from: account })
+                .then(async (gasAmount) => {
+                    console.log(`Estimated gas = ${gasAmount}`)
+                    await tokenContract.methods.burn(amount)
+                        .send({ from: account, gas: Math.floor(gasAmount * 1.1) })
+                        .then((receipt) => {
+                            Report.success(
+                                'Burnt Tokens',
+                                `${amount} SITC successfully burnt!`,
+                                'Okay'
+                            )
+
+                            // Update States
+                            getContractInfo()
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                            Report.failure(
+                                'Error',
+                                `${error.message} (${error.code})`,
+                                'Okay'
+                            )
+                        })
+                })
+                .catch((error) => {
+                    console.log(error)
+                    Report.failure(
+                        'Error',
+                        `${error.message} (${error.code})`,
+                        'Okay'
+                    )
+                })
+
+            Loading.remove()
+        }
+    }
+
+    /**
+     * Validates the `address` input to ensure it is a valid 
+     * {@link https://devdocs.platon.network/docs/en/JS_SDK#web3utilsisbech32address|PlatON Bech32} 
+     * address.
+     * 
+     * @function validateAddress
+     * @param {String} address The `address` input
+     * @returns {Boolean} True if `address` is validated
+     */
+    function validateAddress(address) {
+        // Check if address is valid
+        if (web3.utils.isBech32Address(address) === false) {
+            return false
+        }
+
+        if (address == account) {
+            Notify.failure('Cannot send yourself SIT coins! Please input another address.', {
+                clickToClose: true
+            })
+
+            return false
+        }
+
+        return true
+    }
+
+    /**
+     * Ensures that the `amount` input is not 0 or less.
+     * 
+     * @function validateAmount
+     * @param {Number} amount The `amount` input 
+     * @returns {Boolean} True if `amount` is valid
+     */
+    const validateAmount = (amount) => {
+        // Chops off any decimal places and converts to number
+        const amt = Math.floor(Number(amount))
+
+        console.log(`Amount: ${amt}`)
+
+        if (amt &lt;= 0) {
+            return false
+        }
+
+        if (amt > tokenBalance) {
+            Notify.failure('Amount cannot be more than what you own.', {
+                clickToClose: true
+            })
+            return false
+        }
+
+        return true
+    }
+
+    /**
+     * Checks if the form is validated
+     * 
+     * @function checkValid
+     * @returns {Boolean} True if form is validated
+     */
+    function checkValid() {
+        if (addressValidated &amp;&amp; amountValidated) {
+            return true
+        }
+        return false
+    }
+
+    return (
+        &lt;Container>
+            &lt;Tab.Container id='wallet-info' defaultActiveKey='network'>
+                &lt;Card className='bg-light'>
+                    &lt;Card.Header>
+                        &lt;Nav variant="pills" defaultActiveKey="#network">
+                            &lt;Nav.Item>
+                                &lt;Nav.Link eventKey='network' href='#network'>Network&lt;/Nav.Link>
+                            &lt;/Nav.Item>
+                            &lt;Nav.Item>
+                                &lt;Nav.Link eventKey='wallet' href='#wallet'>Wallet&lt;/Nav.Link>
+                            &lt;/Nav.Item>
+                            &lt;Nav.Item>
+                                &lt;Nav.Link eventKey='transfer' href='#transfer'>Transfer&lt;/Nav.Link>
+                            &lt;/Nav.Item>
+                            &lt;Nav.Item>
+                                &lt;Nav.Link eventKey='burn' href='#burn'>Burn Tokens&lt;/Nav.Link>
+                            &lt;/Nav.Item>
+                        &lt;/Nav>
+                    &lt;/Card.Header>
+                    &lt;Tab.Content>
+                        {/* Network Tab */}
+                        &lt;Tab.Pane eventKey='network' title='network'>
+                            &lt;Card.Body>
+                                &lt;Card.Title>Network Overview&lt;/Card.Title>
+                                {/* Network information */}
+                                &lt;ListGroup horizontal>
+                                    &lt;ListGroup.Item variant='danger' className='col-md-4'>
+                                        &lt;h5>Network Connected&lt;/h5>
+                                    &lt;/ListGroup.Item>
+                                    &lt;ListGroup.Item className='col'>
+                                        {network ? network : notConnected}
+                                    &lt;/ListGroup.Item>
+                                &lt;/ListGroup>
+                                {/* SITcoin Total Supply */}
+                                &lt;ListGroup horizontal>
+                                    &lt;ListGroup.Item variant='warning' className='col-md-4'>
+                                        &lt;h5>Token Supply&lt;/h5>
+                                    &lt;/ListGroup.Item>
+                                    &lt;ListGroup.Item className='col'>
+                                        {tokenSupply ? tokenSupply : notConnected}
+                                    &lt;/ListGroup.Item>
+                                &lt;/ListGroup>
+                            &lt;/Card.Body>
+                        &lt;/Tab.Pane>
+                        {/* Wallet Tab */}
+                        &lt;Tab.Pane eventKey='wallet' title='Wallet'>
+                            &lt;Card.Body>
+                                &lt;Card.Title>My Wallet&lt;/Card.Title>
+                                {/* Account Address */}
+                                &lt;ListGroup horizontal>
+                                    &lt;ListGroup.Item variant='primary' className='col-md-4'>
+                                        &lt;h5>Wallet Address&lt;/h5>
+                                    &lt;/ListGroup.Item>
+                                    &lt;ListGroup.Item className='col'>
+                                        {account ? account : notConnected}
+                                    &lt;/ListGroup.Item>
+                                &lt;/ListGroup>
+                                {/* Account Currency */}
+                                &lt;ListGroup horizontal>
+                                    &lt;ListGroup.Item variant='info' className='col-md-4'>
+                                        &lt;h5>{tokenName} {' '}Balance&lt;/h5>
+                                    &lt;/ListGroup.Item>
+                                    &lt;ListGroup.Item className='col'>
+                                        {tokenBalance ? tokenBalance + ' ' + tokenSymbol : notConnected}
+                                    &lt;/ListGroup.Item>
+                                &lt;/ListGroup>
+                            &lt;/Card.Body>
+                        &lt;/Tab.Pane>
+                        {/* Transfer Tab */}
+                        &lt;Tab.Pane eventKey='transfer' title='Transfer'>
+                            &lt;Card.Body>
+                                &lt;Card.Title>Transfer Tokens&lt;/Card.Title>
+                                {/* Transfer tokens form */}
+                                &lt;Form noValidate validated={validated} onSubmit={transferTokens}>
+                                    {/* Address Input */}
+                                    &lt;Form.Group className="mb-3" controlId="transferAddress">
+                                        &lt;Form.Label className='h6'>Receiver Address&lt;/Form.Label>
+                                        &lt;Form.Control
+                                            required
+                                            type="text"
+                                            placeholder="Receiver Address"
+                                            size='lg'
+                                            onChange={() => {
+                                                // Sanitize user inputs before processing
+                                                const address = DOMPurify.sanitize(document.querySelector('#transferAddress').value)
+
+                                                // Set valid state according to server side validation rules
+                                                validateAddress(address) ? setAddressValidated(true) : setAddressValidated(false)
+
+                                                // Check if form is validated and ready to submit
+                                                checkValid() ? setValidated(true) : setValidated(false)
+                                                console.log(`Validated: ${validated}`)
+                                            }}
+                                            isValid={addressValidated}
+                                            isInvalid={!addressValidated}
+                                        />
+                                        {/* Valid Feedback */}
+                                        &lt;Form.Control.Feedback>
+                                            Ok!
+                                        &lt;/Form.Control.Feedback>
+                                        {/* Invalid Feedback */}
+                                        &lt;Form.Control.Feedback type='invalid'>
+                                            Please enter a valid ATON bech32 address (E.g. lat1rd8c02e905rguunal8ck77ftct0jph2v6zj7cq)
+                                        &lt;/Form.Control.Feedback>
+                                    &lt;/Form.Group>
+                                    {/* Amount input */}
+                                    &lt;Form.Group className="mb-3" controlId="transferAmount">
+                                        &lt;Form.Label className='h6'>Amount&lt;/Form.Label>
+                                        &lt;Form.Control
+                                            required
+                                            type="number"
+                                            placeholder="SITC to transfer"
+                                            onChange={() => {
+                                                // Sanitize user inputs before processing
+                                                const amount = DOMPurify.sanitize(document.querySelector('#transferAmount').value)
+
+                                                // Set valid state according to server side validation rules
+                                                validateAmount(amount) ? setAmountValidated(true) : setAmountValidated(false)
+
+                                                // Check if form is validated and ready to submit
+                                                checkValid() ? setValidated(true) : setValidated(false)
+                                                console.log(`Validated: ${validated}`)
+                                            }}
+                                            isValid={amountValidated}
+                                            isInvalid={!amountValidated}
+                                        />
+                                        {/* Valid Feedback */}
+                                        &lt;Form.Control.Feedback>
+                                            Ok!
+                                        &lt;/Form.Control.Feedback>
+                                        {/* Invalid Feedback */}
+                                        &lt;Form.Control.Feedback type='invalid'>
+                                            Amount cannot be 0 or less.
+                                        &lt;/Form.Control.Feedback>
+                                    &lt;/Form.Group>
+                                    {/* Submit button */}
+                                    &lt;Button variant="success" type="submit" disabled={tokenBalance ? false : true}>
+                                        Transfer
+                                    &lt;/Button>
+                                &lt;/Form>
+                            &lt;/Card.Body>
+                        &lt;/Tab.Pane>
+                        {/* Burn Tokens Tab */}
+                        &lt;Tab.Pane eventKey='burn' title='Burn Tokens'>
+                            &lt;Card.Body>
+                                &lt;Card.Title>Burn Tokens&lt;/Card.Title>
+                                {/* Transfer tokens form */}
+                                &lt;Form noValidate validated={burnValidated} onSubmit={(e) => {
+                                    // Prevent page from refreshing when the form is submitted
+                                    e.preventDefault();
+                                    const amount = DOMPurify.sanitize(document.querySelector('#burnAmount').value)
+
+                                    // Calls the function to burn tokens
+                                    burnTokens(amount)
+                                }}>
+                                    {/* Amount input */}
+                                    &lt;Form.Group className="mb-3" controlId="burnAmount">
+                                        &lt;Form.Label className='h6'>Amount&lt;/Form.Label>
+                                        &lt;Form.Control
+                                            required
+                                            type="number"
+                                            placeholder="Tokens to Burn"
+                                            onChange={() => {
+                                                // Sanitize user inputs before processing
+                                                const amount = DOMPurify.sanitize(document.querySelector('#burnAmount').value)
+
+                                                // Set valid state according to server side validation rules
+                                                validateAmount(amount) ? setBurnValidated(true) : setBurnValidated(false)
+                                            }}
+                                            isValid={burnValidated}
+                                            isInvalid={!burnValidated}
+                                        />
+                                        {/* Valid Feedback */}
+                                        &lt;Form.Control.Feedback>
+                                            Ok!
+                                        &lt;/Form.Control.Feedback>
+                                        {/* Invalid Feedback */}
+                                        &lt;Form.Control.Feedback type='invalid'>
+                                            Amount cannot be 0 or less.
+                                        &lt;/Form.Control.Feedback>
+                                    &lt;/Form.Group>
+                                    {/* Submit button */}
+                                    &lt;Button variant="danger" type="submit" disabled={tokenBalance ? false : true}>
+                                        Burn
+                                    &lt;/Button>
+                                &lt;/Form>
+                            &lt;/Card.Body>
+                        &lt;/Tab.Pane>
+                    &lt;/Tab.Content>
+                &lt;/Card>
+            &lt;/Tab.Container>
+
+        &lt;/Container >
+    )
+
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Header.html">Header</a></li><li><a href="module-IdentityLogin.html">IdentityLogin</a></li><li><a href="module-Ipfs.html">Ipfs</a></li><li><a href="module-IpfsProvider.html">IpfsProvider</a></li><li><a href="module-Layout.html">Layout</a></li><li><a href="module-Marketplace.html">Marketplace</a></li><li><a href="module-NextAuth.html">NextAuth</a></li><li><a href="module-NftMarketProvider.html">NftMarketProvider</a></li><li><a href="module-Wallet.html">Wallet</a></li><li><a href="module-WalletProvider.html">WalletProvider</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Fri Aug 05 2022 02:29:05 GMT+0800 (Singapore Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

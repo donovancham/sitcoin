@@ -1,5 +1,14 @@
 import { useIpfsContext } from '../context/IpfsContext';
 
+/**
+ * Component for IPFS, used to display IPFS connection information. This 
+ * should be removed when IPFS is implemented on the backend as 
+ * {@link IpfsContext} will be sufficient for the backend functionality.
+ * 
+ * @module Ipfs
+ * @todo Remove once IPFS testing completed and no requirement for debug
+ */
+
 export default function Ipfs() {
     const { ipfs, setIpfs, id, version, isOnline } = useIpfsContext()
 

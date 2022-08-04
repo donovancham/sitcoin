@@ -106,6 +106,7 @@ contract NFTMarket is ReentrancyGuard, ERC721URIStorage, ERC721Holder {
      * @param description Description of the NFT.
      * @param _tokenURI Link to the digital asset.
      * @param _price Price of the NFT.
+     * @param _nft The address of the NFT contract.
      * @return _itemID The id of the item created.
      */
     function mint(

@@ -8,6 +8,29 @@ import Navbar from 'react-bootstrap/Navbar';
 
 import WalletContext from '../context/WalletContext'
 
+/**
+ * @fileOverview The Layout component
+ * @author Donovan Cham
+ * 
+ * @example
+ * import Layout from '../components/Layout'
+ * 
+ * export default function Homepage {
+ *   return (
+ *     <Layout>
+ *       <h1>Hello World</h1>
+ *     </Layout>
+ *   )
+ * }
+ */
+
+/**
+ * Provides a base template to that wraps around other components to 
+ * form flesh out the web pages.
+ * 
+ * @module Layout
+ */
+
 export default function Layout({ children }) {
 
     return (
@@ -23,6 +46,8 @@ export default function Layout({ children }) {
                     <Script src="dist/notiflix-report-aio-X.X.X.min.js"></Script>
                     {/* Only Loading module js */}
                     <Script src="dist/notiflix-loading-aio-X.X.X.min.js"></Script>
+                    {/* Only Confirm module js */}
+                    <Script src="dist/notiflix-confirm-aio-X.X.X.min.js"></Script>
                 </Head>
                 {/* Navbar and header elements */}
                 <Header />

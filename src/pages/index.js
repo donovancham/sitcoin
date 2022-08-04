@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react'
 
-import Layout from '../components/Layout'
-import Wallet from '../components/Wallet'
 import Ipfs from '../components/Ipfs'
 import IpfsContext from '../context/IpfsContext'
 import Marketplace from '../components/Marketplace'
-import NftMarketContext from '../context/NFTMarket'
+import NftMarketContext from '../context/NFTMarketContext'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+
+import Layout from '../components/Layout'
+import Wallet from '../components/Wallet'
 
 export default function Index() {
     return (
@@ -18,9 +21,6 @@ export default function Index() {
             </div>
 
             <Wallet />
-            <NftMarketContext>
-                <Marketplace />
-            </NftMarketContext>
             {/* <IpfsContext>
                 <Ipfs />
             </IpfsContext> */}

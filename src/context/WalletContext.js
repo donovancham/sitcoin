@@ -6,16 +6,101 @@ import Web3 from 'web3'
 
 import sitcoin from '../../build/contracts/SITcoin.json'
 
-// Creates the context that can be wrapped around consumers to deliver context
-const WalletContext = createContext()
-const platonMainnet = 100
-const platonDevnet = 210309
+/**
+ * @fileOverview The Wallet Context
+ * @author Donovan Cham
+ * 
+ * @example
+ * import WalletContext from '../context/WalletContext'
+ * import Wallet from '../components/Wallet'
+ * 
+ * export default function Homepage {
+ *   return (
+ *      <WalletContext>
+ *        <Wallet />
+ *      </WalletContext>
+ *   )
+ * }
+ */
 
+/**
+ * Gets information from `SITcoin` contract and stores in states to be 
+ * used in other components.
+ * 
+ * @see {@link module:Wallet|Wallet}
+ * @module WalletProvider
+ */
+
+
+/**
+ * Creates the context that loads and holds the states for wallet 
+ * related functions.
+ * @type {Context<any>}
+ */
+const WalletContext = createContext()
+
+/**
+ * The chain ID of the PlatON mainnet.
+ * @type {Number}
+ */
+const platonMainnet = 100
+// const platonDevnet = 210309
+
+/**
+ * The contract address of the deployed SIT Coin Contract. Set this in 
+ * the `.env.local` local development environment file of the project. 
+ * @type {string}
+ */
 const sitcoinAddress = process.env.NEXT_PUBLIC_SITCOIN_ADDRESS
 
 export default function WalletProvider({ children }) {
 
+    /**
+     * Initialize router to redirect user.
+     * @type {NextRouter}
+     */
     const router = useRouter()
+
+    /**
+     * The state variables for the wallet context. Gets information from 
+     * the `SITcoin` token contract. The `refresh` state variable is used 
+     * to refresh the context states and updates the states rendered for 
+     * other components and pages.
+     * 
+     * @const {Object} WalletContextState
+     * @property {String} account - The connected user wallet account
+     * @property {Dispatch<SetStateAction<String>>} setAccount Sets the 
+     * `account` state
+     * @property {String} network - The currently connected network
+     * @property {Dispatch<SetStateAction<String>>} setNetwork Sets the 
+     * `network` state
+     * @property {Object} web3 - The web3 instance
+     * @property {Dispatch<SetStateAction<Object>>} setWeb3 Sets the 
+     * `web3` state
+     * @property {String} tokenContract - The `SITcoin` contract instance
+     * @property {Dispatch<SetStateAction<String>>} setTokenContract Sets the 
+     * `tokenContract` state
+     * @property {String} tokenName - The token name
+     * @property {Dispatch<SetStateAction<String>>} setTokenName Sets the 
+     * `tokenName` state
+     * @property {String} tokenSymbol - The token symbol
+     * @property {Dispatch<SetStateAction<String>>} setTokenSymbol Sets the 
+     * `tokenSymbol` state
+     * @property {String} tokenSupply - The token supply
+     * @property {Dispatch<SetStateAction<String>>} setTokenSupply Sets the 
+     * `tokenSupply` state
+     * @property {String} tokenBalance - The token balance of the user 
+     * wallet
+     * @property {Dispatch<SetStateAction<String>>} setTokenBalance Sets the 
+     * `tokenBalance` state
+     * @property {Number} allowance - The allowance granted to the 
+     * `NFTMarket` contract
+     * @property {Dispatch<SetStateAction<Number>>} setAllowance Sets the 
+     * `allowance` state
+     * @property {Number} refresh - The refresh state counter
+     * @property {Dispatch<SetStateAction<Number>>} setRefresh - The 
+     * setter function for the refresh state variable
+     */
     const [account, setAccount] = useState()
     const [network, setNetwork] = useState()
     const [web3, setWeb3] = useState()
@@ -24,6 +109,7 @@ export default function WalletProvider({ children }) {
     const [tokenSymbol, setTokenSymbol] = useState()
     const [tokenSupply, setTokenSupply] = useState()
     const [tokenBalance, setTokenBalance] = useState()
+    const [allowance, setAllowance] = useState()
     const [refresh, setRefresh] = useState(0)
 
     // Runs once during rendering phase.
@@ -41,19 +127,24 @@ export default function WalletProvider({ children }) {
             return
         }
         else {
+            // Ensures web3 instance is loaded
             if (web3 === undefined) {
                 initializeWeb3();
 
                 // Configure network
                 console.log(`Current Chain: ${platon.networkVersion}`)
-    
+
+                // Changes the network string to be displayed according 
+                // to 1v1 runs
                 platon.networkVersion === platonMainnet
                     ? setNetwork('PlatON Main Network')
                     : setNetwork('PlatON Test Network')
-    
+
                 console.log(`Current Network: ${network}`)
             }
 
+            // Ensure that account is loaded before loading token contract 
+            // information.
             if (account) {
                 getContractInfo();
             }
@@ -72,6 +163,7 @@ export default function WalletProvider({ children }) {
                         clickToClose: true
                     });
 
+                console.log(`Current Account: ${accounts[0]}`)
                 // Get information from token contract
                 getContractInfo()
             });
@@ -98,8 +190,21 @@ export default function WalletProvider({ children }) {
             });
         }
 
-    }, [account, network, refresh])
+    }, [account, network])
 
+    // Use this event listener to refresh and update contract info
+    useEffect(() => {
+        if (account) {
+            getContractInfo();
+        }
+    }, [refresh])
+
+    /**
+     * Instantiates the Web3 object and loads the `SITcoin` token contract.
+     * 
+     * @async
+     * @function initializeWeb3
+     */
     const initializeWeb3 = async () => {
         // Initialize web3 instance
         let web3Instance = new Web3(platon)
@@ -123,6 +228,14 @@ export default function WalletProvider({ children }) {
             : setTokenContract(contract)
     }
 
+    /**
+     * Gets the information related to the token from the `SITcoin` token 
+     * contract.
+     * 
+     * @async
+     * @function getContractInfo
+     * @returns {Boolean} True if no errors while fetching info
+     */
     const getContractInfo = async () => {
         try {
             // Get Token Name
@@ -145,6 +258,14 @@ export default function WalletProvider({ children }) {
             setTokenBalance(balance)
             console.log(`Current Account Balance: ${tokenBalance}`)
 
+            // Get User's current allowance given to Market
+            let granted = await tokenContract.methods
+                .allowance(account, process.env.NEXT_PUBLIC_NFTMARKET_ADDRESS)
+                .call({ from: account })
+
+            setAllowance(granted)
+            console.log(`Current Allowance: ${allowance}`)
+
             return true
         }
         catch (e) {
@@ -152,10 +273,35 @@ export default function WalletProvider({ children }) {
         }
     }
 
-    // State variables for other pages to get context
+    /**
+     * Array of states to be shared to other components.
+     * 
+     * @const {Object} walletState
+     *  * @property {String} account - The connected user wallet account
+     * @property {Dispatch<SetStateAction<String>>} setAccount Sets the 
+     * `account` state
+     * @property {Number} allowance - The allowance granted to the 
+     * `NFTMarket` contract
+     * @property {String} network - The currently connected network
+     * @property {Dispatch<SetStateAction<String>>} setNetwork Sets the 
+     * `network` state
+     * @property {String} tokenContract - The `SITcoin` contract instance
+     * @property {String} tokenName - The token name
+     * @property {String} tokenSymbol - The token symbol
+     * @property {String} tokenSupply - The token supply
+     * @property {String} tokenBalance - The token balance of the user 
+     * wallet
+     * @property {Object} web3 - The web3 instance
+     * @property {Number} refresh - The refresh state counter
+     * @property {Dispatch<SetStateAction<Number>>} setRefresh - The 
+     * setter function for the refresh state variable
+     * @property {function} getContractInfo - Refreshes state information 
+     * for the token contract variables
+     */
     const walletState = {
         account,
         setAccount,
+        allowance,
         network,
         tokenContract,
         tokenName,
@@ -178,8 +324,8 @@ export default function WalletProvider({ children }) {
 /**
  * Connects to Samurai wallet on browser.
  * 
- * @param {Web3} web3 
- * @returns The address of the account connected on success. Returns false on failure.
+ * @param {Object} web3 The web3 instance
+ * @returns {String|Boolean} The address of the account connected on success.
  */
 export async function connectSamurai(web3) {
     try {
@@ -216,6 +362,13 @@ export async function connectSamurai(web3) {
     }
 }
 
+/**
+ * Calling this function from another component allows access to the 
+ * state array that is shared.
+ * 
+ * @function useWalletContext
+ * @returns {Object} The state array that is shared
+ */
 export function useWalletContext() {
     return useContext(WalletContext)
 }
