@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/Layout.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/Layout.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Container from 'react-bootstrap/Container'
+import Card from 'react-bootstrap/Card'
+import Image from 'react-bootstrap/Image'
+import Head from 'next/head'
+import Script from 'next/script'
+import Header from './Header'
+import Navbar from 'react-bootstrap/Navbar';
+
+import WalletContext from '../context/WalletContext'
+
+/**
+ * @fileOverview The Layout component
+ * @author Donovan Cham
+ * 
+ * @example
+ * import Layout from '../components/Layout'
+ * 
+ * export default function Homepage {
+ *   return (
+ *     &lt;Layout>
+ *       &lt;h1>Hello World&lt;/h1>
+ *     &lt;/Layout>
+ *   )
+ * }
+ */
+
+/**
+ * Provides a base template to that wraps around other components to 
+ * form flesh out the web pages.
+ * 
+ * @module Layout
+ */
+
+export default function Layout({ children }) {
+
+    return (
+        &lt;WalletContext>
+            &lt;Container fluid>
+                &lt;Head>
+                    &lt;title>SIT Metaverse&lt;/title>
+                    &lt;meta charSet="UTF-8" />
+                    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+                    {/* Only Notify module js */}
+                    &lt;Script src="dist/notiflix-notify-aio-X.X.X.min.js">&lt;/Script>
+                    {/* Only Report module js */}
+                    &lt;Script src="dist/notiflix-report-aio-X.X.X.min.js">&lt;/Script>
+                    {/* Only Loading module js */}
+                    &lt;Script src="dist/notiflix-loading-aio-X.X.X.min.js">&lt;/Script>
+                    {/* Only Confirm module js */}
+                    &lt;Script src="dist/notiflix-confirm-aio-X.X.X.min.js">&lt;/Script>
+                &lt;/Head>
+                {/* Navbar and header elements */}
+                &lt;Header />
+                {/* Main Body */}
+                &lt;Container fluid>
+                    {children}
+                &lt;/Container>
+            &lt;/Container>
+            {/* Fixed Footer */}
+            &lt;footer>
+                &lt;Navbar fixed="bottom" variant='light' bg='light'>
+                    &lt;p className="col-md-4 mb-0 text-muted">© 2022 Singapore Institute of Technology&lt;/p>
+
+                    &lt;a href="/" className="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+                        &lt;Image src='/static/SIT_logo_2.png' fluid height='70' width='70' />
+                        {/* &lt;svg class="bi me-2" width="40" height="32">&lt;use xlink:href="#bootstrap">&lt;/use>&lt;/svg> */}
+                    &lt;/a>
+
+                    &lt;ul className="nav col-md-4 justify-content-end">
+                        {/* &lt;li className="nav-item">&lt;a href="#" class="nav-link px-2 text-muted">Home&lt;/a>&lt;/li>
+                    &lt;li className="nav-item">&lt;a href="#" class="nav-link px-2 text-muted">Features&lt;/a>&lt;/li>
+                    &lt;li className="nav-item">&lt;a href="#" class="nav-link px-2 text-muted">Pricing&lt;/a>&lt;/li>
+                    &lt;li className="nav-item">&lt;a href="#" class="nav-link px-2 text-muted">FAQs&lt;/a>&lt;/li> */}
+                        &lt;li className="nav-item">
+                            &lt;a href="https://www.flaticon.com/free-icons/flaticon" className="nav-link px-2 text-muted">
+                                &lt;Image src='/static/flaticon.png' fluid roundedCircle height='70' width='70' />
+                            &lt;/a>
+                        &lt;/li>
+                    &lt;/ul>
+                &lt;/Navbar>
+            &lt;/footer>
+        &lt;/WalletContext>
+    )
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Header.html">Header</a></li><li><a href="module-IdentityLogin.html">IdentityLogin</a></li><li><a href="module-Ipfs.html">Ipfs</a></li><li><a href="module-IpfsProvider.html">IpfsProvider</a></li><li><a href="module-Layout.html">Layout</a></li><li><a href="module-Marketplace.html">Marketplace</a></li><li><a href="module-NextAuth.html">NextAuth</a></li><li><a href="module-NftMarketProvider.html">NftMarketProvider</a></li><li><a href="module-Wallet.html">Wallet</a></li><li><a href="module-WalletProvider.html">WalletProvider</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Fri Aug 05 2022 02:29:05 GMT+0800 (Singapore Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

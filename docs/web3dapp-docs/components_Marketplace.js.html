@@ -1,4 +1,32 @@
-import React, { useState, useEffect } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/Marketplace.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/Marketplace.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
@@ -30,9 +58,9 @@ import NftMarketContext, { useNftMarketContext } from '../context/NFTMarketConte
  * 
  * export default function Homepage {
  *   return (
- *      <NftMarketContext>
- *        <Marketplace />
- *      </NftMarketContext>
+ *      &lt;NftMarketContext>
+ *        &lt;Marketplace />
+ *      &lt;/NftMarketContext>
  *   )
  * }
  */
@@ -60,7 +88,7 @@ export default function Marketplace() {
      * @property {Number} allowance - The allowance that the current user 
      * has given to the `NFTMarket` contract
      * @property {Number} refresh - The refresh state counter
-     * @property {Dispatch<SetStateAction<Number>>} setRefresh - The 
+     * @property {Dispatch&lt;SetStateAction&lt;Number>>} setRefresh - The 
      * setter function for the refresh state variable
      * @property {Object} tokenContract - The contract instance for the 
      * `SITcoin` token contract
@@ -87,13 +115,13 @@ export default function Marketplace() {
      * 
      * @const {Object} NFTMarketContextState
      * @property {Object} nftMarketContract The `NFTMarket` contract instance
-     * @property {Array<Object>} allMarketItems Contains all listed NFTs 
+     * @property {Array&lt;Object>} allMarketItems Contains all listed NFTs 
      * @property {Number} allMarketItemsCount The number of listed NFTs
-     * @property {Array<Object>} unsoldItems Contains all unsold NFTs
+     * @property {Array&lt;Object>} unsoldItems Contains all unsold NFTs
      * @property {Number} unsoldItemsCount The number of unsold NFTs
-     * @property {Array<Object>} myOwnedNfts Contains all owned NFTs
+     * @property {Array&lt;Object>} myOwnedNfts Contains all owned NFTs
      * @property {Number} myOwnedNftCount The number of owned NFTs
-     * @property {Array<Object>} myNftCreations Contains all NFT creations 
+     * @property {Array&lt;Object>} myNftCreations Contains all NFT creations 
      * @property {Number} myCreationCount The number of NFT creations
      * @property {Boolean} approvalStatus Indicates whether the `NFTMarket` 
      * contract is approved by the user to handle item sales on the user's 
@@ -120,16 +148,16 @@ export default function Marketplace() {
      * 
      * @const {Object} CreateNftFormState
      * @property {Boolean} createNftFormShow Flag for displaying form
-     * @property {Dispatch<SetStateAction<Boolean>>} setCreateNftFormShow 
+     * @property {Dispatch&lt;SetStateAction&lt;Boolean>>} setCreateNftFormShow 
      * Changes the visibility status of the form
      * @property {Boolean} nftNameValidated Validation flag for `name` input
-     * @property {Dispatch<SetStateAction<Boolean>>} setNftNameValidated 
+     * @property {Dispatch&lt;SetStateAction&lt;Boolean>>} setNftNameValidated 
      * Sets the validation state for the `name` input
      * @property {Boolean} nftPriceValidated Validation flag for `price` input
-     * @property {Dispatch<SetStateAction<Boolean>>} setNftPriceValidated 
+     * @property {Dispatch&lt;SetStateAction&lt;Boolean>>} setNftPriceValidated 
      * Sets the validation state for the `price` input
      * @property {Boolean} createNftValidated Validation flag for form
-     * @property {Dispatch<SetStateAction<Boolean>>} setCreateNftValidated 
+     * @property {Dispatch&lt;SetStateAction&lt;Boolean>>} setCreateNftValidated 
      * Sets the overall validation state for the Create NFT form
      */
     const [createNftFormShow, setCreateNftFormShow] = useState(false)
@@ -142,19 +170,19 @@ export default function Marketplace() {
      * 
      * @const {Object} AllowanceFormState
      * @property {Boolean} createNftFormShow Flag for displaying form
-     * @property {Dispatch<SetStateAction<Boolean>>} setCreateNftFormShow 
+     * @property {Dispatch&lt;SetStateAction&lt;Boolean>>} setCreateNftFormShow 
      * Changes the visibility status of the form
      * @property {Boolean} amountValidated Validation flag for `amount` input
-     * @property {Dispatch<SetStateAction<Boolean>>} setAmountValidated 
+     * @property {Dispatch&lt;SetStateAction&lt;Boolean>>} setAmountValidated 
      * Sets the validation state for the `amount` input
      * @property {Number} optionSelected Contains option selection choice
-     * @property {Dispatch<SetStateAction<Number>>} setOptionSelected 
+     * @property {Dispatch&lt;SetStateAction&lt;Number>>} setOptionSelected 
      * Sets the selection state for the `option` input
      * @property {Boolean} optionValidated Validation flag for `option` input
-     * @property {Dispatch<SetStateAction<Boolean>>} setOptionValidated 
+     * @property {Dispatch&lt;SetStateAction&lt;Boolean>>} setOptionValidated 
      * Sets the validation state for the `option` input
      * @property {Boolean} allowanceFormValidated Validation flag for form
-     * @property {Dispatch<SetStateAction<Boolean>>} setAllowanceFormValidated 
+     * @property {Dispatch&lt;SetStateAction&lt;Boolean>>} setAllowanceFormValidated 
      * Sets the overall validation state for the Allowance form
      */
     const [allowanceFormShow, setAllowanceFormShow] = useState(false)
@@ -185,59 +213,59 @@ export default function Marketplace() {
      * @function viewNfts
      * @param {String} title The title of the UI tab
      * @param {Number} nftCount The number of NFTs displayed
-     * @param {Array<Object>} nftArray The array of NFTs from the state
+     * @param {Array&lt;Object>} nftArray The array of NFTs from the state
      * @returns {Object} The HTML of the content to be rendered
      */
     function viewNfts(title, nftCount, nftArray) {
         // Create the content list to be returned
         let content = []
         content.push(
-            <Container fluid>
-                <div className='px-4 py-5 my-5 text-center'>
-                    <h1 className='display-5 fw-bold'>{title}</h1>
-                    <div className="col-lg-6 mx-auto">
-                        <p className="lead mb-4">
+            &lt;Container fluid>
+                &lt;div className='px-4 py-5 my-5 text-center'>
+                    &lt;h1 className='display-5 fw-bold'>{title}&lt;/h1>
+                    &lt;div className="col-lg-6 mx-auto">
+                        &lt;p className="lead mb-4">
                             Current Item Count: {nftCount}
-                        </p>
-                    </div>
-                </div>
-                <Row className='justify-content-md-center'>
-                    <Col md='auto'>
-                        <Button variant='primary' size='lg' onClick={handleCreateNftFormShow}>
+                        &lt;/p>
+                    &lt;/div>
+                &lt;/div>
+                &lt;Row className='justify-content-md-center'>
+                    &lt;Col md='auto'>
+                        &lt;Button variant='primary' size='lg' onClick={handleCreateNftFormShow}>
                             Create NFT
-                        </Button>
-                    </Col>
-                    <Col md='auto'>
-                        <Button
+                        &lt;/Button>
+                    &lt;/Col>
+                    &lt;Col md='auto'>
+                        &lt;Button
                             variant={approvalStatus ? 'success' : 'outline-danger'}
                             size='lg'
                             onClick={approveMarket}
                             disabled={approvalStatus}>
                             {approvalStatus ? 'Market Approved' : 'Approve Market'}
-                        </Button>
-                    </Col>
-                    <Col md='auto'>
-                        <Button variant='outline-dark' size='lg' onClick={handleAllowanceFormShow}>
+                        &lt;/Button>
+                    &lt;/Col>
+                    &lt;Col md='auto'>
+                        &lt;Button variant='outline-dark' size='lg' onClick={handleAllowanceFormShow}>
                             Manage Allowance
-                        </Button>
-                    </Col>
-                </Row>
-            </Container >
+                        &lt;/Button>
+                    &lt;/Col>
+                &lt;/Row>
+            &lt;/Container >
         )
 
         // Check if there are any items on the market currently
-        if (nftCount != 0 && nftArray !== undefined) {
+        if (nftCount != 0 &amp;&amp; nftArray !== undefined) {
             // Add the cards displaying NFT items
             content.push(
-                <Table responsive>
-                    <thead>
+                &lt;Table responsive>
+                    &lt;thead>
                         {nftArray.map((nft) => (
-                            <th>
+                            &lt;th>
                                 {nftItemCard(nft)}
-                            </th>
+                            &lt;/th>
                         ))}
-                    </thead>
-                </Table>
+                    &lt;/thead>
+                &lt;/Table>
             )
         }
 
@@ -267,101 +295,101 @@ export default function Marketplace() {
         }
 
         return (
-            <Card style={{ width: '31rem', margin: '25px' }}>
-                <Card.Body>
-                    <Image src='/static/nft_placeholder.png' alt={nft['description'] + ' image'} fluid />
-                    <Card.Title>
-                        <Row>
-                            <Col sm={8} className='display-6'>
+            &lt;Card style={{ width: '31rem', margin: '25px' }}>
+                &lt;Card.Body>
+                    &lt;Image src='/static/nft_placeholder.png' alt={nft['description'] + ' image'} fluid />
+                    &lt;Card.Title>
+                        &lt;Row>
+                            &lt;Col sm={8} className='display-6'>
                                 {nft['description']}
-                            </Col>
-                            <Col sm={4} className='text-muted text-end'>
+                            &lt;/Col>
+                            &lt;Col sm={4} className='text-muted text-end'>
                                 ID: {nft['tokenId']}
-                            </Col>
-                        </Row>
-                    </Card.Title>
-                    <Table striped="columns">
-                        <thead />
-                        <tbody>
-                            <tr>
-                                <td class='lead'>Creator</td>
-                                <td class='text-end h6'>{author}</td>
-                            </tr>
-                            <tr>
-                                <td class='lead'>Owner</td>
-                                <td class='text-end h6'>{owner}</td>
-                            </tr>
-                            <tr>
-                                <td class='lead'>Price</td>
-                                <td class='text-end h6'>{nft['price']} SITC</td>
-                            </tr>
+                            &lt;/Col>
+                        &lt;/Row>
+                    &lt;/Card.Title>
+                    &lt;Table striped="columns">
+                        &lt;thead />
+                        &lt;tbody>
+                            &lt;tr>
+                                &lt;td class='lead'>Creator&lt;/td>
+                                &lt;td class='text-end h6'>{author}&lt;/td>
+                            &lt;/tr>
+                            &lt;tr>
+                                &lt;td class='lead'>Owner&lt;/td>
+                                &lt;td class='text-end h6'>{owner}&lt;/td>
+                            &lt;/tr>
+                            &lt;tr>
+                                &lt;td class='lead'>Price&lt;/td>
+                                &lt;td class='text-end h6'>{nft['price']} SITC&lt;/td>
+                            &lt;/tr>
                             {/* Next JS Conditional Rendering */}
                             {
                                 // Show seller if NFT is up for sale
-                                nft['published'] &&
-                                <tr>
-                                    <td class='lead'>Seller</td>
-                                    <td class='text-end h6'>{seller}</td>
-                                </tr>
+                                nft['published'] &amp;&amp;
+                                &lt;tr>
+                                    &lt;td class='lead'>Seller&lt;/td>
+                                    &lt;td class='text-end h6'>{seller}&lt;/td>
+                                &lt;/tr>
                             }
-                        </tbody>
-                    </Table>
+                        &lt;/tbody>
+                    &lt;/Table>
                     {/* Buy button to buy NFTs */}
                     {
                         // Ensure user does not own displayed NFT
-                        (owner !== account ? author !== account : false) && !nft['sold'] &&
-                        <Button variant='outline-primary' onClick={async () => { await buyNft(nft['tokenId'], nft['price']) }}>
+                        (owner !== account ? author !== account : false) &amp;&amp; !nft['sold'] &amp;&amp;
+                        &lt;Button variant='outline-primary' onClick={async () => { await buyNft(nft['tokenId'], nft['price']) }}>
                             Buy NFT
-                        </Button>
+                        &lt;/Button>
                     }
                     {/* Allow listing item when item is not published */}
                     {
                         // Check if published
-                        !nft['published'] &&
+                        !nft['published'] &amp;&amp;
                         // Ensure at least owned or is author if not owned
-                        (owner === account ? true : author === account) &&
-                        <Button variant='warning' onClick={() => { sellNft(nft['tokenId']) }}>
+                        (owner === account ? true : author === account) &amp;&amp;
+                        &lt;Button variant='warning' onClick={() => { sellNft(nft['tokenId']) }}>
                             Sell NFT
-                        </Button>
+                        &lt;/Button>
                     }
                     {/* Allow unlisting item when owned */}
                     {
                         // Check if published
-                        nft['published'] &&
+                        nft['published'] &amp;&amp;
                         // Ensure Item is not sold already
-                        !nft['sold'] &&
+                        !nft['sold'] &amp;&amp;
                         // Ensure at least owned or is author if not owned
-                        (owner === account ? true : author === account) &&
-                        <Button variant='danger' onClick={() => { unlistNft(nft['tokenId']) }}>
+                        (owner === account ? true : author === account) &amp;&amp;
+                        &lt;Button variant='danger' onClick={() => { unlistNft(nft['tokenId']) }}>
                             Unlist NFT
-                        </Button>
+                        &lt;/Button>
                     }
                     {/* Creator Status */}
                     {
                         // Ensure item is created by usr
-                        author === account &&
-                        <Button variant='outline-primary' disabled>
+                        author === account &amp;&amp;
+                        &lt;Button variant='outline-primary' disabled>
                             Creator
-                        </Button>
+                        &lt;/Button>
                     }
                     {/* Ownership Status */}
                     {
                         // Ensure item is owned
-                        owner === account &&
-                        <Button variant='outline-danger' disabled>
+                        owner === account &amp;&amp;
+                        &lt;Button variant='outline-danger' disabled>
                             Owned
-                        </Button>
+                        &lt;/Button>
                     }
                     {/* Sold Status */}
                     {
                         // Ensure Item is already sold
-                        nft['sold'] &&
-                        <Button variant='outline-success' disabled>
+                        nft['sold'] &amp;&amp;
+                        &lt;Button variant='outline-success' disabled>
                             Sold
-                        </Button>
+                        &lt;/Button>
                     }
-                </Card.Body>
-            </Card>
+                &lt;/Card.Body>
+            &lt;/Card>
         )
     }
 
@@ -447,7 +475,7 @@ export default function Marketplace() {
      */
     async function removeAllowance(amount) {
         // Ensure that allowance to be removed is within existing allowance scope
-        if (allowance < amount) {
+        if (allowance &lt; amount) {
             Report.warning(
                 'Unable to process',
                 `You do not have ${amount} SITC granted to Market. Current grant: ${allowance} SITC`,
@@ -572,7 +600,7 @@ export default function Marketplace() {
      */
     async function buyNft(tokenId, price) {
         // Request for allowance when not enough
-        if (allowance < price) {
+        if (allowance &lt; price) {
             Report.warning(
                 'Not enough allowance',
                 `Please use the "Manage Allowance" button to grant at least ${price} SITC in allowance to Market Contract.`,
@@ -779,7 +807,7 @@ export default function Marketplace() {
      * the user will not be able to proceed.
      * 
      * @function manageAllowance
-     * @param {React.MouseEvent<HTMLElement>} event The event fired after 
+     * @param {React.MouseEvent&lt;HTMLElement>} event The event fired after 
      * the submit button is clicked
      */
     function manageAllowance(event) {
@@ -818,7 +846,7 @@ export default function Marketplace() {
      * will not be able to proceed.
      * 
      * @function createNft
-     * @param {React.MouseEvent<HTMLElement>} event The event fired after 
+     * @param {React.MouseEvent&lt;HTMLElement>} event The event fired after 
      * the submit button is clicked
      */
     function createNft(event) {
@@ -847,7 +875,7 @@ export default function Marketplace() {
                     'Mint NFT',
                     'Cancel',
                     async () => {
-                        if (form.checkValidity() === true && nftNameValidated && nftPriceValidated) {
+                        if (form.checkValidity() === true &amp;&amp; nftNameValidated &amp;&amp; nftPriceValidated) {
                             Loading.hourglass('Minting a new NFT...')
 
                             // FUTURE UPGRADE: IPFS URI Metadata storage
@@ -929,7 +957,7 @@ export default function Marketplace() {
         console.log(`Number to validate: ${amt}`)
 
         // Ensure price is more than 0
-        if (amt <= 0) {
+        if (amt &lt;= 0) {
             return false
         }
 
@@ -943,7 +971,7 @@ export default function Marketplace() {
      * @returns True if Create NFT Form is validated
      */
     function checkNftFormValid() {
-        if (nftNameValidated && nftPriceValidated) {
+        if (nftNameValidated &amp;&amp; nftPriceValidated) {
             return true
         }
         return false
@@ -956,64 +984,64 @@ export default function Marketplace() {
      * @returns True if Allowance Form is validated
      */
     function checkAllowanceFormValid() {
-        return amountValidated && optionValidated
+        return amountValidated &amp;&amp; optionValidated
     }
 
     return (
-        <NftMarketContext>
-            <Container>
-                <Tabs
+        &lt;NftMarketContext>
+            &lt;Container>
+                &lt;Tabs
                     defaultActiveKey="allMarketItems"
                     id="nft-marketplace"
                     className="mb-3"
                     fill
                 >
                     {/* View all Market items tab */}
-                    <Tab eventKey="allMarketItems" title="All Listings">
+                    &lt;Tab eventKey="allMarketItems" title="All Listings">
                         {
                             account
                                 ? viewNfts('All Items', allMarketItemsCount, allMarketItems)
                                 : 'Please click Connect Button to refresh'
                         }
-                    </Tab>
+                    &lt;/Tab>
                     {/* View all unsold items tab */}
-                    <Tab eventKey="unsoldItems" title="Unsold Listings">
+                    &lt;Tab eventKey="unsoldItems" title="Unsold Listings">
                         {
                             account
                                 ? viewNfts('Unsold Items', unsoldItemsCount, unsoldItems)
                                 : 'Please click Connect Button to refresh'
                         }
-                    </Tab>
+                    &lt;/Tab>
                     {/* View my owned NFTs tab */}
-                    <Tab eventKey="myNFTs" title="My NFTs">
+                    &lt;Tab eventKey="myNFTs" title="My NFTs">
                         {
                             account
                                 ? viewNfts('My NFTs', myOwnedNftCount, myOwnedNfts)
                                 : 'Please click Connect Button to refresh'
                         }
-                    </Tab>
+                    &lt;/Tab>
                     {/* View my creations tab */}
-                    <Tab eventKey="myCreations" title="My Creations">
+                    &lt;Tab eventKey="myCreations" title="My Creations">
                         {
                             account
                                 ? viewNfts('My Creations', myCreationCount, myNftCreations)
                                 : 'Please click Connect Button to refresh'
                         }
-                    </Tab>
-                </Tabs>
-            </Container>
+                    &lt;/Tab>
+                &lt;/Tabs>
+            &lt;/Container>
 
             {/* Create NFT Form Modal */}
-            <Modal show={createNftFormShow} onHide={handleCreateNftFormClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Create NFT</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form noValidate validated={createNftValidated} onSubmit={createNft}>
+            &lt;Modal show={createNftFormShow} onHide={handleCreateNftFormClose}>
+                &lt;Modal.Header closeButton>
+                    &lt;Modal.Title>Create NFT&lt;/Modal.Title>
+                &lt;/Modal.Header>
+                &lt;Modal.Body>
+                    &lt;Form noValidate validated={createNftValidated} onSubmit={createNft}>
                         {/* Address Input */}
-                        <Form.Group className="mb-3" controlId="nftName">
-                            <Form.Label className='h6'>NFT Name</Form.Label>
-                            <Form.Control
+                        &lt;Form.Group className="mb-3" controlId="nftName">
+                            &lt;Form.Label className='h6'>NFT Name&lt;/Form.Label>
+                            &lt;Form.Control
                                 required
                                 type="text"
                                 placeholder="Name of NFT"
@@ -1032,18 +1060,18 @@ export default function Marketplace() {
                                 isInvalid={!nftNameValidated}
                             />
                             {/* Valid Feedback */}
-                            <Form.Control.Feedback>
+                            &lt;Form.Control.Feedback>
                                 Ok!
-                            </Form.Control.Feedback>
+                            &lt;/Form.Control.Feedback>
                             {/* Invalid Feedback */}
-                            <Form.Control.Feedback type='invalid'>
+                            &lt;Form.Control.Feedback type='invalid'>
                                 Please enter a name for your NFT
-                            </Form.Control.Feedback>
-                        </Form.Group>
+                            &lt;/Form.Control.Feedback>
+                        &lt;/Form.Group>
                         {/* Amount input */}
-                        <Form.Group className="mb-3" controlId="nftPrice">
-                            <Form.Label className='h6'>Selling Price</Form.Label>
-                            <Form.Control
+                        &lt;Form.Group className="mb-3" controlId="nftPrice">
+                            &lt;Form.Label className='h6'>Selling Price&lt;/Form.Label>
+                            &lt;Form.Control
                                 required
                                 type="number"
                                 placeholder="Selling price of NFT"
@@ -1062,49 +1090,49 @@ export default function Marketplace() {
                                 isInvalid={!nftPriceValidated}
                             />
                             {/* Valid Feedback */}
-                            <Form.Control.Feedback>
+                            &lt;Form.Control.Feedback>
                                 Ok!
-                            </Form.Control.Feedback>
+                            &lt;/Form.Control.Feedback>
                             {/* Invalid Feedback */}
-                            <Form.Control.Feedback type='invalid'>
+                            &lt;Form.Control.Feedback type='invalid'>
                                 Price cannot be 0 or less
-                            </Form.Control.Feedback>
-                        </Form.Group>
+                            &lt;/Form.Control.Feedback>
+                        &lt;/Form.Group>
                         {/* More form elements can be added in the future with IPFS support for metadata */}
                         {/* Submit button */}
-                        <Button variant="success" type="submit">
+                        &lt;Button variant="success" type="submit">
                             Mint!
-                        </Button>
-                    </Form>
-                </Modal.Body>
-            </Modal>
+                        &lt;/Button>
+                    &lt;/Form>
+                &lt;/Modal.Body>
+            &lt;/Modal>
 
             {/* Allowance Management Modal Form */}
-            <Modal show={allowanceFormShow} onHide={handleAllowanceFormClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Manage Allowance</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form noValidate validated={allowanceFormValidated} onSubmit={manageAllowance}>
+            &lt;Modal show={allowanceFormShow} onHide={handleAllowanceFormClose}>
+                &lt;Modal.Header closeButton>
+                    &lt;Modal.Title>Manage Allowance&lt;/Modal.Title>
+                &lt;/Modal.Header>
+                &lt;Modal.Body>
+                    &lt;Form noValidate validated={allowanceFormValidated} onSubmit={manageAllowance}>
                         {/* Display Current Allowance */}
-                        <div className="h3 text-primary">
+                        &lt;div className="h3 text-primary">
                             Current Allowance:
-                            <div className="h4 text-info">{allowance} SITC</div>
-                        </div>
-                        <div className="h3 text-success">
+                            &lt;div className="h4 text-info">{allowance} SITC&lt;/div>
+                        &lt;/div>
+                        &lt;div className="h3 text-success">
                             Wallet Balance:
-                            <div className="h4 text-dark">{tokenBalance} SITC</div>
-                        </div>
+                            &lt;div className="h4 text-dark">{tokenBalance} SITC&lt;/div>
+                        &lt;/div>
 
                         {/* Amount input */}
-                        <Form.Group className="mb-3" controlId="allowanceAmount">
-                            <Form.Label className='h6'>Allowance Amount</Form.Label>
-                            <Form.Control
+                        &lt;Form.Group className="mb-3" controlId="allowanceAmount">
+                            &lt;Form.Label className='h6'>Allowance Amount&lt;/Form.Label>
+                            &lt;Form.Control
                                 required
                                 type="number"
                                 placeholder="Allowance to grant or remove"
                                 onChange={() => {
-                                    if (document.querySelector('#decreaseAllowance').checked === false &&
+                                    if (document.querySelector('#decreaseAllowance').checked === false &amp;&amp;
                                         document.querySelector('#increaseAllowance').checked === false) {
                                         // Since both are not checked, options should be invalid
                                         setOptionValidated(false)
@@ -1124,30 +1152,30 @@ export default function Marketplace() {
                                 isInvalid={!amountValidated}
                             />
                             {/* Valid Feedback */}
-                            <Form.Control.Feedback>
+                            &lt;Form.Control.Feedback>
                                 Ok!
-                            </Form.Control.Feedback>
+                            &lt;/Form.Control.Feedback>
                             {/* Invalid Feedback */}
-                            <Form.Control.Feedback type='invalid'>
+                            &lt;Form.Control.Feedback type='invalid'>
                                 Amount cannot be 0 or less
-                            </Form.Control.Feedback>
-                        </Form.Group>
+                            &lt;/Form.Control.Feedback>
+                        &lt;/Form.Group>
                         {/* Option Selection for increase or decrease */}
-                        <Form.Group className="mb-3" controlId="allowanceOption">
-                            <Form.Label className='h6'>Allowance Management Options</Form.Label>
-                            <div>
+                        &lt;Form.Group className="mb-3" controlId="allowanceOption">
+                            &lt;Form.Label className='h6'>Allowance Management Options&lt;/Form.Label>
+                            &lt;div>
                                 {/* Option for increase allowance */}
-                                <Form.Check
+                                &lt;Form.Check
                                     inline
                                     id="increaseAllowance"
                                     type="radio"
                                 >
-                                    <Form.Check.Input
+                                    &lt;Form.Check.Input
                                         required
                                         type="radio"
                                         name="allowanceOption"
                                         onChange={() => {
-                                            if (document.querySelector('#decreaseAllowance').checked === false &&
+                                            if (document.querySelector('#decreaseAllowance').checked === false &amp;&amp;
                                                 document.querySelector('#increaseAllowance').checked === false) {
                                                 // Since both are not checked, options should be invalid
                                                 setOptionValidated(false)
@@ -1164,26 +1192,26 @@ export default function Marketplace() {
                                         isValid={optionValidated}
                                         isInvalid={!optionValidated}
                                     />
-                                    <Form.Check.Label>Give Allowance</Form.Check.Label>
-                                    <Form.Control.Feedback type="valid">
+                                    &lt;Form.Check.Label>Give Allowance&lt;/Form.Check.Label>
+                                    &lt;Form.Control.Feedback type="valid">
                                         Ok!
-                                    </Form.Control.Feedback>
-                                    <Form.Control.Feedback type="invalid">
+                                    &lt;/Form.Control.Feedback>
+                                    &lt;Form.Control.Feedback type="invalid">
                                         Please Select an option
-                                    </Form.Control.Feedback>
-                                </Form.Check>
+                                    &lt;/Form.Control.Feedback>
+                                &lt;/Form.Check>
                                 {/* Option for decrease allowance */}
-                                <Form.Check
+                                &lt;Form.Check
                                     inline
                                     id="decreaseAllowance"
                                     type="radio"
                                 >
-                                    <Form.Check.Input
+                                    &lt;Form.Check.Input
                                         required
                                         type="radio"
                                         name="allowanceOption"
                                         onChange={() => {
-                                            if (document.querySelector('#decreaseAllowance').checked === false &&
+                                            if (document.querySelector('#decreaseAllowance').checked === false &amp;&amp;
                                                 document.querySelector('#increaseAllowance').checked === false) {
                                                 // Since both are not checked, options should be invalid
                                                 setOptionValidated(false)
@@ -1202,23 +1230,45 @@ export default function Marketplace() {
                                         isValid={optionValidated}
                                         isInvalid={!optionValidated}
                                     />
-                                    <Form.Check.Label>Remove Allowance</Form.Check.Label>
-                                    <Form.Control.Feedback type="valid">
+                                    &lt;Form.Check.Label>Remove Allowance&lt;/Form.Check.Label>
+                                    &lt;Form.Control.Feedback type="valid">
                                         Ok!
-                                    </Form.Control.Feedback>
-                                    <Form.Control.Feedback type="invalid">
+                                    &lt;/Form.Control.Feedback>
+                                    &lt;Form.Control.Feedback type="invalid">
                                         Please Select an option
-                                    </Form.Control.Feedback>
-                                </Form.Check>
-                            </div>
-                        </Form.Group>
+                                    &lt;/Form.Control.Feedback>
+                                &lt;/Form.Check>
+                            &lt;/div>
+                        &lt;/Form.Group>
                         {/* Submit button */}
-                        <Button variant="success" type="submit">
+                        &lt;Button variant="success" type="submit">
                             Submit
-                        </Button>
-                    </Form>
-                </Modal.Body>
-            </Modal>
-        </NftMarketContext >
+                        &lt;/Button>
+                    &lt;/Form>
+                &lt;/Modal.Body>
+            &lt;/Modal>
+        &lt;/NftMarketContext >
     )
-}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Header.html">Header</a></li><li><a href="module-IdentityLogin.html">IdentityLogin</a></li><li><a href="module-Ipfs.html">Ipfs</a></li><li><a href="module-IpfsProvider.html">IpfsProvider</a></li><li><a href="module-Layout.html">Layout</a></li><li><a href="module-Marketplace.html">Marketplace</a></li><li><a href="module-NextAuth.html">NextAuth</a></li><li><a href="module-NftMarketProvider.html">NftMarketProvider</a></li><li><a href="module-Wallet.html">Wallet</a></li><li><a href="module-WalletProvider.html">WalletProvider</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Fri Aug 05 2022 02:29:05 GMT+0800 (Singapore Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

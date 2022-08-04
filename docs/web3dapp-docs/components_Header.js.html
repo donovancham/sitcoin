@@ -1,4 +1,32 @@
-import Container from 'react-bootstrap/Container';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/Header.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/Header.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
@@ -17,7 +45,7 @@ import { connectSamurai, useWalletContext } from '../context/WalletContext';
  * import Header from './Header';
  * 
  * export default function Homepage {
- *   return <Header />
+ *   return &lt;Header />
  * }
  */
 
@@ -41,11 +69,11 @@ export default function Header() {
      * @see {@link module:WalletProvider|WalletContext}
      * @const {Object} WalletContextState 
      * @property {Number} refresh - The refresh state counter
-     * @property {Dispatch<SetStateAction<Number>>} setRefresh - The 
+     * @property {Dispatch&lt;SetStateAction&lt;Number>>} setRefresh - The 
      * setter function for the refresh state variable
      * @property {String} account - Contains the account that is 
      * connected from the user's wallet
-     * @property {Dispatch<SetStateAction<String>>} setAccount - The 
+     * @property {Dispatch&lt;SetStateAction&lt;String>>} setAccount - The 
      * setter function for the account state variable
      * @property {Object} web3 - The web3 instance.
      */
@@ -88,9 +116,9 @@ export default function Header() {
      */
     const connectButton = () => {
         return (
-            <Button variant="outline-success" size="md" onClick={initializeWallet}>
+            &lt;Button variant="outline-success" size="md" onClick={initializeWallet}>
                 Connect Wallet
-            </Button>
+            &lt;/Button>
         )
     }
 
@@ -101,9 +129,9 @@ export default function Header() {
      */
     const connectedButton = () => {
         return (
-            <Button variant="success" size="md" disabled>
+            &lt;Button variant="success" size="md" disabled>
                 Connected
-            </Button>
+            &lt;/Button>
         )
     }
 
@@ -114,64 +142,86 @@ export default function Header() {
      */
     const refreshButton = () => {
         return (
-            <Button variant="outline-dark" size="md" onClick={async () => {
+            &lt;Button variant="outline-dark" size="md" onClick={async () => {
                 setRefresh(refresh + 1)
             }}>
                 Refresh
-            </Button>
+            &lt;/Button>
         )
     }
 
     return (
-        <Navbar variant="light" sticky="top" className='bg-light bg-gradient'>
-            <Container>
-                <Image src="/static/token.png" width="45" height="45" />
-                <Navbar.Brand href="/">
+        &lt;Navbar variant="light" sticky="top" className='bg-light bg-gradient'>
+            &lt;Container>
+                &lt;Image src="/static/token.png" width="45" height="45" />
+                &lt;Navbar.Brand href="/">
                     SIT Metaverse
-                </Navbar.Brand>
+                &lt;/Navbar.Brand>
                 {/* Insert any navigation links you need here */}
-                <Nav.Link href="/nftmarket" disabled={account ? false : true}>NFT Market</Nav.Link>
-                <Nav.Link href="/login" disabled={account ? false : true}>Login</Nav.Link>
-                <Navbar.Collapse className="justify-content-end">
+                &lt;Nav.Link href="/nftmarket" disabled={account ? false : true}>NFT Market&lt;/Nav.Link>
+                &lt;Nav.Link href="/login" disabled={account ? false : true}>Login&lt;/Nav.Link>
+                &lt;Navbar.Collapse className="justify-content-end">
                     {/* Refresh Button */}
-                    <Navbar.Text>
+                    &lt;Navbar.Text>
                         {/* Show refresh button once account connected */}
                         {account ? refreshButton() : ''}
-                    </Navbar.Text>
+                    &lt;/Navbar.Text>
                     {/* Connect Wallet Button */}
-                    <Navbar.Text>
+                    &lt;Navbar.Text>
                         {/* Error Alert message that will pop-up when install fails */}
                         {account ? connectedButton() : connectButton()}
-                    </Navbar.Text>
+                    &lt;/Navbar.Text>
                     {/* Current User identity information */}
-                    <Navbar.Text>
-                        <Button variant='secondary' disabled>
+                    &lt;Navbar.Text>
+                        &lt;Button variant='secondary' disabled>
                             Identity: {session ? session.user.identity : 'None'}
-                        </Button>
-                    </Navbar.Text>
+                        &lt;/Button>
+                    &lt;/Navbar.Text>
                     {/* Claim information if user verifies identity */}
-                    <Navbar.Text>
-                        <Button variant='danger' disabled>
+                    &lt;Navbar.Text>
+                        &lt;Button variant='danger' disabled>
                             Claim: {session
                                 ? (
-                                    (session.user.claimType === 11 && 'Student Claim') ||
-                                    (session.user.claimType === 22 && 'Faculty Claim')
+                                    (session.user.claimType === 11 &amp;&amp; 'Student Claim') ||
+                                    (session.user.claimType === 22 &amp;&amp; 'Faculty Claim')
                                 )
                                 : 'None'}
-                        </Button>
-                    </Navbar.Text>
+                        &lt;/Button>
+                    &lt;/Navbar.Text>
                     {/* Logout button */}
                     {
                         // Only show logout button if logged in
-                        session &&
-                        <Navbar.Text>
-                            <Button variant='outline-dark' disabled>
+                        session &amp;&amp;
+                        &lt;Navbar.Text>
+                            &lt;Button variant='outline-dark' disabled>
                                 Identity: {session ? session.user.identity : 'None'}
-                            </Button>
-                        </Navbar.Text>
+                            &lt;/Button>
+                        &lt;/Navbar.Text>
                     }
-                </Navbar.Collapse>
-            </Container>
-        </Navbar>
+                &lt;/Navbar.Collapse>
+            &lt;/Container>
+        &lt;/Navbar>
     )
-}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Header.html">Header</a></li><li><a href="module-IdentityLogin.html">IdentityLogin</a></li><li><a href="module-Ipfs.html">Ipfs</a></li><li><a href="module-IpfsProvider.html">IpfsProvider</a></li><li><a href="module-Layout.html">Layout</a></li><li><a href="module-Marketplace.html">Marketplace</a></li><li><a href="module-NextAuth.html">NextAuth</a></li><li><a href="module-NftMarketProvider.html">NftMarketProvider</a></li><li><a href="module-Wallet.html">Wallet</a></li><li><a href="module-WalletProvider.html">WalletProvider</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Fri Aug 05 2022 02:29:05 GMT+0800 (Singapore Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

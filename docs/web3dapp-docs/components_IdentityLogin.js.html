@@ -1,4 +1,32 @@
-import { useState, useEffect } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/IdentityLogin.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/IdentityLogin.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useState, useEffect } from 'react';
 import { signIn, getCsrfToken } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Row from 'react-bootstrap/Row';
@@ -25,7 +53,7 @@ import claimHolder from '../../build/contracts/ClaimHolder.json'
  * import IdentityLogin from './components/IdentityLogin';
  * 
  * export default function Homepage {
- *   return <IdentityLogin />
+ *   return &lt;IdentityLogin />
  * }
  */
 
@@ -100,7 +128,7 @@ export default function IdentityLogin({ csrfToken }) {
      * @const {Object} WalletContextState
      * @property {String} account - Contains the account that is 
      * connected from the user's wallet
-     * @property {Dispatch<SetStateAction<String>>} setAccount - The 
+     * @property {Dispatch&lt;SetStateAction&lt;String>>} setAccount - The 
      * setter function for the account state variable
      * @property {Number} refresh - The refresh state counter
      * @property {Object} web3 - The web3 instance
@@ -115,7 +143,7 @@ export default function IdentityLogin({ csrfToken }) {
      * 
      * @const {Object} ServerWeb3State 
      * @property {Object} serverWeb3 Stores the server's web3 instance
-     * @property {Dispatch<SetStateAction<Object>>} setServerWeb3 Sets the 
+     * @property {Dispatch&lt;SetStateAction&lt;Object>>} setServerWeb3 Sets the 
      * web3 instance
      */
     const [serverWeb3, setServerWeb3] = useState()
@@ -125,7 +153,7 @@ export default function IdentityLogin({ csrfToken }) {
      * 
      * @const {Object} ValidatedState 
      * @property {Boolean} validated Stores the `validated` flag
-     * @property {Dispatch<SetStateAction<Boolean>>} setValidated Sets 
+     * @property {Dispatch&lt;SetStateAction&lt;Boolean>>} setValidated Sets 
      * the `validated` flag
      */
     const [validated, setValidated] = useState(false)
@@ -135,7 +163,7 @@ export default function IdentityLogin({ csrfToken }) {
      * 
      * @const {Object} AddressValidatedState 
      * @property {Boolean} addressValidated Stores the `addressValidated` flag
-     * @property {Dispatch<SetStateAction<Boolean>>} setAddressValidated 
+     * @property {Dispatch&lt;SetStateAction&lt;Boolean>>} setAddressValidated 
      * Sets the `addressValidated` flag
      */
     const [addressValidated, setAddressValidated] = useState(false)
@@ -145,7 +173,7 @@ export default function IdentityLogin({ csrfToken }) {
      * 
      * @const {Object} IdentityValidatedState 
      * @property {Boolean} identityValidated Stores the `identityValidated` flag
-     * @property {Dispatch<SetStateAction<Boolean>>} setIdentityValidated 
+     * @property {Dispatch&lt;SetStateAction&lt;Boolean>>} setIdentityValidated 
      * Sets the `identityValidated` flag
      */
     const [identityValidated, setIdentityValidated] = useState(false)
@@ -157,7 +185,7 @@ export default function IdentityLogin({ csrfToken }) {
      * @const {Object} IdentityContractState 
      * @property {Object} identityContract Stores the contract instance 
      * of the user's loaded identity
-     * @property {Dispatch<SetStateAction<Object>>} setIdentityContract 
+     * @property {Dispatch&lt;SetStateAction&lt;Object>>} setIdentityContract 
      * Sets the contract instance
      */
     const [identityContract, setIdentityContract] = useState()
@@ -167,7 +195,7 @@ export default function IdentityLogin({ csrfToken }) {
      * 
      * @const {Object} IdentityAddressState 
      * @property {String} identityAddress Stores the contract address.
-     * @property {Dispatch<SetStateAction<String>>} setIdentityAddress 
+     * @property {Dispatch&lt;SetStateAction&lt;String>>} setIdentityAddress 
      * Sets the contract address
      */
     const [identityAddress, setIdentityAddress] = useState()
@@ -177,8 +205,8 @@ export default function IdentityLogin({ csrfToken }) {
      * the contract.
      * 
      * @const {Object} IdentityKeysState 
-     * @property {Array<Object>} identityKeys Stores the Key objects
-     * @property {Dispatch<SetStateAction<String>>} setIdentityKeys 
+     * @property {Array&lt;Object>} identityKeys Stores the Key objects
+     * @property {Dispatch&lt;SetStateAction&lt;String>>} setIdentityKeys 
      * Sets the Key object
      */
     const [identityKeys, setIdentityKeys] = useState()
@@ -188,8 +216,8 @@ export default function IdentityLogin({ csrfToken }) {
      * the contract.
      * 
      * @const {Object} IdentityClaimsState 
-     * @property {Array<Object>} identityClaims Stores the Claim objects
-     * @property {Dispatch<SetStateAction<String>>} setIdentityClaims 
+     * @property {Array&lt;Object>} identityClaims Stores the Claim objects
+     * @property {Dispatch&lt;SetStateAction&lt;String>>} setIdentityClaims 
      * Sets the Claim object
      */
     const [identityClaims, setIdentityClaims] = useState()
@@ -325,7 +353,7 @@ export default function IdentityLogin({ csrfToken }) {
 
                         Report.success(
                             'Identity Created',
-                            `Your Identity address <strong>${receipt.contractAddress}</strong>`,
+                            `Your Identity address &lt;strong>${receipt.contractAddress}&lt;/strong>`,
                             'Okay'
                         )
                     })
@@ -369,7 +397,7 @@ export default function IdentityLogin({ csrfToken }) {
      * @returns {Boolean} True if all fields valid
      */
     function checkValid() {
-        return addressValidated && identityValidated
+        return addressValidated &amp;&amp; identityValidated
     }
 
     /**
@@ -522,12 +550,12 @@ export default function IdentityLogin({ csrfToken }) {
     }
 
     /**
-     * Packs the Key information to be rendered to the `<Table>` HTML 
+     * Packs the Key information to be rendered to the `&lt;Table>` HTML 
      * object.
      * 
      * @function showKeyData
      * @returns {Object} The elements to be rendered nested in the 
-     * `<Table>` HTML object
+     * `&lt;Table>` HTML object
      */
     function showKeyData() {
         let content = []
@@ -539,23 +567,23 @@ export default function IdentityLogin({ csrfToken }) {
 
         identityKeys.map((key) => {
             content.push(
-                <tr>
-                    <td>{key.keyId}</td>
-                    <td>{key.purpose}</td>
-                    <td>{key.keyType}</td>
-                </tr>
+                &lt;tr>
+                    &lt;td>{key.keyId}&lt;/td>
+                    &lt;td>{key.purpose}&lt;/td>
+                    &lt;td>{key.keyType}&lt;/td>
+                &lt;/tr>
             )
         })
         return content
     }
 
     /**
-     * Packs the Claim information to be rendered to the `<Table>` HTML 
+     * Packs the Claim information to be rendered to the `&lt;Table>` HTML 
      * object.
      * 
      * @function showClaimData
      * @returns {Object} The elements to be rendered nested in the 
-     * `<Table>` HTML object
+     * `&lt;Table>` HTML object
      */
     function showClaimData() {
         let content = []
@@ -568,14 +596,14 @@ export default function IdentityLogin({ csrfToken }) {
         identityClaims.map((claim) => {
             console.log(claim)
             content.push(
-                <tr>
-                    <td>{claim.topic}</td>
-                    <td>{claim.scheme}</td>
-                    <td>{claim.issuer}</td>
-                    <td>{claim.signature}</td>
-                    <td>{claim.data}</td>
-                    <td>{claim.uri}</td>
-                </tr>
+                &lt;tr>
+                    &lt;td>{claim.topic}&lt;/td>
+                    &lt;td>{claim.scheme}&lt;/td>
+                    &lt;td>{claim.issuer}&lt;/td>
+                    &lt;td>{claim.signature}&lt;/td>
+                    &lt;td>{claim.data}&lt;/td>
+                    &lt;td>{claim.uri}&lt;/td>
+                &lt;/tr>
             )
         })
 
@@ -591,54 +619,54 @@ export default function IdentityLogin({ csrfToken }) {
      */
     function identityComponent() {
 
-        console.log(identityContract && identityAddress && identityKeys)
+        console.log(identityContract &amp;&amp; identityAddress &amp;&amp; identityKeys)
 
         // Display Identity details
         return (
-            <Card style={{ marginTop: '50px' }}>
-                <Card.Header className='display-5'>
+            &lt;Card style={{ marginTop: '50px' }}>
+                &lt;Card.Header className='display-5'>
                     My Identity: {identityAddress}
-                </Card.Header>
-                <Card.Body>
-                    <Card>
-                        <Card.Header className='h3'>Keys</Card.Header>
-                        <Card.Body>
-                            <Table responsive hover>
-                                <thead>
-                                    <tr>
-                                        <th>Key ID</th>
-                                        <th>Purpose</th>
-                                        <th>Key Type</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                &lt;/Card.Header>
+                &lt;Card.Body>
+                    &lt;Card>
+                        &lt;Card.Header className='h3'>Keys&lt;/Card.Header>
+                        &lt;Card.Body>
+                            &lt;Table responsive hover>
+                                &lt;thead>
+                                    &lt;tr>
+                                        &lt;th>Key ID&lt;/th>
+                                        &lt;th>Purpose&lt;/th>
+                                        &lt;th>Key Type&lt;/th>
+                                    &lt;/tr>
+                                &lt;/thead>
+                                &lt;tbody>
                                     {showKeyData()}
-                                </tbody>
-                            </Table>
-                        </Card.Body>
-                    </Card>
-                    <Card style={{ marginTop: '15px' }}>
-                        <Card.Header className='h3'>Claims</Card.Header>
-                        <Card.Body>
-                            <Table responsive hover>
-                                <thead>
-                                    <tr>
-                                        <th>Topic</th>
-                                        <th>Scheme</th>
-                                        <th>Issuer</th>
-                                        <th>Sign</th>
-                                        <th>Data</th>
-                                        <th>URI</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                                &lt;/tbody>
+                            &lt;/Table>
+                        &lt;/Card.Body>
+                    &lt;/Card>
+                    &lt;Card style={{ marginTop: '15px' }}>
+                        &lt;Card.Header className='h3'>Claims&lt;/Card.Header>
+                        &lt;Card.Body>
+                            &lt;Table responsive hover>
+                                &lt;thead>
+                                    &lt;tr>
+                                        &lt;th>Topic&lt;/th>
+                                        &lt;th>Scheme&lt;/th>
+                                        &lt;th>Issuer&lt;/th>
+                                        &lt;th>Sign&lt;/th>
+                                        &lt;th>Data&lt;/th>
+                                        &lt;th>URI&lt;/th>
+                                    &lt;/tr>
+                                &lt;/thead>
+                                &lt;tbody>
                                     {showClaimData()}
-                                </tbody>
-                            </Table>
-                        </Card.Body>
-                    </Card>
-                </Card.Body>
-            </Card>
+                                &lt;/tbody>
+                            &lt;/Table>
+                        &lt;/Card.Body>
+                    &lt;/Card>
+                &lt;/Card.Body>
+            &lt;/Card>
         )
     }
 
@@ -656,22 +684,22 @@ export default function IdentityLogin({ csrfToken }) {
     }
 
     return (
-        <>
-            <Card>
-                <Card.Header className='display-3'>
+        &lt;>
+            &lt;Card>
+                &lt;Card.Header className='display-3'>
                     Digital Identity Login
-                </Card.Header>
-                <Card.Body>
+                &lt;/Card.Header>
+                &lt;Card.Body>
                     {/* Transfer tokens form */}
-                    <Form noValidate validated={validated} onSubmit={async (e) => {
+                    &lt;Form noValidate validated={validated} onSubmit={async (e) => {
                         // Prevent page refresh
                         e.preventDefault();
                         await login();
                     }}>
                         {/* Address Input */}
-                        <Form.Group className="mb-3" controlId="identityAddress">
-                            <Form.Label className='h6'>Identity Contract Address</Form.Label>
-                            <Form.Control
+                        &lt;Form.Group className="mb-3" controlId="identityAddress">
+                            &lt;Form.Label className='h6'>Identity Contract Address&lt;/Form.Label>
+                            &lt;Form.Control
                                 required
                                 type="text"
                                 placeholder="lat1zg69v7yszg69v7yszg69v7yszg69v7y3q7dnwf"
@@ -690,61 +718,61 @@ export default function IdentityLogin({ csrfToken }) {
                                 isInvalid={!addressValidated}
                             />
                             {/* Valid Feedback */}
-                            <Form.Control.Feedback>
+                            &lt;Form.Control.Feedback>
                                 Ok!
-                            </Form.Control.Feedback>
+                            &lt;/Form.Control.Feedback>
                             {/* Invalid Feedback */}
-                            <Form.Control.Feedback type='invalid'>
+                            &lt;Form.Control.Feedback type='invalid'>
                                 Please enter a valid ATON bech32 address (E.g. lat1rd8c02e905rguunal8ck77ftct0jph2v6zj7cq)
-                            </Form.Control.Feedback>
-                        </Form.Group>
+                            &lt;/Form.Control.Feedback>
+                        &lt;/Form.Group>
                         {/* Create Identity */}
-                        {/* <Button variant="outline-primary" onClick={async () => {
+                        {/* &lt;Button variant="outline-primary" onClick={async () => {
                         // Sanitize user inputs before processing
                         const address = DOMPurify.sanitize(document.querySelector('#identityAddress').value)
                         // Check identity
                         await createIdentity()
                     }}>
                         Create Identity
-                    </Button> */}
+                    &lt;/Button> */}
 
-                        <Row>
-                            <Col md="auto">
+                        &lt;Row>
+                            &lt;Col md="auto">
                                 {/* Check Identity */}
-                                <Button variant="primary" onClick={async () => {
+                                &lt;Button variant="primary" onClick={async () => {
                                     // Sanitize user inputs before processing
                                     const address = DOMPurify.sanitize(document.querySelector('#identityAddress').value)
                                     // Check identity
                                     await checkIdentity(address) ? setIdentityValidated(true) : setIdentityValidated(false)
                                 }} disabled={!addressValidated}>
                                     Check Contract
-                                </Button>
-                            </Col>
-                            <Col md="auto">
+                                &lt;/Button>
+                            &lt;/Col>
+                            &lt;Col md="auto">
                                 {/* KYC Process */}
-                                <DropdownButton
+                                &lt;DropdownButton
                                     variant='secondary'
                                     id="getClaimButton"
                                     title="Get Claim"
-                                    disabled={!addressValidated && identityAddress}
+                                    disabled={!addressValidated &amp;&amp; identityAddress}
                                 >
-                                    <Dropdown.Item onClick={() => { }}>Student Claim</Dropdown.Item>
-                                    <Dropdown.Item onClick={() => { }}>Faculty Claim</Dropdown.Item>
-                                </DropdownButton>
-                            </Col>
-                            <Col md="auto">
+                                    &lt;Dropdown.Item onClick={() => { }}>Student Claim&lt;/Dropdown.Item>
+                                    &lt;Dropdown.Item onClick={() => { }}>Faculty Claim&lt;/Dropdown.Item>
+                                &lt;/DropdownButton>
+                            &lt;/Col>
+                            &lt;Col md="auto">
                                 {/* Submit button */}
-                                <Button variant="success" type="submit">
+                                &lt;Button variant="success" type="submit">
                                     Login
-                                </Button>
-                            </Col>
-                        </Row>
+                                &lt;/Button>
+                            &lt;/Col>
+                        &lt;/Row>
 
-                    </Form>
-                </Card.Body>
-            </Card>
-            {identityContract && identityAddress && identityKeys && identityComponent()}
-        </>
+                    &lt;/Form>
+                &lt;/Card.Body>
+            &lt;/Card>
+            {identityContract &amp;&amp; identityAddress &amp;&amp; identityKeys &amp;&amp; identityComponent()}
+        &lt;/>
     )
 }
 
@@ -755,4 +783,26 @@ export async function getServerSideProps(context) {
             csrfToken: await getCsrfToken(context),
         },
     };
-}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Header.html">Header</a></li><li><a href="module-IdentityLogin.html">IdentityLogin</a></li><li><a href="module-Ipfs.html">Ipfs</a></li><li><a href="module-IpfsProvider.html">IpfsProvider</a></li><li><a href="module-Layout.html">Layout</a></li><li><a href="module-Marketplace.html">Marketplace</a></li><li><a href="module-NextAuth.html">NextAuth</a></li><li><a href="module-NftMarketProvider.html">NftMarketProvider</a></li><li><a href="module-Wallet.html">Wallet</a></li><li><a href="module-WalletProvider.html">WalletProvider</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Fri Aug 05 2022 02:29:05 GMT+0800 (Singapore Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
